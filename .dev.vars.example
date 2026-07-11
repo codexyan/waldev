@@ -8,9 +8,14 @@ BETTER_AUTH_URL="http://localhost:3000"
 # Cron (endpoint publish terjadwal)
 CRON_SECRET="ganti-dengan-string-acak"
 
-# Cloudflare Turnstile (anti-spam form publik)
+# Cloudflare Turnstile (anti-spam form publik) — form tetap jalan bila kosong
 TURNSTILE_SECRET_KEY=""
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=""
+
+# Notifikasi email lead via Resend (opsional; dilewati bila kosong)
+RESEND_API_KEY=""
+LEAD_NOTIFY_EMAIL=""
+LEAD_FROM_EMAIL="WalDev <onboarding@resend.dev>"
 
 # Rute admin rahasia (opsional; default "/panel")
 NEXT_PUBLIC_ADMIN_BASE="/panel"
