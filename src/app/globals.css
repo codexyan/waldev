@@ -94,3 +94,82 @@
     text-rendering: optimizeLegibility;
   }
 }
+
+/* Rich text (editor Tiptap & artikel publik) */
+@layer components {
+  .prose {
+    color: hsl(var(--foreground));
+    line-height: 1.75;
+  }
+  .prose > * + * {
+    margin-top: 1em;
+  }
+  .prose h1,
+  .prose h2,
+  .prose h3 {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  .prose h1 {
+    font-size: 1.875rem;
+  }
+  .prose h2 {
+    font-size: 1.5rem;
+    margin-top: 1.6em;
+  }
+  .prose h3 {
+    font-size: 1.25rem;
+    margin-top: 1.4em;
+  }
+  .prose a {
+    color: hsl(var(--primary));
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+  }
+  .prose ol {
+    list-style: decimal;
+    padding-left: 1.5rem;
+  }
+  .prose li + li {
+    margin-top: 0.25em;
+  }
+  .prose blockquote {
+    border-left: 3px solid hsl(var(--border));
+    padding-left: 1rem;
+    color: hsl(var(--muted-foreground));
+    font-style: italic;
+  }
+  .prose code {
+    background: hsl(var(--muted));
+    padding: 0.15em 0.35em;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+  }
+  .prose pre {
+    background: hsl(var(--muted));
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+  }
+  .prose pre code {
+    background: transparent;
+    padding: 0;
+  }
+  .prose hr {
+    border: 0;
+    border-top: 1px solid hsl(var(--border));
+  }
+  /* Placeholder ProseMirror saat kosong */
+  .prose p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    color: hsl(var(--muted-foreground));
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+}
