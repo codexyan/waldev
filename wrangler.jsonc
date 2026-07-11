@@ -11,9 +11,11 @@
   "observability": {
     "enabled": true
   },
+  // Catatan: BETTER_AUTH_URL sengaja TIDAK diisi di sini. Di production Better Auth
+  // menyimpulkan origin dari request; untuk lokal disediakan lewat .dev.vars.
+  // NEXT_PUBLIC_SITE_URL sebaiknya di-set sebagai build variable saat domain final diketahui.
   "vars": {
-    "NEXT_PUBLIC_SITE_URL": "http://localhost:3000",
-    "BETTER_AUTH_URL": "http://localhost:3000"
+    "NEXT_PUBLIC_SITE_URL": "http://localhost:3000"
   },
   // Ganti *_ID setelah resource dibuat via wrangler (lihat README).
   "d1_databases": [
