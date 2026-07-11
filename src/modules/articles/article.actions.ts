@@ -23,6 +23,7 @@ function toWriteData(input: ArticleInput): dal.ArticleWriteData {
     title: input.title,
     slug: input.slug,
     summary: input.summary ?? null,
+    coverMediaId: input.coverMediaId || null,
     contentJson: input.contentJson,
     categoryId: input.categoryId || null,
     tags: input.tags ?? [],

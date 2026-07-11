@@ -50,6 +50,15 @@ export default async function PortfolioDetailPage({
         ) : null}
       </header>
 
+      {project.coverUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={project.coverUrl}
+          alt={project.title}
+          className="mt-8 aspect-video w-full rounded-xl object-cover"
+        />
+      ) : null}
+
       <div className="mt-8 flex flex-wrap gap-3">
         {project.timeline ? (
           <span className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
@@ -124,6 +133,22 @@ export default async function PortfolioDetailPage({
               </li>
             ))}
           </ul>
+        </section>
+      ) : null}
+      {project.gallery.length > 0 ? (
+        <section className="mt-12">
+          <h2 className="text-xl font-semibold tracking-tight">Galeri</h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {project.gallery.map((img) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={img.url}
+                src={img.url}
+                alt={img.filename}
+                className="w-full rounded-lg object-cover"
+              />
+            ))}
+          </div>
         </section>
       ) : null}
     </article>

@@ -37,6 +37,14 @@ export default async function ArticlesPage() {
               href={`/articles/${article.slug}`}
               className="group flex flex-col rounded-xl border border-border bg-card p-6 transition-colors hover:border-foreground/20"
             >
+              {article.coverUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={article.coverUrl}
+                  alt=""
+                  className="mb-4 aspect-video w-full rounded-lg object-cover"
+                />
+              ) : null}
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
                 {article.categoryName ? <span>{article.categoryName}</span> : null}
                 <span>{article.readingTime} mnt baca</span>

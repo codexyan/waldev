@@ -43,6 +43,7 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
           status: article.status,
           scheduledAt: toDatetimeLocal(article.scheduledAt),
           contentJson,
+          cover: article.cover,
         }}
         categories={categories}
       />

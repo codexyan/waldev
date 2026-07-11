@@ -13,10 +13,15 @@ const NAV = [
   { href: "/media", label: "Media" },
   { href: "/categories", label: "Categories" },
   { href: "/tags", label: "Tags" },
+  { href: "/clients", label: "Clients" },
+  { href: "/testimonials", label: "Testimonials" },
   { href: "/collaboration", label: "Collaboration" },
   { href: "/contact-messages", label: "Contact" },
+  { href: "/navigation", label: "Navigation" },
+  { href: "/settings", label: "Settings" },
   { href: "/users", label: "Users" },
   { href: "/roles", label: "Roles" },
+  { href: "/activity-logs", label: "Activity" },
 ];
 
 export function AdminNav() {

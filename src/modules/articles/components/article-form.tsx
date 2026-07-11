@@ -12,6 +12,7 @@ import { ADMIN_BASE } from "@/lib/constants";
 import { slugify } from "@/lib/slug";
 import { createArticle, updateArticle } from "@/modules/articles/article.actions";
 import { ARTICLE_STATUSES, type ArticleStatus } from "@/modules/articles/article.schema";
+import { MediaPickerField, type PickedMedia } from "@/modules/media/components/media-picker";
 
 export interface ArticleFormInitial {
   id?: string;
@@ -23,6 +24,7 @@ export interface ArticleFormInitial {
   status: ArticleStatus;
   scheduledAt: string;
   contentJson: unknown;
+  cover: PickedMedia | null;
 }
 
 const STATUS_LABELS: Record<ArticleStatus, string> = {
@@ -54,6 +56,7 @@ export function ArticleForm({
   const [tags, setTags] = useState(initial.tags);
   const [status, setStatus] = useState<ArticleStatus>(initial.status);
   const [scheduledAt, setScheduledAt] = useState(initial.scheduledAt);
+  const [cover, setCover] = useState<PickedMedia | null>(initial.cover);
   const [content, setContent] = useState<unknown>(initial.contentJson);
 
   const [error, setError] = useState<string | null>(null);
@@ -75,6 +78,7 @@ export function ArticleForm({
       title,
       slug: slug || undefined,
       summary: summary || undefined,
+      coverMediaId: cover?.id,
       contentJson: content,
       categoryId: categoryId || undefined,
       tags: tags
@@ -167,6 +171,7 @@ export function ArticleForm({
         </div>
 
         <div className="rounded-xl border border-border bg-card p-5 space-y-4">
+          <MediaPickerField label="Cover" value={cover} onChange={setCover} />
           <div className="space-y-1.5">
             <Label htmlFor="slug">Slug</Label>
             <Input

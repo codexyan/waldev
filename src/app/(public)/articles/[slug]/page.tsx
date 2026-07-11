@@ -78,6 +78,15 @@ export default async function ArticleDetailPage({
         ) : null}
       </header>
 
+      {article.coverUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={article.coverUrl}
+          alt={article.title}
+          className="mt-8 aspect-video w-full rounded-xl object-cover"
+        />
+      ) : null}
+
       <div
         className="prose mt-10 max-w-none"
         // eslint-disable-next-line react/no-danger

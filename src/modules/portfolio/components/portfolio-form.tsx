@@ -10,6 +10,11 @@ import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ADMIN_BASE } from "@/lib/constants";
 import { slugify } from "@/lib/slug";
+import {
+  MediaGalleryField,
+  MediaPickerField,
+  type PickedMedia,
+} from "@/modules/media/components/media-picker";
 import { createPortfolio, updatePortfolio } from "@/modules/portfolio/portfolio.actions";
 import { PORTFOLIO_STATUSES, type PortfolioStatus } from "@/modules/portfolio/portfolio.schema";
 
@@ -29,6 +34,9 @@ export interface PortfolioFormInitial {
   isConfidential: boolean;
   technologies: string;
   features: RepeatableRow[];
+  thumbnail: PickedMedia | null;
+  cover: PickedMedia | null;
+  gallery: PickedMedia[];
 }
 
 export function PortfolioForm({
@@ -56,6 +64,9 @@ export function PortfolioForm({
   const [isConfidential, setIsConfidential] = useState(initial.isConfidential);
   const [technologies, setTechnologies] = useState(initial.technologies);
   const [features, setFeatures] = useState<RepeatableRow[]>(initial.features);
+  const [thumbnail, setThumbnail] = useState<PickedMedia | null>(initial.thumbnail);
+  const [cover, setCover] = useState<PickedMedia | null>(initial.cover);
+  const [gallery, setGallery] = useState<PickedMedia[]>(initial.gallery);
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -83,6 +94,9 @@ export function PortfolioForm({
       repoUrl: repoUrl || undefined,
       order,
       isConfidential,
+      thumbnailMediaId: thumbnail?.id,
+      coverMediaId: cover?.id,
+      galleryMediaIds: gallery.map((g) => g.id),
       technologies: technologies
         .split(",")
         .map((t) => t.trim())
@@ -134,6 +148,7 @@ export function PortfolioForm({
           value={features}
           onChange={setFeatures}
         />
+        <MediaGalleryField label="Galeri" value={gallery} onChange={setGallery} />
       </div>
 
       <aside className="space-y-5">
@@ -180,6 +195,8 @@ export function PortfolioForm({
         </div>
 
         <div className="space-y-4 rounded-xl border border-border bg-card p-5">
+          <MediaPickerField label="Thumbnail" value={thumbnail} onChange={setThumbnail} />
+          <MediaPickerField label="Cover" value={cover} onChange={setCover} />
           <div className="space-y-1.5">
             <Label htmlFor="slug">Slug</Label>
             <Input

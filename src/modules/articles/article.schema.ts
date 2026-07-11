@@ -9,6 +9,7 @@ export const articleInputSchema = z
     title: z.string().trim().min(1, "Judul wajib diisi").max(200),
     slug: z.string().trim().max(80).optional(),
     summary: z.string().trim().max(500).optional(),
+    coverMediaId: z.string().trim().optional(),
     contentJson: z.any(),
     categoryId: z.string().trim().optional(),
     tags: z.array(z.string().trim().min(1).max(50)).max(20).default([]),

@@ -32,6 +32,14 @@ export default async function PortfolioPage() {
               href={`/portfolio/${item.slug}`}
               className="group flex flex-col rounded-xl border border-border bg-card p-6 transition-colors hover:border-foreground/20"
             >
+              {item.thumbnailUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={item.thumbnailUrl}
+                  alt=""
+                  className="mb-4 aspect-video w-full rounded-lg object-cover"
+                />
+              ) : null}
               <span className="text-xs text-muted-foreground">
                 {item.isConfidential ? "Confidential Project" : (item.clientName ?? "Proyek")}
               </span>

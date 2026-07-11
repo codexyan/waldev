@@ -34,6 +34,9 @@ export default async function EditPortfolioPage({ params }: { params: Promise<{ 
           isConfidential: portfolio.isConfidential,
           technologies: portfolio.technologies.join(", "),
           features: portfolio.features,
+          thumbnail: portfolio.thumbnail,
+          cover: portfolio.cover,
+          gallery: portfolio.gallery,
         }}
         clients={clients}
       />

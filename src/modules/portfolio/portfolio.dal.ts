@@ -3,7 +3,9 @@ import { slugify } from "@/lib/slug";
 import { getDb, type DB } from "@/server/db/client";
 import {
   clients,
+  media,
   portfolioFeatures,
+  portfolioMedia,
   portfolioTechnologies,
   portfolios,
   technologies,
@@ -25,6 +27,9 @@ export interface PortfolioWriteData {
   status: PortfolioStatus;
   demoUrl?: string;
   repoUrl?: string;
+  thumbnailMediaId?: string;
+  coverMediaId?: string;
+  gallery: string[];
   clientId?: string;
   isConfidential: boolean;
   order: number;
@@ -98,10 +103,32 @@ function coreValues(data: PortfolioWriteData) {
     status: data.status,
     demoUrl: data.demoUrl?.trim() || null,
     repoUrl: data.repoUrl?.trim() || null,
+    thumbnailMediaId: data.thumbnailMediaId || null,
+    coverMediaId: data.coverMediaId || null,
     clientId: data.clientId || null,
     isConfidential: data.isConfidential,
     order: data.order,
   };
+}
+
+async function replaceGallery(db: DB, portfolioId: string, mediaIds: string[]) {
+  await db.delete(portfolioMedia).where(eq(portfolioMedia.portfolioId, portfolioId));
+  const unique = Array.from(new Set(mediaIds.filter(Boolean)));
+  if (unique.length > 0) {
+    await db
+      .insert(portfolioMedia)
+      .values(unique.map((mediaId, i) => ({ portfolioId, mediaId, order: i })));
+  }
+}
+
+async function getMediaPick(db: DB, id: string | null) {
+  if (!id) return null;
+  const rows = await db
+    .select({ id: media.id, url: media.url, filename: media.filename, kind: media.kind })
+    .from(media)
+    .where(eq(media.id, id))
+    .limit(1);
+  return rows[0] ?? null;
 }
 
 /* --------------------------------- Admin --------------------------------- */
@@ -118,6 +145,7 @@ export async function createPortfolio(data: PortfolioWriteData) {
   if (created) {
     await replaceTechnologies(db, created.id, data.technologies);
     await replaceFeatures(db, created.id, data.features);
+    await replaceGallery(db, created.id, data.gallery);
   }
   return created;
 }
@@ -131,6 +159,7 @@ export async function updatePortfolio(id: string, data: PortfolioWriteData) {
     .where(eq(portfolios.id, id));
   await replaceTechnologies(db, id, data.technologies);
   await replaceFeatures(db, id, data.features);
+  await replaceGallery(db, id, data.gallery);
   return { id, slug };
 }
 
@@ -191,10 +220,20 @@ export async function getPortfolioForEdit(id: string) {
     .where(eq(portfolioFeatures.portfolioId, id))
     .orderBy(asc(portfolioFeatures.order));
 
+  const gallery = await db
+    .select({ id: media.id, url: media.url, filename: media.filename, kind: media.kind })
+    .from(portfolioMedia)
+    .innerJoin(media, eq(portfolioMedia.mediaId, media.id))
+    .where(eq(portfolioMedia.portfolioId, id))
+    .orderBy(asc(portfolioMedia.order));
+
   return {
     ...portfolio,
     technologies: techRows.map((t) => t.name),
     features: featureRows.map((f) => ({ title: f.title, description: f.description ?? "" })),
+    thumbnail: await getMediaPick(db, portfolio.thumbnailMediaId),
+    cover: await getMediaPick(db, portfolio.coverMediaId),
+    gallery,
   };
 }
 
@@ -215,9 +254,11 @@ export async function listPublishedPortfolios() {
       status: portfolios.status,
       isConfidential: portfolios.isConfidential,
       clientName: clients.name,
+      thumbnailUrl: media.url,
     })
     .from(portfolios)
     .leftJoin(clients, eq(portfolios.clientId, clients.id))
+    .leftJoin(media, eq(portfolios.thumbnailMediaId, media.id))
     .where(ne(portfolios.status, "archived"))
     .orderBy(asc(portfolios.order), desc(portfolios.createdAt));
 }
@@ -238,9 +279,11 @@ export async function getPublishedPortfolioBySlug(slug: string) {
       repoUrl: portfolios.repoUrl,
       isConfidential: portfolios.isConfidential,
       clientName: clients.name,
+      coverUrl: media.url,
     })
     .from(portfolios)
     .leftJoin(clients, eq(portfolios.clientId, clients.id))
+    .leftJoin(media, eq(portfolios.coverMediaId, media.id))
     .where(and(eq(portfolios.slug, slug), ne(portfolios.status, "archived")))
     .limit(1);
 
@@ -259,10 +302,18 @@ export async function getPublishedPortfolioBySlug(slug: string) {
     .where(eq(portfolioFeatures.portfolioId, portfolio.id))
     .orderBy(asc(portfolioFeatures.order));
 
+  const gallery = await db
+    .select({ url: media.url, filename: media.filename })
+    .from(portfolioMedia)
+    .innerJoin(media, eq(portfolioMedia.mediaId, media.id))
+    .where(eq(portfolioMedia.portfolioId, portfolio.id))
+    .orderBy(asc(portfolioMedia.order));
+
   return {
     ...portfolio,
     clientName: portfolio.isConfidential ? null : portfolio.clientName,
     technologies: techRows.map((t) => t.name),
     features: featureRows,
+    gallery,
   };
 }

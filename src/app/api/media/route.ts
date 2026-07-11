@@ -1,7 +1,7 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { createId } from "@paralleldrive/cuid2";
 import { slugify } from "@/lib/slug";
-import { createMedia, type MediaKind } from "@/modules/media/media.dal";
+import { createMedia, listMedia, type MediaKind } from "@/modules/media/media.dal";
 import { getSession } from "@/server/auth/session";
 
 const MAX_SIZE = 10 * 1024 * 1024; // 10MB
@@ -18,6 +18,13 @@ function detectKind(mime: string): MediaKind | null {
     return "document";
   }
   return null;
+}
+
+export async function GET(): Promise<Response> {
+  const session = await getSession();
+  if (!session) return Response.json({ ok: false, error: "UNAUTHORIZED" }, { status: 401 });
+  const items = await listMedia();
+  return Response.json({ ok: true, data: items });
 }
 
 export async function POST(request: Request): Promise<Response> {

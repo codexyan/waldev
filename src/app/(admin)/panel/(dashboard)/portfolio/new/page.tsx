@@ -27,6 +27,9 @@ export default async function NewPortfolioPage() {
           isConfidential: false,
           technologies: "",
           features: [],
+          thumbnail: null,
+          cover: null,
+          gallery: [],
         }}
         clients={clients}
       />

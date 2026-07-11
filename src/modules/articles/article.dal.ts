@@ -6,6 +6,7 @@ import {
   articleTags,
   articles,
   categories,
+  media,
   tags as tagsTable,
   user,
 } from "@/server/db/schema";
@@ -15,6 +16,7 @@ export interface ArticleWriteData {
   title: string;
   slug?: string;
   summary?: string | null;
+  coverMediaId?: string | null;
   contentJson: unknown;
   categoryId?: string | null;
   tags: string[];
@@ -89,6 +91,7 @@ export async function createArticle(data: ArticleWriteData, authorId: string) {
       title: data.title,
       slug,
       summary: data.summary?.trim() || null,
+      coverMediaId: data.coverMediaId || null,
       categoryId: data.categoryId || null,
       authorId,
       contentJson: JSON.stringify(data.contentJson ?? { type: "doc", content: [] }),
@@ -118,6 +121,7 @@ export async function updateArticle(id: string, data: ArticleWriteData) {
       title: data.title,
       slug,
       summary: data.summary?.trim() || null,
+      coverMediaId: data.coverMediaId || null,
       categoryId: data.categoryId || null,
       contentJson: JSON.stringify(data.contentJson ?? { type: "doc", content: [] }),
       contentHtml: renderTiptapToHtml(data.contentJson),
@@ -202,7 +206,19 @@ export async function getArticleForEdit(id: string) {
     .innerJoin(tagsTable, eq(articleTags.tagId, tagsTable.id))
     .where(eq(articleTags.articleId, id));
 
-  return { ...article, tags: tagRows.map((t) => t.name) };
+  let cover:
+    | { id: string; url: string; filename: string; kind: "image" | "pdf" | "document" }
+    | null = null;
+  if (article.coverMediaId) {
+    const m = await db
+      .select({ id: media.id, url: media.url, filename: media.filename, kind: media.kind })
+      .from(media)
+      .where(eq(media.id, article.coverMediaId))
+      .limit(1);
+    cover = m[0] ?? null;
+  }
+
+  return { ...article, tags: tagRows.map((t) => t.name), cover };
 }
 
 export async function listArticleCategories() {
@@ -230,9 +246,11 @@ export async function listPublishedArticles(params: { page?: number; limit?: num
       readingTime: articles.readingTime,
       publishedAt: articles.publishedAt,
       categoryName: categories.name,
+      coverUrl: media.url,
     })
     .from(articles)
     .leftJoin(categories, eq(articles.categoryId, categories.id))
+    .leftJoin(media, eq(articles.coverMediaId, media.id))
     .where(eq(articles.status, "published"))
     .orderBy(desc(articles.publishedAt))
     .limit(limit)
@@ -260,10 +278,12 @@ export async function getPublishedArticleBySlug(slug: string) {
       publishedAt: articles.publishedAt,
       categoryName: categories.name,
       authorName: user.name,
+      coverUrl: media.url,
     })
     .from(articles)
     .leftJoin(categories, eq(articles.categoryId, categories.id))
     .leftJoin(user, eq(articles.authorId, user.id))
+    .leftJoin(media, eq(articles.coverMediaId, media.id))
     .where(and(eq(articles.slug, slug), eq(articles.status, "published")))
     .limit(1);
 

@@ -21,6 +21,7 @@ export default async function NewArticlePage() {
           status: "draft",
           scheduledAt: "",
           contentJson: { type: "doc", content: [] },
+          cover: null,
         }}
         categories={categories}
       />
