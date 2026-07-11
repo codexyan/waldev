@@ -5,6 +5,7 @@ import { unstable_rethrow } from "next/navigation";
 import { FORBIDDEN, invalid, type ActionResult } from "@/lib/action";
 import { logActivity } from "@/server/activity-log";
 import { requirePermission } from "@/server/rbac/guard";
+import { upsertSeoMeta } from "@/modules/seo/seo.dal";
 import * as dal from "./service.dal";
 import { serviceInputSchema, type ServiceInput } from "./service.schema";
 
@@ -44,6 +45,11 @@ export async function createService(
 
   const created = await dal.createService(toWriteData(parsed.data));
   if (!created) return { ok: false, error: "Gagal membuat layanan." };
+  await upsertSeoMeta("service", created.id, {
+    metaTitle: parsed.data.metaTitle,
+    metaDescription: parsed.data.metaDescription,
+    noIndex: parsed.data.noIndex,
+  });
   await logActivity({ userId: actor.id, action: "service.create", entityType: "service", entityId: created.id });
   revalidate(created.slug);
   return { ok: true, data: created };
@@ -64,6 +70,11 @@ export async function updateService(
   if (!parsed.success) return invalid(parsed.error);
 
   const updated = await dal.updateService(id, toWriteData(parsed.data));
+  await upsertSeoMeta("service", id, {
+    metaTitle: parsed.data.metaTitle,
+    metaDescription: parsed.data.metaDescription,
+    noIndex: parsed.data.noIndex,
+  });
   await logActivity({ userId: actor.id, action: "service.update", entityType: "service", entityId: id });
   revalidate(updated.slug);
   return { ok: true, data: updated };

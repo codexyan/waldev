@@ -1,6 +1,6 @@
 import { count, desc, eq } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
-import { collaborationRequests, contactMessages } from "@/server/db/schema";
+import { collaborationRequests, contactMessages, media } from "@/server/db/schema";
 import type { CollaborationStatus, ContactStatus } from "./lead.schema";
 
 /* Collaboration */
@@ -14,6 +14,7 @@ export async function createCollaboration(data: {
   deadline?: string;
   projectType?: string;
   description: string;
+  attachmentMediaId?: string;
 }) {
   const db = getDb();
   const inserted = await db
@@ -27,6 +28,7 @@ export async function createCollaboration(data: {
       deadline: data.deadline?.trim() || null,
       projectType: data.projectType?.trim() || null,
       description: data.description,
+      attachmentMediaId: data.attachmentMediaId || null,
     })
     .returning({ id: collaborationRequests.id });
   return inserted[0];
@@ -44,8 +46,10 @@ export async function listCollaborations() {
       budget: collaborationRequests.budget,
       status: collaborationRequests.status,
       createdAt: collaborationRequests.createdAt,
+      attachmentUrl: media.url,
     })
     .from(collaborationRequests)
+    .leftJoin(media, eq(collaborationRequests.attachmentMediaId, media.id))
     .orderBy(desc(collaborationRequests.createdAt));
 }
 

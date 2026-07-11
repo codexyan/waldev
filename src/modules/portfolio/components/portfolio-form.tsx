@@ -17,6 +17,7 @@ import {
 } from "@/modules/media/components/media-picker";
 import { createPortfolio, updatePortfolio } from "@/modules/portfolio/portfolio.actions";
 import { PORTFOLIO_STATUSES, type PortfolioStatus } from "@/modules/portfolio/portfolio.schema";
+import { SeoFields, type SeoValue } from "@/modules/seo/components/seo-fields";
 
 export interface PortfolioFormInitial {
   id?: string;
@@ -37,6 +38,7 @@ export interface PortfolioFormInitial {
   thumbnail: PickedMedia | null;
   cover: PickedMedia | null;
   gallery: PickedMedia[];
+  seo: SeoValue;
 }
 
 export function PortfolioForm({
@@ -67,6 +69,7 @@ export function PortfolioForm({
   const [thumbnail, setThumbnail] = useState<PickedMedia | null>(initial.thumbnail);
   const [cover, setCover] = useState<PickedMedia | null>(initial.cover);
   const [gallery, setGallery] = useState<PickedMedia[]>(initial.gallery);
+  const [seo, setSeo] = useState<SeoValue>(initial.seo);
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -104,6 +107,9 @@ export function PortfolioForm({
       features: features
         .map((f) => ({ title: (f.title ?? "").trim(), description: (f.description ?? "").trim() }))
         .filter((f) => f.title),
+      metaTitle: seo.metaTitle || undefined,
+      metaDescription: seo.metaDescription || undefined,
+      noIndex: seo.noIndex,
     };
 
     const res = isEdit
@@ -235,6 +241,7 @@ export function PortfolioForm({
             <Input id="order" type="number" value={order} onChange={(e) => setOrder(e.target.value)} />
           </div>
         </div>
+        <SeoFields value={seo} onChange={setSeo} />
       </aside>
     </form>
   );

@@ -22,6 +22,7 @@ export default async function NewArticlePage() {
           scheduledAt: "",
           contentJson: { type: "doc", content: [] },
           cover: null,
+          seo: { metaTitle: "", metaDescription: "", noIndex: false },
         }}
         categories={categories}
       />

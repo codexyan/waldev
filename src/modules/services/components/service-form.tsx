@@ -12,6 +12,7 @@ import { ADMIN_BASE } from "@/lib/constants";
 import { slugify } from "@/lib/slug";
 import { createService, updateService } from "@/modules/services/service.actions";
 import { SERVICE_STATUSES, type ServiceStatus } from "@/modules/services/service.schema";
+import { SeoFields, type SeoValue } from "@/modules/seo/components/seo-fields";
 
 export interface ServiceFormInitial {
   id?: string;
@@ -26,6 +27,7 @@ export interface ServiceFormInitial {
   features: RepeatableRow[];
   workflow: RepeatableRow[];
   faqs: RepeatableRow[];
+  seo: SeoValue;
 }
 
 export function ServiceForm({ initial }: { initial: ServiceFormInitial }) {
@@ -44,6 +46,7 @@ export function ServiceForm({ initial }: { initial: ServiceFormInitial }) {
   const [features, setFeatures] = useState<RepeatableRow[]>(initial.features);
   const [workflow, setWorkflow] = useState<RepeatableRow[]>(initial.workflow);
   const [faqs, setFaqs] = useState<RepeatableRow[]>(initial.faqs);
+  const [seo, setSeo] = useState<SeoValue>(initial.seo);
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -76,6 +79,9 @@ export function ServiceForm({ initial }: { initial: ServiceFormInitial }) {
       faqs: faqs
         .map((f) => ({ question: (f.question ?? "").trim(), answer: (f.answer ?? "").trim() }))
         .filter((f) => f.question && f.answer),
+      metaTitle: seo.metaTitle || undefined,
+      metaDescription: seo.metaDescription || undefined,
+      noIndex: seo.noIndex,
     };
 
     const res = isEdit
@@ -192,6 +198,7 @@ export function ServiceForm({ initial }: { initial: ServiceFormInitial }) {
             <Input id="order" type="number" value={order} onChange={(e) => setOrder(e.target.value)} />
           </div>
         </div>
+        <SeoFields value={seo} onChange={setSeo} />
       </aside>
     </form>
   );

@@ -30,6 +30,7 @@ export const collaborationSubmitSchema = z.object({
   deadline: z.string().trim().max(100).optional(),
   projectType: z.string().trim().max(100).optional(),
   description: z.string().trim().min(10, "Ceritakan kebutuhan Anda (min. 10 karakter)").max(5000),
+  attachmentMediaId: z.string().trim().optional(),
   turnstileToken: z.string().optional(),
 });
 

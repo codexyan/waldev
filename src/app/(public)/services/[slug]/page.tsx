@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { getActiveServiceBySlug } from "@/modules/services/service.dal";
+import { getSeoMeta } from "@/modules/seo/seo.dal";
 
 export const dynamic = "force-dynamic";
 
@@ -14,11 +15,15 @@ export async function generateMetadata({
   const { slug } = await params;
   const service = await getActiveServiceBySlug(slug);
   if (!service) return { title: "Layanan tidak ditemukan" };
+  const seo = await getSeoMeta("service", service.id);
+  const title = seo.metaTitle || service.name;
+  const description = seo.metaDescription || service.description || undefined;
   return {
-    title: service.name,
-    description: service.description ?? undefined,
+    title,
+    description,
     alternates: { canonical: `/services/${service.slug}` },
-    openGraph: { title: service.name, description: service.description ?? undefined },
+    robots: seo.noIndex ? { index: false, follow: false } : undefined,
+    openGraph: { title, description },
   };
 }
 

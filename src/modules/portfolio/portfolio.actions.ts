@@ -5,6 +5,7 @@ import { unstable_rethrow } from "next/navigation";
 import { FORBIDDEN, invalid, type ActionResult } from "@/lib/action";
 import { logActivity } from "@/server/activity-log";
 import { requirePermission } from "@/server/rbac/guard";
+import { upsertSeoMeta } from "@/modules/seo/seo.dal";
 import * as dal from "./portfolio.dal";
 import { portfolioInputSchema, type PortfolioInput } from "./portfolio.schema";
 
@@ -50,6 +51,11 @@ export async function createPortfolio(
 
   const created = await dal.createPortfolio(toWriteData(parsed.data));
   if (!created) return { ok: false, error: "Gagal membuat portfolio." };
+  await upsertSeoMeta("portfolio", created.id, {
+    metaTitle: parsed.data.metaTitle,
+    metaDescription: parsed.data.metaDescription,
+    noIndex: parsed.data.noIndex,
+  });
   await logActivity({ userId: actor.id, action: "portfolio.create", entityType: "portfolio", entityId: created.id });
   revalidate(created.slug);
   return { ok: true, data: created };
@@ -70,6 +76,11 @@ export async function updatePortfolio(
   if (!parsed.success) return invalid(parsed.error);
 
   const updated = await dal.updatePortfolio(id, toWriteData(parsed.data));
+  await upsertSeoMeta("portfolio", id, {
+    metaTitle: parsed.data.metaTitle,
+    metaDescription: parsed.data.metaDescription,
+    noIndex: parsed.data.noIndex,
+  });
   await logActivity({ userId: actor.id, action: "portfolio.update", entityType: "portfolio", entityId: id });
   revalidate(updated.slug);
   return { ok: true, data: updated };

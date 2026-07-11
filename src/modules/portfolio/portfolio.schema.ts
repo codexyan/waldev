@@ -26,6 +26,9 @@ export const portfolioInputSchema = z.object({
   order: z.coerce.number().int().min(0).default(0),
   technologies: z.array(z.string().trim().min(1).max(60)).max(30).default([]),
   features: z.array(portfolioFeatureSchema).max(30).default([]),
+  metaTitle: z.string().trim().max(200).optional(),
+  metaDescription: z.string().trim().max(320).optional(),
+  noIndex: z.boolean().default(false),
 });
 
 export type PortfolioInput = z.infer<typeof portfolioInputSchema>;

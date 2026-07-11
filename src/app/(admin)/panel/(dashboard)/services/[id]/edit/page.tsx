@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { ServiceForm } from "@/modules/services/components/service-form";
 import { getServiceForEdit } from "@/modules/services/service.dal";
+import { getSeoMeta } from "@/modules/seo/seo.dal";
 import { requirePagePermission } from "@/server/rbac/guard";
 
 export const dynamic = "force-dynamic";
@@ -8,7 +9,7 @@ export const dynamic = "force-dynamic";
 export default async function EditServicePage({ params }: { params: Promise<{ id: string }> }) {
   await requirePagePermission("service.update");
   const { id } = await params;
-  const service = await getServiceForEdit(id);
+  const [service, seo] = await Promise.all([getServiceForEdit(id), getSeoMeta("service", id)]);
   if (!service) notFound();
 
   return (
@@ -28,6 +29,7 @@ export default async function EditServicePage({ params }: { params: Promise<{ id
           features: service.features,
           workflow: service.workflow,
           faqs: service.faqs,
+          seo,
         }}
       />
     </div>

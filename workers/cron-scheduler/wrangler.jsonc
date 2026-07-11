@@ -1,0 +1,11 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "waldev-cron",
+  "main": "index.ts",
+  "compatibility_date": "2025-06-01",
+  // Setiap 15 menit: publikasikan artikel terjadwal yang waktunya tiba.
+  "triggers": { "crons": ["*/15 * * * *"] },
+  "vars": {
+    "CRON_TARGET": "https://waldev.mdcodeid.workers.dev/api/cron/publish-scheduled"
+  }
+}

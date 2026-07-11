@@ -58,8 +58,16 @@ export default async function CollaborationAdminPage() {
                   <TableCell className="text-muted-foreground">{row.email}</TableCell>
                   <TableCell className="text-muted-foreground">
                     {row.projectType ?? "—"}
-                    {row.budget ? (
-                      <span className="block text-xs">{row.budget}</span>
+                    {row.budget ? <span className="block text-xs">{row.budget}</span> : null}
+                    {row.attachmentUrl ? (
+                      <a
+                        href={row.attachmentUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block text-xs text-primary hover:underline"
+                      >
+                        Lampiran ↓
+                      </a>
                     ) : null}
                   </TableCell>
                   <TableCell className="text-muted-foreground">{formatDate(row.createdAt)}</TableCell>

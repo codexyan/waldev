@@ -13,6 +13,7 @@ import { slugify } from "@/lib/slug";
 import { createArticle, updateArticle } from "@/modules/articles/article.actions";
 import { ARTICLE_STATUSES, type ArticleStatus } from "@/modules/articles/article.schema";
 import { MediaPickerField, type PickedMedia } from "@/modules/media/components/media-picker";
+import { SeoFields, type SeoValue } from "@/modules/seo/components/seo-fields";
 
 export interface ArticleFormInitial {
   id?: string;
@@ -25,6 +26,7 @@ export interface ArticleFormInitial {
   scheduledAt: string;
   contentJson: unknown;
   cover: PickedMedia | null;
+  seo: SeoValue;
 }
 
 const STATUS_LABELS: Record<ArticleStatus, string> = {
@@ -58,6 +60,7 @@ export function ArticleForm({
   const [scheduledAt, setScheduledAt] = useState(initial.scheduledAt);
   const [cover, setCover] = useState<PickedMedia | null>(initial.cover);
   const [content, setContent] = useState<unknown>(initial.contentJson);
+  const [seo, setSeo] = useState<SeoValue>(initial.seo);
 
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[] | undefined>>({});
@@ -87,6 +90,9 @@ export function ArticleForm({
         .filter(Boolean),
       status,
       scheduledAt: scheduledAt || undefined,
+      metaTitle: seo.metaTitle || undefined,
+      metaDescription: seo.metaDescription || undefined,
+      noIndex: seo.noIndex,
     };
 
     const res = isEdit
@@ -208,6 +214,7 @@ export function ArticleForm({
             />
           </div>
         </div>
+        <SeoFields value={seo} onChange={setSeo} />
       </aside>
     </form>
   );

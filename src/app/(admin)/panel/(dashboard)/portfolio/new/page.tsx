@@ -30,6 +30,7 @@ export default async function NewPortfolioPage() {
           thumbnail: null,
           cover: null,
           gallery: [],
+          seo: { metaTitle: "", metaDescription: "", noIndex: false },
         }}
         clients={clients}
       />

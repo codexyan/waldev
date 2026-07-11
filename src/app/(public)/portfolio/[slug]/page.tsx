@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPublishedPortfolioBySlug } from "@/modules/portfolio/portfolio.dal";
+import { getSeoMeta } from "@/modules/seo/seo.dal";
 
 export const dynamic = "force-dynamic";
 
@@ -13,11 +14,15 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = await getPublishedPortfolioBySlug(slug);
   if (!project) return { title: "Proyek tidak ditemukan" };
+  const seo = await getSeoMeta("portfolio", project.id);
+  const title = seo.metaTitle || project.title;
+  const description = seo.metaDescription || project.summary || undefined;
   return {
-    title: project.title,
-    description: project.summary ?? undefined,
+    title,
+    description,
     alternates: { canonical: `/portfolio/${project.slug}` },
-    openGraph: { title: project.title, description: project.summary ?? undefined },
+    robots: seo.noIndex ? { index: false, follow: false } : undefined,
+    openGraph: { title, description },
   };
 }
 

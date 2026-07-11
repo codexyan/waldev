@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import { TurnstileWidget } from "@/components/turnstile-widget";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,9 @@ export function CollaborationForm() {
     description: "",
   });
   const [token, setToken] = useState<string | undefined>(undefined);
+  const [attachmentId, setAttachmentId] = useState<string | undefined>(undefined);
+  const [attachmentName, setAttachmentName] = useState("");
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
@@ -28,11 +31,37 @@ export function CollaborationForm() {
     setForm((f) => ({ ...f, [key]: value }));
   }
 
+  async function onFile(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError(null);
+    const fd = new FormData();
+    fd.append("file", file);
+    const res = await fetch("/api/collaboration/attachment", { method: "POST", body: fd });
+    const data = (await res.json().catch(() => ({}))) as {
+      ok?: boolean;
+      data?: { id: string; filename: string };
+      error?: string;
+    };
+    setUploading(false);
+    if (res.ok && data.ok && data.data) {
+      setAttachmentId(data.data.id);
+      setAttachmentName(data.data.filename);
+    } else {
+      setError(data.error ?? "Gagal mengunggah lampiran.");
+    }
+  }
+
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const res = await submitCollaboration({ ...form, turnstileToken: token });
+    const res = await submitCollaboration({
+      ...form,
+      attachmentMediaId: attachmentId,
+      turnstileToken: token,
+    });
     setLoading(false);
     if (!res.ok) {
       setError(res.error);
@@ -93,6 +122,22 @@ export function CollaborationForm() {
           onChange={(e) => set("description", e.target.value)}
           required
         />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="attachment">Lampiran (opsional)</Label>
+        <input
+          id="attachment"
+          type="file"
+          accept="image/*,application/pdf,.doc,.docx,.txt"
+          onChange={onFile}
+          className="block w-full text-sm text-muted-foreground file:mr-3 file:rounded-md file:border file:border-border file:bg-muted file:px-3 file:py-1.5 file:text-sm"
+        />
+        {uploading ? (
+          <p className="text-xs text-muted-foreground">Mengunggah…</p>
+        ) : attachmentName ? (
+          <p className="text-xs text-emerald-600">Terlampir: {attachmentName}</p>
+        ) : null}
       </div>
 
       <TurnstileWidget onVerify={setToken} />

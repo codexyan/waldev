@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { PortfolioForm } from "@/modules/portfolio/components/portfolio-form";
 import { getPortfolioForEdit, listClientsForSelect } from "@/modules/portfolio/portfolio.dal";
+import { getSeoMeta } from "@/modules/seo/seo.dal";
 import { requirePagePermission } from "@/server/rbac/guard";
 
 export const dynamic = "force-dynamic";
@@ -8,9 +9,10 @@ export const dynamic = "force-dynamic";
 export default async function EditPortfolioPage({ params }: { params: Promise<{ id: string }> }) {
   await requirePagePermission("portfolio.update");
   const { id } = await params;
-  const [portfolio, clients] = await Promise.all([
+  const [portfolio, clients, seo] = await Promise.all([
     getPortfolioForEdit(id),
     listClientsForSelect(),
+    getSeoMeta("portfolio", id),
   ]);
   if (!portfolio) notFound();
 
@@ -37,6 +39,7 @@ export default async function EditPortfolioPage({ params }: { params: Promise<{ 
           thumbnail: portfolio.thumbnail,
           cover: portfolio.cover,
           gallery: portfolio.gallery,
+          seo,
         }}
         clients={clients}
       />

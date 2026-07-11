@@ -30,6 +30,9 @@ export const serviceInputSchema = z.object({
   features: z.array(serviceFeatureSchema).max(30).default([]),
   workflow: z.array(serviceWorkflowSchema).max(30).default([]),
   faqs: z.array(serviceFaqSchema).max(30).default([]),
+  metaTitle: z.string().trim().max(200).optional(),
+  metaDescription: z.string().trim().max(320).optional(),
+  noIndex: z.boolean().default(false),
 });
 
 export type ServiceInput = z.infer<typeof serviceInputSchema>;

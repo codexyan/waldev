@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPublishedArticleBySlug, getRelatedArticles } from "@/modules/articles/article.dal";
+import { getSeoMeta } from "@/modules/seo/seo.dal";
 
 export const dynamic = "force-dynamic";
 
@@ -18,13 +19,17 @@ export async function generateMetadata({
   const { slug } = await params;
   const article = await getPublishedArticleBySlug(slug);
   if (!article) return { title: "Artikel tidak ditemukan" };
+  const seo = await getSeoMeta("article", article.id);
+  const title = seo.metaTitle || article.title;
+  const description = seo.metaDescription || article.summary || undefined;
   return {
-    title: article.title,
-    description: article.summary ?? undefined,
+    title,
+    description,
     alternates: { canonical: `/articles/${article.slug}` },
+    robots: seo.noIndex ? { index: false, follow: false } : undefined,
     openGraph: {
-      title: article.title,
-      description: article.summary ?? undefined,
+      title,
+      description,
       type: "article",
       publishedTime: article.publishedAt?.toISOString(),
     },

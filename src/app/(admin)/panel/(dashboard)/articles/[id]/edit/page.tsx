@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getArticleForEdit, listArticleCategories } from "@/modules/articles/article.dal";
 import { ArticleForm } from "@/modules/articles/components/article-form";
+import { getSeoMeta } from "@/modules/seo/seo.dal";
 import { requirePagePermission } from "@/server/rbac/guard";
 
 export const dynamic = "force-dynamic";
@@ -14,9 +15,10 @@ function toDatetimeLocal(value: Date | null): string {
 export default async function EditArticlePage({ params }: { params: Promise<{ id: string }> }) {
   await requirePagePermission("article.update");
   const { id } = await params;
-  const [article, categories] = await Promise.all([
+  const [article, categories, seo] = await Promise.all([
     getArticleForEdit(id),
     listArticleCategories(),
+    getSeoMeta("article", id),
   ]);
   if (!article) notFound();
 
@@ -44,6 +46,7 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
           scheduledAt: toDatetimeLocal(article.scheduledAt),
           contentJson,
           cover: article.cover,
+          seo,
         }}
         categories={categories}
       />

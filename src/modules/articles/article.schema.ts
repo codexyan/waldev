@@ -15,6 +15,9 @@ export const articleInputSchema = z
     tags: z.array(z.string().trim().min(1).max(50)).max(20).default([]),
     status: z.enum(ARTICLE_STATUSES).default("draft"),
     scheduledAt: z.string().trim().optional().nullable(),
+    metaTitle: z.string().trim().max(200).optional(),
+    metaDescription: z.string().trim().max(320).optional(),
+    noIndex: z.boolean().default(false),
   })
   .superRefine((val, ctx) => {
     if (val.status === "scheduled") {

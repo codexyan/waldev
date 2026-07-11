@@ -5,6 +5,7 @@ import { unstable_rethrow } from "next/navigation";
 import type { ZodError } from "zod";
 import { logActivity } from "@/server/activity-log";
 import { requirePermission } from "@/server/rbac/guard";
+import { upsertSeoMeta } from "@/modules/seo/seo.dal";
 import * as dal from "./article.dal";
 import { articleInputSchema, type ArticleInput } from "./article.schema";
 
@@ -54,6 +55,11 @@ export async function createArticle(
   const created = await dal.createArticle(toWriteData(parsed.data), actor.id);
   if (!created) return { ok: false, error: "Gagal membuat artikel." };
 
+  await upsertSeoMeta("article", created.id, {
+    metaTitle: parsed.data.metaTitle,
+    metaDescription: parsed.data.metaDescription,
+    noIndex: parsed.data.noIndex,
+  });
   await logActivity({
     userId: actor.id,
     action: "article.create",
@@ -81,6 +87,11 @@ export async function updateArticle(
   if (!parsed.success) return invalid(parsed.error);
 
   const updated = await dal.updateArticle(id, toWriteData(parsed.data));
+  await upsertSeoMeta("article", id, {
+    metaTitle: parsed.data.metaTitle,
+    metaDescription: parsed.data.metaDescription,
+    noIndex: parsed.data.noIndex,
+  });
   await logActivity({
     userId: actor.id,
     action: "article.update",

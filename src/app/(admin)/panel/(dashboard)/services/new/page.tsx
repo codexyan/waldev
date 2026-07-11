@@ -22,6 +22,7 @@ export default async function NewServicePage() {
           features: [],
           workflow: [],
           faqs: [],
+          seo: { metaTitle: "", metaDescription: "", noIndex: false },
         }}
       />
     </div>

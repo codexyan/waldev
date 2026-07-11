@@ -44,5 +44,15 @@ pnpm preview   # build OpenNext + jalankan di runtime Workers lokal
 pnpm deploy    # build + deploy ke Cloudflare Workers
 ```
 
+## Scheduled publish (cron)
+Artikel berstatus `scheduled` dipublikasikan oleh endpoint `/api/cron/publish-scheduled`
+(dilindungi header `x-cron-secret`). Pemicunya ada di worker terpisah `workers/cron-scheduler`:
+```bash
+pnpm wrangler deploy --config workers/cron-scheduler/wrangler.jsonc
+pnpm wrangler secret put CRON_SECRET --config workers/cron-scheduler/wrangler.jsonc
+```
+Alternatif tanpa worker: jadwalkan cron eksternal (mis. cron-job.org) untuk `POST`
+ke URL tersebut dengan header `x-cron-secret`.
+
 ## Struktur
 `src/app` (routing: `(public)` & `(admin)/panel`) · `src/modules` (domain per fitur) · `src/server` (db/auth/infra) · `src/components` (design system). Detail: [`docs/07-folder-standards.md`](./docs/07-folder-standards.md).
