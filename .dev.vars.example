@@ -1,0 +1,16 @@
+# Salin file ini menjadi `.dev.vars` (untuk `wrangler`/OpenNext dev) dan isi nilainya.
+# JANGAN commit `.dev.vars`. Di production, set via `wrangler secret put <NAME>`.
+
+# Better Auth
+BETTER_AUTH_SECRET="ganti-dengan-string-acak-32-char-atau-lebih"
+BETTER_AUTH_URL="http://localhost:3000"
+
+# Cron (endpoint publish terjadwal)
+CRON_SECRET="ganti-dengan-string-acak"
+
+# Cloudflare Turnstile (anti-spam form publik)
+TURNSTILE_SECRET_KEY=""
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=""
+
+# Rute admin rahasia (opsional; default "/panel")
+NEXT_PUBLIC_ADMIN_BASE="/panel"

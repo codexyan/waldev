@@ -1,0 +1,39 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "waldev",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-06-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "NEXT_PUBLIC_SITE_URL": "http://localhost:3000",
+    "BETTER_AUTH_URL": "http://localhost:3000"
+  },
+  // Ganti *_ID setelah resource dibuat via wrangler (lihat README).
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "waldev-db",
+      "database_id": "f85ff378-0980-4c79-9e9c-6f3db3ea0089",
+      "migrations_dir": "drizzle"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA_BUCKET",
+      "bucket_name": "waldev-media"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "CACHE_KV",
+      "id": "3624b822eb5146fea6e854c0267f2c9e"
+    }
+  ]
+}
