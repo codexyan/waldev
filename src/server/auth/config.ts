@@ -39,6 +39,12 @@ export function getAuth() {
       expiresIn: 60 * 60 * 24 * 7, // 7 hari
       updateAge: 60 * 60 * 24, // refresh tiap 24 jam
     },
+    // Origin tepercaya (CSRF) — domain kustom + workers.dev.
+    trustedOrigins: [
+      "https://wolue.cloud",
+      "https://www.wolue.cloud",
+      "https://waldev.mdcodeid.workers.dev",
+    ],
   });
 }
 

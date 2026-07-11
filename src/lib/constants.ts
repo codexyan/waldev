@@ -4,7 +4,7 @@ export const SITE = {
   tagline: "Build Digital Products.",
   description:
     "WalDev adalah studio digital yang membangun website, sistem informasi, web application, dan produk digital yang modern, cepat, dan profesional.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://waldev.mdcodeid.workers.dev",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://wolue.cloud",
 } as const;
 
 /**
