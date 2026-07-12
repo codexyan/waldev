@@ -3,7 +3,6 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SITE } from "@/lib/constants";
 import { listPublishedArticles } from "@/modules/articles/article.dal";
-import { listPublishedClients } from "@/modules/clients/client.dal";
 import { listPublishedPortfolios } from "@/modules/portfolio/portfolio.dal";
 import { listActiveServices } from "@/modules/services/service.dal";
 import { listPublishedTestimonials } from "@/modules/testimonials/testimonial.dal";
@@ -41,18 +40,16 @@ function SectionHeader({
 }
 
 export default async function HomePage() {
-  const [services, portfolios, articlesResult, testimonials, clients] = await Promise.all([
+  const [services, portfolios, articlesResult, testimonials] = await Promise.all([
     listActiveServices(),
     listPublishedPortfolios(),
     listPublishedArticles({ limit: 3 }),
     listPublishedTestimonials(),
-    listPublishedClients(),
   ]);
   const articles = articlesResult.rows;
   const featuredServices = services.slice(0, 6);
   const featuredPortfolio = portfolios.slice(0, 3);
   const featuredTestimonials = testimonials.slice(0, 3);
-  const trustClients = clients.slice(0, 6);
 
   // Kata terakhir tagline diberi aksen gradien.
   const taglineWords = SITE.tagline.replace(/\.$/, "").split(" ");
@@ -92,34 +89,6 @@ export default async function HomePage() {
                 </Button>
               </Link>
             </div>
-
-            {trustClients.length > 0 ? (
-              <div className="animate-fade-up mt-16 [animation-delay:320ms]">
-                <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-                  Dipercaya oleh
-                </p>
-                <div className="mt-5 flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
-                  {trustClients.map((client, i) =>
-                    client.logoUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        key={`${client.name}-${i}`}
-                        src={client.logoUrl}
-                        alt={client.name}
-                        className="h-7 opacity-60 grayscale transition-opacity hover:opacity-100"
-                      />
-                    ) : (
-                      <span
-                        key={`${client.name}-${i}`}
-                        className="text-sm font-medium text-muted-foreground/70"
-                      >
-                        {client.name}
-                      </span>
-                    ),
-                  )}
-                </div>
-              </div>
-            ) : null}
           </div>
         </div>
       </section>
@@ -127,8 +96,12 @@ export default async function HomePage() {
       {/* Services */}
       {featuredServices.length > 0 ? (
         <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <SectionHeader eyebrow="Layanan" title="Apa yang kami kerjakan" href="/services" />
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <SectionHeader eyebrow="Layanan" title="Apa yang kami sediakan" href="/services" />
+          <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">
+            Solusi digital menyeluruh untuk bisnis Anda, mulai dari website dan sistem informasi
+            hingga otomasi dan integrasi AI.
+          </p>
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {featuredServices.map((s) => (
               <Link
                 key={s.slug}
