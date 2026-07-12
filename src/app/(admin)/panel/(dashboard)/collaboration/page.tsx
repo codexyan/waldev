@@ -55,10 +55,19 @@ export default async function CollaborationAdminPage() {
                       <span className="block text-xs text-muted-foreground">{row.company}</span>
                     ) : null}
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{row.email}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {row.email}
+                    {row.whatsapp ? (
+                      <span className="block text-xs">WA: {row.whatsapp}</span>
+                    ) : null}
+                  </TableCell>
                   <TableCell className="text-muted-foreground">
                     {row.projectType ?? "—"}
-                    {row.budget ? <span className="block text-xs">{row.budget}</span> : null}
+                    {row.budget || row.deadline ? (
+                      <span className="block text-xs">
+                        {[row.budget, row.deadline].filter(Boolean).join(" · ")}
+                      </span>
+                    ) : null}
                     {row.attachmentUrl ? (
                       <a
                         href={row.attachmentUrl}
@@ -68,6 +77,16 @@ export default async function CollaborationAdminPage() {
                       >
                         Lampiran ↓
                       </a>
+                    ) : null}
+                    {row.description ? (
+                      <details className="mt-1">
+                        <summary className="cursor-pointer text-xs font-medium text-primary">
+                          Lihat brief
+                        </summary>
+                        <p className="mt-2 max-w-md whitespace-pre-line rounded-lg border border-border bg-muted/40 p-3 text-xs leading-relaxed text-foreground">
+                          {row.description}
+                        </p>
+                      </details>
                     ) : null}
                   </TableCell>
                   <TableCell className="text-muted-foreground">{formatDate(row.createdAt)}</TableCell>

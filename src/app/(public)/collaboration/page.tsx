@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import {
   Clock,
   FileText,
-  MessagesSquare,
+  ListChecks,
   ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
@@ -10,25 +10,26 @@ import { CollaborationForm } from "@/modules/leads/components/collaboration-form
 
 export const metadata: Metadata = {
   title: "Start a Project",
-  description: "Ceritakan kebutuhan Anda dan mari bangun produk digital bersama WalDev.",
+  description:
+    "Jawab beberapa pertanyaan singkat, jawaban Anda otomatis tersusun menjadi brief proyek untuk tim WalDev.",
   alternates: { canonical: "/collaboration" },
 };
 
 const POINTS: { icon: LucideIcon; title: string; body: string }[] = [
   {
-    icon: MessagesSquare,
-    title: "Diskusi awal gratis",
-    body: "Ceritakan kebutuhan Anda tanpa komitmen. Kami bantu memetakan solusinya.",
-  },
-  {
-    icon: Clock,
-    title: "Respons cepat",
-    body: "Tim kami menghubungi Anda dalam 1x24 jam kerja setelah formulir dikirim.",
+    icon: ListChecks,
+    title: "Terpandu langkah demi langkah",
+    body: "Cukup pilih jawaban yang tersedia. Tidak perlu paham istilah teknis atau bingung mulai dari mana.",
   },
   {
     icon: FileText,
-    title: "Proposal yang jelas",
-    body: "Cakupan, estimasi waktu, dan biaya disusun transparan sebelum mulai.",
+    title: "Otomatis jadi brief proyek",
+    body: "Jawaban Anda tersusun menjadi dokumen kebutuhan (PRD ringkas) yang langsung dipahami tim kami.",
+  },
+  {
+    icon: Clock,
+    title: "Sekitar 3 menit, respons 1x24 jam",
+    body: "Lima langkah singkat, dan tim kami menghubungi Anda dalam 1x24 jam kerja.",
   },
   {
     icon: ShieldCheck,
@@ -47,8 +48,8 @@ export default function CollaborationPage() {
           </p>
           <h1 className="mt-2 text-4xl font-semibold tracking-tight">Start a Project</h1>
           <p className="mt-3 leading-relaxed text-muted-foreground">
-            Isi formulir berikut dan tim kami akan menghubungi Anda untuk membahas kebutuhan
-            proyek.
+            Tidak perlu menyiapkan dokumen apa pun. Jawab beberapa pertanyaan singkat, sisanya
+            kami yang susun menjadi brief proyek.
           </p>
 
           <ul className="mt-10 space-y-6">
