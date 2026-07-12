@@ -52,7 +52,6 @@ export default async function ServiceDetailPage({
             {service.description}
           </p>
         ) : null}
-        {service.price ? <p className="mt-4 text-sm font-medium">{service.price}</p> : null}
       </header>
 
       {service.features.length > 0 ? (

@@ -40,9 +40,6 @@ export default async function ServicesPage() {
                   {service.description}
                 </p>
               ) : null}
-              {service.price ? (
-                <span className="mt-4 text-sm font-medium text-foreground">{service.price}</span>
-              ) : null}
             </Link>
           ))}
         </div>
