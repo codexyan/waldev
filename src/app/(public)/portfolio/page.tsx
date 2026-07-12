@@ -16,7 +16,8 @@ export default async function PortfolioPage() {
   return (
     <section className="mx-auto max-w-6xl px-6 py-20">
       <header className="max-w-2xl">
-        <h1 className="text-4xl font-semibold tracking-tight">Portfolio</h1>
+        <p className="text-xs font-semibold uppercase tracking-widest text-primary">Karya Kami</p>
+        <h1 className="mt-2 text-4xl font-semibold tracking-tight">Portfolio</h1>
         <p className="mt-3 text-muted-foreground">
           Sebagian proyek yang telah kami bangun untuk berbagai klien.
         </p>

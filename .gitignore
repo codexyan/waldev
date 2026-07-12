@@ -45,3 +45,6 @@ next-env.d.ts
 /coverage
 /playwright-report
 /test-results
+
+# sumber logo mentah (5.7MB, jangan commit; aset web ada di public/)
+/logo-wd.svg

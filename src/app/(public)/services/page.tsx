@@ -16,9 +16,10 @@ export default async function ServicesPage() {
   return (
     <section className="mx-auto max-w-6xl px-6 py-20">
       <header className="max-w-2xl">
-        <h1 className="text-4xl font-semibold tracking-tight">Services</h1>
+        <p className="text-xs font-semibold uppercase tracking-widest text-primary">Layanan</p>
+        <h1 className="mt-2 text-4xl font-semibold tracking-tight">Services</h1>
         <p className="mt-3 text-muted-foreground">
-          Dari website hingga sistem informasi dan otomasi — dibangun end-to-end.
+          Dari website hingga sistem informasi dan otomasi, semuanya dibangun end-to-end.
         </p>
       </header>
 

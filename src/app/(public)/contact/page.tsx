@@ -11,7 +11,8 @@ export default function ContactPage() {
   return (
     <section className="mx-auto max-w-2xl px-6 py-20">
       <header className="mb-10">
-        <h1 className="text-4xl font-semibold tracking-tight">Contact</h1>
+        <p className="text-xs font-semibold uppercase tracking-widest text-primary">Kontak</p>
+        <h1 className="mt-2 text-4xl font-semibold tracking-tight">Contact</h1>
         <p className="mt-3 text-muted-foreground">
           Ada pertanyaan? Kirim pesan dan kami akan segera membalas.
         </p>

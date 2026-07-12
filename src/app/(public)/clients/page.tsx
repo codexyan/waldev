@@ -15,7 +15,10 @@ export default async function ClientsPublicPage() {
   return (
     <section className="mx-auto max-w-6xl px-6 py-20">
       <header className="max-w-2xl">
-        <h1 className="text-4xl font-semibold tracking-tight">Clients</h1>
+        <p className="text-xs font-semibold uppercase tracking-widest text-primary">
+          Klien &amp; Mitra
+        </p>
+        <h1 className="mt-2 text-4xl font-semibold tracking-tight">Clients</h1>
         <p className="mt-3 text-muted-foreground">Dipercaya oleh berbagai klien dan mitra.</p>
       </header>
 

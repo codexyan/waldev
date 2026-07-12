@@ -259,7 +259,7 @@ export default async function HomePage() {
               Siap membangun produk digital?
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-pretty text-muted-foreground">
-              Ceritakan ide Anda — tim {SITE.name} siap mewujudkannya.
+              Ceritakan ide Anda, tim {SITE.name} siap mewujudkannya.
             </p>
             <Link href="/collaboration" className="mt-8 inline-block">
               <Button size="lg">

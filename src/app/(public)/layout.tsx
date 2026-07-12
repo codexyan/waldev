@@ -44,10 +44,20 @@ export default async function PublicLayout({ children }: { children: React.React
         <div className="mx-auto max-w-6xl px-6 py-14">
           <div className="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
             <div className="max-w-sm">
-              <p className="text-lg font-semibold tracking-tight">
-                {brand}
-                <span className="text-primary">.</span>
-              </p>
+              <div className="flex items-center gap-2.5">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/logo-mark.png"
+                  alt=""
+                  width={211}
+                  height={96}
+                  className="h-7 w-auto dark:invert"
+                />
+                <p className="text-lg font-semibold tracking-tight">
+                  {brand}
+                  <span className="text-primary">.</span>
+                </p>
+              </div>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 {settings.footer_text || settings.tagline}
               </p>

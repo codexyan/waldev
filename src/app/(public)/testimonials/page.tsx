@@ -15,7 +15,8 @@ export default async function TestimonialsPublicPage() {
   return (
     <section className="mx-auto max-w-6xl px-6 py-20">
       <header className="max-w-2xl">
-        <h1 className="text-4xl font-semibold tracking-tight">Testimonials</h1>
+        <p className="text-xs font-semibold uppercase tracking-widest text-primary">Testimoni</p>
+        <h1 className="mt-2 text-4xl font-semibold tracking-tight">Testimonials</h1>
         <p className="mt-3 text-muted-foreground">Cerita dari klien yang telah bekerja sama.</p>
       </header>
 

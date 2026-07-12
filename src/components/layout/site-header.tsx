@@ -26,10 +26,20 @@ export function SiteHeader({ brand, nav }: { brand: string; nav: HeaderNavItem[]
         <Link
           href="/"
           onClick={() => setOpen(false)}
-          className="text-lg font-semibold tracking-tight"
+          className="flex items-center gap-2.5"
         >
-          {brand}
-          <span className="text-primary">.</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-mark.png"
+            alt=""
+            width={211}
+            height={96}
+            className="h-7 w-auto dark:invert"
+          />
+          <span className="text-lg font-semibold tracking-tight">
+            {brand}
+            <span className="text-primary">.</span>
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
