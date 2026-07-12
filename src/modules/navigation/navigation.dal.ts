@@ -1,3 +1,4 @@
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { asc, eq } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import { navigationItems, navigationMenus } from "@/server/db/schema";
@@ -7,7 +8,19 @@ export interface NavItem {
   url: string;
 }
 
+const CACHE_TTL = 300;
+const cacheKey = (key: string) => `cache:nav:${key}`;
+
 export async function getMenuItems(key: string): Promise<NavItem[]> {
+  const { env } = getCloudflareContext();
+
+  try {
+    const cached = await env.CACHE_KV.get(cacheKey(key));
+    if (cached) return JSON.parse(cached) as NavItem[];
+  } catch {
+    // lanjut ke DB
+  }
+
   const db = getDb();
   const menu = await db
     .select({ id: navigationMenus.id })
@@ -15,12 +28,29 @@ export async function getMenuItems(key: string): Promise<NavItem[]> {
     .where(eq(navigationMenus.key, key))
     .limit(1);
   const m = menu[0];
-  if (!m) return [];
-  return db
-    .select({ label: navigationItems.label, url: navigationItems.url })
-    .from(navigationItems)
-    .where(eq(navigationItems.menuId, m.id))
-    .orderBy(asc(navigationItems.order));
+  const items: NavItem[] = m
+    ? await db
+        .select({ label: navigationItems.label, url: navigationItems.url })
+        .from(navigationItems)
+        .where(eq(navigationItems.menuId, m.id))
+        .orderBy(asc(navigationItems.order))
+    : [];
+
+  try {
+    await env.CACHE_KV.put(cacheKey(key), JSON.stringify(items), { expirationTtl: CACHE_TTL });
+  } catch {
+    // abaikan
+  }
+  return items;
+}
+
+async function invalidateCache(key: string) {
+  try {
+    const { env } = getCloudflareContext();
+    await env.CACHE_KV.delete(cacheKey(key));
+  } catch {
+    // abaikan
+  }
 }
 
 export async function saveMenu(key: string, name: string, items: NavItem[]) {
@@ -49,4 +79,5 @@ export async function saveMenu(key: string, name: string, items: NavItem[]) {
       clean.map((i, idx) => ({ menuId: mid, label: i.label.trim(), url: i.url.trim(), order: idx })),
     );
   }
+  await invalidateCache(key);
 }
