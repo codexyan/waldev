@@ -30,7 +30,7 @@ export default async function ServicesPage() {
             <Link
               key={service.slug}
               href={`/services/${service.slug}`}
-              className="group flex flex-col rounded-xl border border-border bg-card p-6 transition-colors hover:border-foreground/20"
+              className="card-lift group flex flex-col rounded-xl border border-border bg-card p-6"
             >
               <h2 className="text-lg font-semibold tracking-tight group-hover:text-primary">
                 {service.name}

@@ -35,7 +35,7 @@ export default async function ArticlesPage() {
             <Link
               key={article.slug}
               href={`/articles/${article.slug}`}
-              className="group flex flex-col rounded-xl border border-border bg-card p-6 transition-colors hover:border-foreground/20"
+              className="card-lift group flex flex-col rounded-xl border border-border bg-card p-6"
             >
               {article.coverUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element

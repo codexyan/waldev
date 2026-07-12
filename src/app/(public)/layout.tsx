@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
-import { Button } from "@/components/ui/button";
+import { SiteHeader } from "@/components/layout/site-header";
 import { getMenuItems } from "@/modules/navigation/navigation.dal";
 import { getSiteSettings } from "@/modules/settings/settings.dal";
 
@@ -37,50 +36,30 @@ export default async function PublicLayout({ children }: { children: React.React
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <Link href="/" className="text-lg font-semibold tracking-tight">
-            {brand}
-          </Link>
-          <nav className="hidden items-center gap-8 md:flex">
-            {nav.map((item) => (
-              <Link
-                key={item.url}
-                href={item.url}
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-          <div className="flex items-center gap-3">
-            <ThemeToggle />
-            <Link href="/collaboration" className="hidden sm:block">
-              <Button size="sm">Start a Project</Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <SiteHeader brand={brand} nav={nav} />
 
       <main className="flex-1">{children}</main>
 
-      <footer className="border-t border-border/60">
-        <div className="mx-auto max-w-6xl px-6 py-12">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+      <footer className="border-t border-border/60 bg-muted/30">
+        <div className="mx-auto max-w-6xl px-6 py-14">
+          <div className="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
             <div className="max-w-sm">
-              <p className="text-lg font-semibold tracking-tight">{brand}</p>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p className="text-lg font-semibold tracking-tight">
+                {brand}
+                <span className="text-primary">.</span>
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 {settings.footer_text || settings.tagline}
               </p>
               {socials.length > 0 ? (
-                <div className="mt-4 flex gap-4">
+                <div className="mt-5 flex gap-5">
                   {socials.map((s) => (
                     <a
                       key={s.label}
                       href={s.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-muted-foreground hover:text-foreground"
+                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {s.label}
                     </a>
@@ -88,21 +67,23 @@ export default async function PublicLayout({ children }: { children: React.React
                 </div>
               ) : null}
             </div>
-            <nav className="flex gap-6">
+            <nav className="flex flex-col gap-3 sm:items-end">
               {footerNav.map((item) => (
                 <Link
                   key={item.url}
                   href={item.url}
-                  className="text-sm text-muted-foreground hover:text-foreground"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {item.label}
                 </Link>
               ))}
             </nav>
           </div>
-          <p className="mt-10 text-xs text-muted-foreground">
-            © {new Date().getFullYear()} {brand}. {settings.tagline}
-          </p>
+          <div className="mt-12 border-t border-border/60 pt-6">
+            <p className="text-xs text-muted-foreground">
+              © {new Date().getFullYear()} {brand}. {settings.tagline}
+            </p>
+          </div>
         </div>
       </footer>
     </div>

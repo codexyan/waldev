@@ -119,7 +119,7 @@ export default async function ArticleDetailPage({
               <Link
                 key={item.slug}
                 href={`/articles/${item.slug}`}
-                className="rounded-lg border border-border p-4 transition-colors hover:border-foreground/20"
+                className="card-lift rounded-lg border border-border p-4"
               >
                 <h3 className="text-sm font-medium">{item.title}</h3>
                 <span className="mt-2 block text-xs text-muted-foreground">

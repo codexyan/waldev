@@ -30,7 +30,7 @@ export default async function PortfolioPage() {
             <Link
               key={item.slug}
               href={`/portfolio/${item.slug}`}
-              className="group flex flex-col rounded-xl border border-border bg-card p-6 transition-colors hover:border-foreground/20"
+              className="card-lift group flex flex-col rounded-xl border border-border bg-card p-6"
             >
               {item.thumbnailUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
