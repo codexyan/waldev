@@ -45,7 +45,12 @@ export function ProcessTimeline() {
         className="absolute bottom-4 left-5 top-4 w-px bg-gradient-to-b from-primary/50 via-border to-border"
       />
       {STAGES.map((stage, i) => (
-        <li key={stage.title} className="relative flex gap-5">
+        <li
+          key={stage.title}
+          className="relative flex gap-5"
+          data-reveal
+          style={{ transitionDelay: `${i * 90}ms` }}
+        >
           <span className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-background text-primary shadow-sm">
             <stage.icon className="h-4 w-4" />
           </span>

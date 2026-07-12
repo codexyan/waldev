@@ -1,7 +1,16 @@
 import Link from "next/link";
+import type { ComponentType, SVGProps } from "react";
 import { SiteHeader } from "@/components/layout/site-header";
+import { RevealInit } from "@/components/reveal-init";
+import { GithubIcon, InstagramIcon, LinkedinIcon } from "@/components/social-icons";
 import { getMenuItems } from "@/modules/navigation/navigation.dal";
 import { getSiteSettings } from "@/modules/settings/settings.dal";
+
+const SOCIAL_ICONS: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
+  Instagram: InstagramIcon,
+  LinkedIn: LinkedinIcon,
+  GitHub: GithubIcon,
+};
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +45,11 @@ export default async function PublicLayout({ children }: { children: React.React
 
   return (
     <div className="flex min-h-dvh flex-col">
+      <RevealInit />
+      {/* Tanpa JS, konten [data-reveal] harus tetap terlihat */}
+      <noscript>
+        <style>{`[data-reveal]{opacity:1 !important;transform:none !important}`}</style>
+      </noscript>
       <SiteHeader brand={brand} nav={nav} />
 
       <main className="flex-1">{children}</main>
@@ -62,18 +76,22 @@ export default async function PublicLayout({ children }: { children: React.React
                 {settings.footer_text || settings.tagline}
               </p>
               {socials.length > 0 ? (
-                <div className="mt-5 flex gap-5">
-                  {socials.map((s) => (
-                    <a
-                      key={s.label}
-                      href={s.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {s.label}
-                    </a>
-                  ))}
+                <div className="mt-5 flex gap-3">
+                  {socials.map((s) => {
+                    const Icon = SOCIAL_ICONS[s.label];
+                    return (
+                      <a
+                        key={s.label}
+                        href={s.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={s.label}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary"
+                      >
+                        {Icon ? <Icon className="h-4 w-4" /> : <span className="text-xs">{s.label}</span>}
+                      </a>
+                    );
+                  })}
                 </div>
               ) : null}
             </div>

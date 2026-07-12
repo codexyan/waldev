@@ -221,9 +221,46 @@
 .animate-fade-up {
   animation: fade-up 0.6s ease-out both;
 }
+
+/* Reveal-on-scroll: elemen [data-reveal] dianimasikan masuk oleh RevealInit.
+   Stagger diatur per elemen lewat inline style transition-delay. */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Orb dekoratif yang mengapung pelan (hero) */
+@keyframes float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -16px, 0);
+  }
+}
+.animate-float {
+  animation: float 9s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up {
     animation: none;
+  }
+  .animate-float {
+    animation: none;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
   .card-lift,
   .card-lift:hover {

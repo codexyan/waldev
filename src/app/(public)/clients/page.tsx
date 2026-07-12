@@ -14,7 +14,7 @@ export default async function ClientsPublicPage() {
 
   return (
     <section className="mx-auto max-w-6xl px-6 py-20">
-      <header className="max-w-2xl">
+      <header className="max-w-2xl" data-reveal>
         <p className="text-xs font-semibold uppercase tracking-widest text-primary">
           Klien &amp; Mitra
         </p>
@@ -29,8 +29,10 @@ export default async function ClientsPublicPage() {
           {rows.map((client, i) => (
             <div
               key={`${client.name}-${i}`}
-              className="flex h-24 items-center justify-center rounded-xl border border-border bg-card p-6"
+              className="card-lift flex h-24 items-center justify-center rounded-xl border border-border bg-card p-6"
               title={client.name}
+              data-reveal
+              style={{ transitionDelay: `${(i % 5) * 60}ms` }}
             >
               {client.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element

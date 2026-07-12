@@ -1,7 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import {
+  Activity,
+  ArrowLeft,
+  ArrowRight,
+  Building2,
+  CalendarClock,
+  Link2,
+  type LucideIcon,
+} from "lucide-react";
 import { ProcessTimeline } from "@/components/process-timeline";
 import { Button } from "@/components/ui/button";
 import { getPublishedPortfolioBySlug } from "@/modules/portfolio/portfolio.dal";
@@ -57,10 +65,21 @@ function Narrative({ text }: { text: string }) {
   );
 }
 
-function MetaItem({ label, value }: { label: string; value: React.ReactNode }) {
+function MetaItem({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: LucideIcon;
+  label: string;
+  value: React.ReactNode;
+}) {
   return (
     <div>
-      <dt className="text-xs uppercase tracking-wide text-muted-foreground/70">{label}</dt>
+      <dt className="flex items-center gap-1.5 text-xs uppercase tracking-wide text-muted-foreground/70">
+        <Icon className="h-3.5 w-3.5" aria-hidden />
+        {label}
+      </dt>
       <dd className="mt-1 text-sm font-medium">{value}</dd>
     </div>
   );
@@ -102,12 +121,19 @@ export default async function PortfolioDetailPage({
       </header>
 
       {/* Meta bar */}
-      <dl className="mt-10 flex flex-wrap gap-x-12 gap-y-5 border-y border-border py-6">
-        <MetaItem label="Klien" value={clientLabel} />
-        {project.timeline ? <MetaItem label="Durasi" value={project.timeline} /> : null}
-        <MetaItem label="Status" value={STATUS_LABEL[project.status] ?? project.status} />
+      <dl className="mt-10 flex flex-wrap gap-x-12 gap-y-5 border-y border-border py-6" data-reveal>
+        <MetaItem icon={Building2} label="Klien" value={clientLabel} />
+        {project.timeline ? (
+          <MetaItem icon={CalendarClock} label="Durasi" value={project.timeline} />
+        ) : null}
+        <MetaItem
+          icon={Activity}
+          label="Status"
+          value={STATUS_LABEL[project.status] ?? project.status}
+        />
         {project.demoUrl || project.repoUrl ? (
           <MetaItem
+            icon={Link2}
             label="Tautan"
             value={
               <span className="flex flex-wrap gap-3">
@@ -150,13 +176,13 @@ export default async function PortfolioDetailPage({
       {project.challenge || project.solution ? (
         <div className="mt-16 grid gap-12 sm:grid-cols-2">
           {project.challenge ? (
-            <section>
+            <section data-reveal>
               <Eyebrow>Tantangan</Eyebrow>
               <Narrative text={project.challenge} />
             </section>
           ) : null}
           {project.solution ? (
-            <section>
+            <section data-reveal style={{ transitionDelay: "100ms" }}>
               <Eyebrow>Pendekatan &amp; Solusi</Eyebrow>
               <Narrative text={project.solution} />
             </section>
@@ -165,7 +191,10 @@ export default async function PortfolioDetailPage({
       ) : null}
 
       {/* Process (visual end-to-end) */}
-      <section className="mt-16 overflow-hidden rounded-2xl border border-border bg-card p-8 sm:p-10">
+      <section
+        className="mt-16 overflow-hidden rounded-2xl border border-border bg-card p-8 sm:p-10"
+        data-reveal
+      >
         <Eyebrow>Proses</Eyebrow>
         <h2 className="mt-2 text-2xl font-semibold tracking-tight">Bagaimana kami mengerjakannya</h2>
         <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">
@@ -177,7 +206,7 @@ export default async function PortfolioDetailPage({
 
       {/* Tech stack */}
       {project.technologies.length > 0 ? (
-        <section className="mt-16">
+        <section className="mt-16" data-reveal>
           <Eyebrow>Tech Stack</Eyebrow>
           <div className="mt-4 flex flex-wrap gap-2">
             {project.technologies.map((tech) => (
@@ -194,11 +223,14 @@ export default async function PortfolioDetailPage({
 
       {/* Features */}
       {project.features.length > 0 ? (
-        <section className="mt-16">
+        <section className="mt-16" data-reveal>
           <Eyebrow>Fitur Utama</Eyebrow>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             {project.features.map((feature) => (
-              <div key={feature.title} className="rounded-xl border border-border bg-card p-5">
+              <div
+                key={feature.title}
+                className="card-lift rounded-xl border border-border bg-card p-5"
+              >
                 <p className="font-semibold tracking-tight">{feature.title}</p>
                 {feature.description ? (
                   <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
@@ -213,24 +245,28 @@ export default async function PortfolioDetailPage({
 
       {/* Gallery */}
       {project.gallery.length > 0 ? (
-        <section className="mt-16">
+        <section className="mt-16" data-reveal>
           <Eyebrow>Galeri</Eyebrow>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             {project.gallery.map((img) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <div
                 key={img.url}
-                src={img.url}
-                alt={img.filename}
-                className="w-full rounded-xl border border-border object-cover"
-              />
+                className="group overflow-hidden rounded-xl border border-border"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={img.url}
+                  alt={img.filename}
+                  className="w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
             ))}
           </div>
         </section>
       ) : null}
 
       {/* CTA */}
-      <section className="mt-20">
+      <section className="mt-20" data-reveal>
         <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-10 text-center sm:p-14">
           <div
             aria-hidden
