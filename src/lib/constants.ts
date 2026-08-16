@@ -4,7 +4,8 @@ export const SITE = {
   tagline: "Studio Digital Indonesia",
   description:
     "WalDev merancang dan membangun website, sistem informasi, dan dashboard internal untuk bisnis di Indonesia. Dari riset sampai peluncuran, dikerjakan oleh satu tim.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://wolue.cloud",
+  // Nilai sebenarnya di-set lewat NEXT_PUBLIC_SITE_URL pada wrangler.jsonc.
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://waldev.mdcodeid.workers.dev",
 } as const;
 
 /** Kalimat pembuka di beranda, dipecah per baris agar bisa dianimasikan. */

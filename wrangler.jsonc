@@ -14,10 +14,13 @@
   // Catatan: BETTER_AUTH_URL sengaja TIDAK diisi di sini. Di production Better Auth
   // menyimpulkan origin dari request; untuk lokal disediakan lewat .dev.vars.
   // NEXT_PUBLIC_SITE_URL dipakai untuk canonical, Open Graph, robots.txt, dan
-  // sitemap. Harus berupa domain publik final, bukan localhost, agar tautan yang
-  // dibagikan dan hasil pencarian menunjuk ke alamat yang benar.
+  // sitemap, jadi nilainya harus alamat yang benar benar melayani situs.
+  // Per 2026-08-16 domain wolue.cloud kedaluwarsa di registrar dan hanya
+  // menampilkan halaman parkir, sehingga canonical dipindah ke alamat workers.dev.
+  // Setelah domain diperpanjang dan DNS kembali ke Cloudflare, kembalikan nilai
+  // ini ke "https://wolue.cloud" (satu baris, lalu deploy ulang).
   "vars": {
-    "NEXT_PUBLIC_SITE_URL": "https://wolue.cloud"
+    "NEXT_PUBLIC_SITE_URL": "https://waldev.mdcodeid.workers.dev"
   },
   // Ganti *_ID setelah resource dibuat via wrangler (lihat README).
   "d1_databases": [
