@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, CheckCircle2, ChevronDown } from "lucide-react";
+import { ArrowLeft, Check } from "lucide-react";
+import { CtaPanel } from "@/components/cta-panel";
+import { FaqAccordion, GENERAL_FAQS } from "@/components/faq-accordion";
 import { ServiceIcon } from "@/components/service-icon";
-import { Button } from "@/components/ui/button";
+import { Eyebrow } from "@/components/ui/section-heading";
 import { getActiveServiceBySlug } from "@/modules/services/service.dal";
 import { getSeoMeta } from "@/modules/seo/seo.dal";
 
@@ -39,45 +41,65 @@ export default async function ServiceDetailPage({
   if (!service) notFound();
 
   const ctaHref = service.ctaUrl || "/collaboration";
-  const ctaLabel = service.ctaLabel || "Mulai Proyek";
+  const ctaLabel = service.ctaLabel || "Mulai proyek";
+  const faqs = service.faqs.length > 0 ? service.faqs : GENERAL_FAQS;
 
   return (
-    <article className="mx-auto max-w-3xl px-6 py-20">
-      <Link
-        href="/services"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Semua layanan
-      </Link>
+    <>
+      <header className="bg-noise relative overflow-hidden border-b border-border">
+        <div aria-hidden className="bg-grid absolute inset-0" />
+        <div className="relative mx-auto max-w-7xl px-6 pb-16 pt-10 lg:px-10">
+          <Link
+            href="/services"
+            className="link-sweep group inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
+            Semua layanan
+          </Link>
 
-      <header className="mt-8" data-reveal>
-        <span className="flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary">
-          <ServiceIcon slug={service.slug} className="h-6 w-6" />
-        </span>
-        <h1 className="mt-5 text-balance text-4xl font-semibold tracking-tight">{service.name}</h1>
-        {service.description ? (
-          <p className="mt-4 whitespace-pre-line text-pretty text-lg leading-relaxed text-muted-foreground">
-            {service.description}
-          </p>
-        ) : null}
+          <div className="animate-fade-up mt-12 flex items-center gap-4 [animation-delay:80ms]">
+            <span className="flex h-14 w-14 items-center justify-center rounded-lg bg-signal text-signal-foreground">
+              <ServiceIcon slug={service.slug} className="h-6 w-6" />
+            </span>
+            <Eyebrow>Layanan</Eyebrow>
+          </div>
+
+          <h1 className="display animate-fade-up mt-8 max-w-4xl text-balance text-[clamp(2.25rem,6vw,4.25rem)] [animation-delay:160ms]">
+            {service.name}
+          </h1>
+          {service.description ? (
+            <p className="animate-fade-up mt-7 max-w-2xl whitespace-pre-line text-pretty text-lg leading-relaxed text-muted-foreground [animation-delay:280ms]">
+              {service.description}
+            </p>
+          ) : null}
+        </div>
       </header>
 
       {service.features.length > 0 ? (
-        <section className="mt-14" data-reveal>
-          <p className="text-xs font-semibold uppercase tracking-widest text-primary">
-            Yang Anda dapatkan
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight">Fitur</h2>
-          <ul className="mt-5 grid gap-4 sm:grid-cols-2">
-            {service.features.map((f) => (
-              <li key={f.title} className="card-lift flex gap-3 rounded-xl border border-border bg-card p-5">
-                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden />
+        <section className="mx-auto max-w-7xl px-6 py-16 sm:py-24 lg:px-10">
+          <div className="border-t border-border pt-6" data-reveal>
+            <div className="flex items-start justify-between gap-6">
+              <Eyebrow>Yang Anda dapatkan</Eyebrow>
+              <span className="label-mono text-muted-foreground">01</span>
+            </div>
+            <h2 className="display mt-8 text-balance text-3xl sm:text-4xl">Cakupan pekerjaan</h2>
+          </div>
+          <ul className="mt-12 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2">
+            {service.features.map((feature, index) => (
+              <li
+                key={feature.title}
+                className="group flex gap-4 bg-background p-7 transition-colors duration-500 hover:bg-muted"
+                data-reveal
+                style={{ transitionDelay: `${(index % 2) * 70}ms` }}
+              >
+                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-border transition-all duration-500 group-hover:border-transparent group-hover:bg-signal group-hover:text-signal-foreground">
+                  <Check className="h-3.5 w-3.5" aria-hidden />
+                </span>
                 <div>
-                  <p className="font-medium tracking-tight">{f.title}</p>
-                  {f.description ? (
-                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                      {f.description}
+                  <p className="display-sm text-base">{feature.title}</p>
+                  {feature.description ? (
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      {feature.description}
                     </p>
                   ) : null}
                 </div>
@@ -88,83 +110,72 @@ export default async function ServiceDetailPage({
       ) : null}
 
       {service.workflow.length > 0 ? (
-        <section className="mt-14" data-reveal>
-          <p className="text-xs font-semibold uppercase tracking-widest text-primary">
-            Cara kami bekerja
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight">Workflow</h2>
-          <ol className="relative mt-6 space-y-6">
-            <div
-              aria-hidden
-              className="absolute bottom-4 left-4 top-4 w-px bg-gradient-to-b from-primary/50 via-border to-border"
-            />
-            {service.workflow.map((step, i) => (
-              <li key={step.title} className="relative flex gap-4">
-                <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-background text-sm font-semibold text-primary shadow-sm">
-                  {i + 1}
-                </span>
-                <div className="pt-0.5">
-                  <p className="font-medium tracking-tight">{step.title}</p>
-                  {step.description ? (
-                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                      {step.description}
-                    </p>
-                  ) : null}
+        <section className="mx-auto max-w-7xl px-6 pb-16 sm:pb-24 lg:px-10">
+          <div className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
+            <div className="lg:sticky lg:top-28 lg:self-start">
+              <div className="border-t border-border pt-6" data-reveal>
+                <div className="flex items-start justify-between gap-6">
+                  <Eyebrow>Cara kami bekerja</Eyebrow>
+                  <span className="label-mono text-muted-foreground">02</span>
                 </div>
-              </li>
-            ))}
-          </ol>
-        </section>
-      ) : null}
-
-      {service.faqs.length > 0 ? (
-        <section className="mt-14" data-reveal>
-          <p className="text-xs font-semibold uppercase tracking-widest text-primary">
-            Sering ditanyakan
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight">FAQ</h2>
-          <div className="mt-5 space-y-3">
-            {service.faqs.map((faq) => (
-              <details
-                key={faq.question}
-                className="group rounded-xl border border-border bg-card px-5 py-4 transition-colors open:border-primary/30"
-              >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium tracking-tight [&::-webkit-details-marker]:hidden">
-                  {faq.question}
-                  <ChevronDown
-                    className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300 group-open:rotate-180"
-                    aria-hidden
-                  />
-                </summary>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{faq.answer}</p>
-              </details>
-            ))}
+                <h2 className="display mt-8 text-balance text-3xl sm:text-4xl">
+                  Alur pengerjaan
+                </h2>
+                <p className="mt-5 max-w-md text-pretty leading-relaxed text-muted-foreground">
+                  Setiap tahap punya hasil yang bisa Anda lihat, jadi Anda tidak pernah menunggu
+                  dalam gelap.
+                </p>
+              </div>
+            </div>
+            <ol className="relative">
+              <div aria-hidden className="absolute bottom-8 left-6 top-8 w-px bg-border" />
+              <div aria-hidden className="progress-line absolute bottom-8 left-6 top-8 w-px" />
+              {service.workflow.map((step, index) => (
+                <li
+                  key={step.title}
+                  className="relative flex gap-6"
+                  data-reveal
+                  style={{ transitionDelay: `${index * 70}ms` }}
+                >
+                  <span className="label-mono relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-border bg-background text-muted-foreground">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <div className="pb-10 pt-3">
+                    <h3 className="display-sm text-lg">{step.title}</h3>
+                    {step.description ? (
+                      <p className="mt-2.5 max-w-xl text-sm leading-relaxed text-muted-foreground">
+                        {step.description}
+                      </p>
+                    ) : null}
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
         </section>
       ) : null}
 
-      <section className="mt-16" data-reveal>
-        <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-10 text-center">
-          <div
-            aria-hidden
-            className="absolute left-1/2 top-[-9rem] h-[16rem] w-[26rem] -translate-x-1/2 rounded-full bg-primary/15 blur-[90px]"
-          />
-          <div className="relative">
-            <h2 className="text-balance text-2xl font-semibold tracking-tight">
-              Tertarik dengan layanan ini?
-            </h2>
-            <p className="mx-auto mt-2 max-w-md text-pretty text-sm text-muted-foreground">
-              Ceritakan kebutuhan Anda dan kami bantu wujudkan.
-            </p>
-            <Link href={ctaHref} className="mt-6 inline-block">
-              <Button size="lg">
-                {ctaLabel}
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
+      <section className="mx-auto max-w-7xl px-6 pb-16 sm:pb-24 lg:px-10">
+        <div className="border-t border-border pt-6" data-reveal>
+          <div className="flex items-start justify-between gap-6">
+            <Eyebrow>Pertanyaan</Eyebrow>
+            <span className="label-mono text-muted-foreground">03</span>
           </div>
+          <h2 className="display mt-8 text-balance text-3xl sm:text-4xl">Sering ditanyakan</h2>
+        </div>
+        <div className="mt-12">
+          <FaqAccordion items={faqs} />
         </div>
       </section>
-    </article>
+
+      <section className="mx-auto max-w-7xl px-6 pb-8 lg:px-10">
+        <CtaPanel
+          title={`Tertarik dengan ${service.name}?`}
+          body="Ceritakan kebutuhan Anda lewat brief terpandu. Kami balas dengan cakupan dan estimasi yang jelas dalam 1x24 jam kerja."
+          ctaLabel={ctaLabel}
+          ctaHref={ctaHref}
+        />
+      </section>
+    </>
   );
 }

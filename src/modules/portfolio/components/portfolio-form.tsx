@@ -172,7 +172,7 @@ export function PortfolioForm({
           <div className="space-y-1.5">
             <Label htmlFor="client">Klien</Label>
             <Select id="client" value={clientId} onChange={(e) => setClientId(e.target.value)}>
-              <option value="">— Tanpa klien —</option>
+              <option value="">Tanpa klien</option>
               {clients.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}

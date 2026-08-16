@@ -1,67 +1,67 @@
-import { Code2, PenTool, Rocket, Search, Target } from "lucide-react";
-import type { ComponentType } from "react";
+import { Code2, PenTool, Rocket, Search, Target, type LucideIcon } from "lucide-react";
 
 interface Stage {
-  icon: ComponentType<{ className?: string }>;
+  icon: LucideIcon;
   title: string;
   body: string;
 }
 
-const STAGES: Stage[] = [
+export const PROCESS_STAGES: Stage[] = [
   {
     icon: Search,
-    title: "Discovery & Riset",
-    body: "Kami menggali kebutuhan bisnis, pengguna, dan tujuan proyek lewat riset dan diskusi mendalam.",
+    title: "Discovery dan riset",
+    body: "Kami menggali kebutuhan bisnis, perilaku pengguna, dan tujuan proyek lewat diskusi terarah sebelum satu baris kode ditulis.",
   },
   {
     icon: Target,
-    title: "Strategi & Definisi",
-    body: "Temuan dirumuskan menjadi cakupan, alur, dan prioritas fitur yang jelas dan terukur.",
+    title: "Strategi dan definisi",
+    body: "Temuan riset dirumuskan menjadi cakupan, alur, dan prioritas fitur yang jelas, lengkap dengan ukuran keberhasilan.",
   },
   {
     icon: PenTool,
-    title: "Desain & Prototipe",
-    body: "Wireframe hingga UI interaktif dibuat lebih dulu, agar solusi bisa diuji sebelum dibangun.",
+    title: "Desain dan prototipe",
+    body: "Wireframe sampai antarmuka interaktif dibuat lebih dulu, sehingga Anda bisa melihat dan mencoba solusinya sebelum dibangun.",
   },
   {
     icon: Code2,
-    title: "Development",
-    body: "Fitur dibangun bertahap dengan kode yang rapi, aman, dan performa yang diukur di setiap iterasi.",
+    title: "Pengembangan",
+    body: "Fitur dibangun bertahap dengan kode yang rapi dan aman, dengan performa yang diukur di setiap iterasi.",
   },
   {
     icon: Rocket,
-    title: "Peluncuran & Iterasi",
-    body: "Peluncuran mulus, pemantauan, lalu penyempurnaan berkelanjutan berdasarkan data dan masukan.",
+    title: "Peluncuran dan iterasi",
+    body: "Peluncuran mulus, pemantauan, lalu penyempurnaan berkelanjutan berdasarkan data penggunaan dan masukan nyata.",
   },
 ];
 
-/** Visualisasi proses pengerjaan end-to-end (timeline vertikal). */
-export function ProcessTimeline() {
+/**
+ * Alur kerja end to end. Garis penghubung terisi mengikuti scroll pada
+ * browser yang mendukung animasi berbasis timeline.
+ */
+export function ProcessTimeline({ compact = false }: { compact?: boolean }) {
   return (
-    <ol className="relative mt-8 space-y-8">
-      {/* garis penghubung */}
-      <div
-        aria-hidden
-        className="absolute bottom-4 left-5 top-4 w-px bg-gradient-to-b from-primary/50 via-border to-border"
-      />
-      {STAGES.map((stage, i) => (
+    <ol className="relative">
+      <div aria-hidden className="absolute bottom-8 left-6 top-8 w-px bg-border" />
+      <div aria-hidden className="progress-line absolute bottom-8 left-6 top-8 w-px" />
+
+      {PROCESS_STAGES.map((stage, index) => (
         <li
           key={stage.title}
-          className="relative flex gap-5"
+          className="relative flex gap-6"
           data-reveal
-          style={{ transitionDelay: `${i * 90}ms` }}
+          style={{ transitionDelay: `${index * 70}ms` }}
         >
-          <span className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-background text-primary shadow-sm">
-            <stage.icon className="h-4 w-4" />
+          <span className="label-mono relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-border bg-background text-muted-foreground">
+            {String(index + 1).padStart(2, "0")}
           </span>
-          <div className="pt-1">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold tabular-nums text-muted-foreground/70">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <h3 className="font-semibold tracking-tight">{stage.title}</h3>
+          <div className={compact ? "pb-8 pt-3" : "pb-10 pt-3"}>
+            <div className="flex items-center gap-2.5">
+              <stage.icon className="h-4 w-4 text-muted-foreground" aria-hidden />
+              <h3 className="display-sm text-lg">{stage.title}</h3>
             </div>
-            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{stage.body}</p>
+            <p className="mt-2.5 max-w-xl text-sm leading-relaxed text-muted-foreground">
+              {stage.body}
+            </p>
           </div>
         </li>
       ))}

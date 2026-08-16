@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
-import {
-  Clock,
-  FileText,
-  ListChecks,
-  ShieldCheck,
-  type LucideIcon,
-} from "lucide-react";
+import { Clock, FileText, ListChecks, ShieldCheck, type LucideIcon } from "lucide-react";
+import { PageHeader } from "@/components/page-header";
 import { CollaborationForm } from "@/modules/leads/components/collaboration-form";
 
 export const metadata: Metadata = {
-  title: "Start a Project",
+  title: "Mulai Proyek",
   description:
     "Jawab beberapa pertanyaan singkat, jawaban Anda otomatis tersusun menjadi brief proyek untuk tim WalDev.",
   alternates: { canonical: "/collaboration" },
@@ -19,17 +14,17 @@ const POINTS: { icon: LucideIcon; title: string; body: string }[] = [
   {
     icon: ListChecks,
     title: "Terpandu langkah demi langkah",
-    body: "Cukup pilih jawaban yang tersedia. Tidak perlu paham istilah teknis atau bingung mulai dari mana.",
+    body: "Cukup pilih jawaban yang tersedia. Tidak perlu paham istilah teknis atau bingung harus mulai dari mana.",
   },
   {
     icon: FileText,
-    title: "Otomatis jadi brief proyek",
-    body: "Jawaban Anda tersusun menjadi dokumen kebutuhan (PRD ringkas) yang langsung dipahami tim kami.",
+    title: "Otomatis menjadi brief proyek",
+    body: "Jawaban Anda tersusun menjadi dokumen kebutuhan ringkas yang langsung dipahami tim kami.",
   },
   {
     icon: Clock,
-    title: "Sekitar 3 menit, respons 1x24 jam",
-    body: "Lima langkah singkat, dan tim kami menghubungi Anda dalam 1x24 jam kerja.",
+    title: "Sekitar 3 menit saja",
+    body: "Lima langkah singkat, lalu tim kami menghubungi Anda dalam 1x24 jam kerja.",
   },
   {
     icon: ShieldCheck,
@@ -40,46 +35,46 @@ const POINTS: { icon: LucideIcon; title: string; body: string }[] = [
 
 export default function CollaborationPage() {
   return (
-    <section className="mx-auto max-w-6xl px-6 py-20">
-      <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
-        <div data-reveal>
-          <p className="text-xs font-semibold uppercase tracking-widest text-primary">
-            Kolaborasi
-          </p>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight">Start a Project</h1>
-          <p className="mt-3 leading-relaxed text-muted-foreground">
-            Tidak perlu menyiapkan dokumen apa pun. Jawab beberapa pertanyaan singkat, sisanya
-            kami yang susun menjadi brief proyek.
-          </p>
+    <>
+      <PageHeader
+        eyebrow="Mulai Proyek"
+        title={["Tidak perlu siapkan", "dokumen apa pun."]}
+        marked="apa pun."
+        description="Jawab beberapa pertanyaan singkat. Sisanya kami yang susun menjadi brief proyek yang rapi, siap dibaca dan ditindaklanjuti."
+      />
 
-          <ul className="mt-10 space-y-6">
-            {POINTS.map((point, i) => (
-              <li
-                key={point.title}
-                className="flex gap-4"
-                data-reveal
-                style={{ transitionDelay: `${i * 80}ms` }}
-              >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary">
-                  <point.icon className="h-4 w-4" aria-hidden />
-                </span>
-                <div>
-                  <p className="font-medium tracking-tight">{point.title}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                    {point.body}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
+      <section className="mx-auto max-w-7xl px-6 py-16 sm:py-24 lg:px-10">
+        <div className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <ul className="space-y-px overflow-hidden rounded-lg border border-border bg-border">
+              {POINTS.map((point, index) => (
+                <li
+                  key={point.title}
+                  className="group flex gap-5 bg-background p-7 transition-colors duration-500 hover:bg-muted"
+                  data-reveal
+                  style={{ transitionDelay: `${index * 70}ms` }}
+                >
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border transition-all duration-500 group-hover:border-transparent group-hover:bg-signal group-hover:text-signal-foreground">
+                    <point.icon className="h-4 w-4" aria-hidden />
+                  </span>
+                  <div>
+                    <p className="display-sm text-base">{point.title}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      {point.body}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        <div data-reveal style={{ transitionDelay: "120ms" }}>
-          <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
-            <CollaborationForm />
+          <div data-reveal style={{ transitionDelay: "120ms" }}>
+            <div className="rounded-lg border border-border bg-card p-7 sm:p-9">
+              <CollaborationForm />
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

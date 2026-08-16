@@ -61,7 +61,7 @@ export default async function ServicesAdminPage() {
                       {row.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{row.price ?? "—"}</TableCell>
+                  <TableCell className="text-muted-foreground">{row.price ?? "·"}</TableCell>
                   <TableCell>
                     <EntityRowActions
                       id={row.id}

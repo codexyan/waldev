@@ -3,59 +3,77 @@
 /* Dark mode via class strategy (next-themes menambahkan .dark pada <html>) */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ============ Design Tokens (Light) ============ */
+/* ============================================================
+   WalDev Design System v2 "Editorial Mono"
+   Dasar: tinta (ink) + kertas (paper). Satu warna sinyal (lime)
+   dipakai maksimal 5% sebagai isian grafis, tidak pernah sebagai
+   warna teks, sehingga kontras tetap aman untuk aksesibilitas.
+   ============================================================ */
+
+/* ---------------------- Token: Terang (kertas) ---------------------- */
 :root {
-  --background: 0 0% 100%;
-  --foreground: 240 10% 4%;
+  --background: 48 33% 98%;
+  --foreground: 240 14% 5%;
 
   --card: 0 0% 100%;
-  --card-foreground: 240 10% 4%;
+  --card-foreground: 240 14% 5%;
 
-  --muted: 240 5% 96%;
-  --muted-foreground: 240 4% 46%;
+  --muted: 45 20% 95%;
+  --muted-foreground: 240 5% 42%;
 
-  --border: 240 6% 90%;
-  --input: 240 6% 90%;
-  --ring: 243 75% 58%;
+  --border: 42 12% 88%;
+  --input: 42 12% 84%;
+  --ring: 240 14% 5%;
 
-  --primary: 243 75% 58%;
-  --primary-foreground: 0 0% 100%;
+  /* Primary = tinta. Tombol utama tampil sebagai pil hitam pekat. */
+  --primary: 240 14% 5%;
+  --primary-foreground: 48 33% 98%;
 
-  --accent: 240 5% 96%;
-  --accent-foreground: 240 10% 4%;
+  --accent: 45 20% 95%;
+  --accent-foreground: 240 14% 5%;
 
-  --destructive: 0 72% 51%;
+  --destructive: 0 72% 45%;
   --destructive-foreground: 0 0% 100%;
 
-  --radius: 0.75rem;
+  /* Warna sinyal: hanya untuk isian grafis, penanda, dan aksen kecil. */
+  --signal: 72 95% 55%;
+  --signal-foreground: 240 14% 5%;
+
+  --radius: 0.375rem;
+
+  /* Memungkinkan transisi tinggi ke/dari `auto` (akordeon FAQ). */
+  interpolate-size: allow-keywords;
 }
 
-/* ============ Design Tokens (Dark) ============ */
+/* ----------------------- Token: Gelap (tinta) ----------------------- */
 .dark {
-  --background: 240 10% 4%;
-  --foreground: 0 0% 98%;
+  --background: 240 14% 5%;
+  --foreground: 48 20% 96%;
 
-  --card: 240 10% 6%;
-  --card-foreground: 0 0% 98%;
+  --card: 240 12% 8%;
+  --card-foreground: 48 20% 96%;
 
-  --muted: 240 4% 12%;
-  --muted-foreground: 240 5% 65%;
+  --muted: 240 8% 13%;
+  --muted-foreground: 240 6% 63%;
 
-  --border: 240 4% 16%;
-  --input: 240 4% 18%;
-  --ring: 243 80% 66%;
+  --border: 240 8% 17%;
+  --input: 240 8% 22%;
+  --ring: 72 95% 55%;
 
-  --primary: 243 80% 66%;
-  --primary-foreground: 240 10% 4%;
+  --primary: 48 20% 96%;
+  --primary-foreground: 240 14% 5%;
 
-  --accent: 240 4% 14%;
-  --accent-foreground: 0 0% 98%;
+  --accent: 240 8% 15%;
+  --accent-foreground: 48 20% 96%;
 
-  --destructive: 0 63% 45%;
+  --destructive: 0 62% 48%;
   --destructive-foreground: 0 0% 98%;
+
+  --signal: 72 90% 58%;
+  --signal-foreground: 240 14% 5%;
 }
 
-/* ============ Map tokens -> Tailwind theme ============ */
+/* ------------------- Pemetaan token ke tema Tailwind ---------------- */
 @theme inline {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
@@ -72,6 +90,8 @@
   --color-accent-foreground: hsl(var(--accent-foreground));
   --color-destructive: hsl(var(--destructive));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-signal: hsl(var(--signal));
+  --color-signal-foreground: hsl(var(--signal-foreground));
 
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
@@ -80,11 +100,19 @@
   --font-sans:
     var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-display:
+    var(--font-display-face), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    var(--font-mono-face), ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    monospace;
 }
 
 @layer base {
   * {
     border-color: hsl(var(--border));
+  }
+  html {
+    scroll-behavior: smooth;
   }
   body {
     background-color: hsl(var(--background));
@@ -93,39 +121,325 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+  ::selection {
+    background: hsl(var(--signal));
+    color: hsl(var(--signal-foreground));
+  }
+  /* Fokus keyboard yang konsisten dan terlihat di kedua tema */
+  :focus-visible {
+    outline: 2px solid hsl(var(--foreground));
+    outline-offset: 2px;
+  }
 }
 
-/* Rich text (editor Tiptap & artikel publik) */
 @layer components {
+  /* ===================== Tipografi editorial ===================== */
+
+  /* Judul besar: font display, tracking rapat, leading pendek. */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+  }
+  .display-sm {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+  }
+
+  /* Label mikro monospace untuk eyebrow, indeks, dan meta. */
+  .label-mono {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  /* Angka besar (statistik, penomoran seksi). */
+  .num {
+    font-family: var(--font-display);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.04em;
+  }
+
+  /* ===================== Latar & tekstur ===================== */
+
+  /* Kisi halus, memudar ke bawah. */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, hsl(var(--foreground) / 0.055) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--foreground) / 0.055) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(ellipse 75% 65% at 50% 0%, black 20%, transparent 78%);
+    -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 0%, black 20%, transparent 78%);
+  }
+
+  /* Butiran halus supaya bidang datar tidak terasa mati. */
+  .bg-noise::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .dark .bg-noise::after {
+    opacity: 0.06;
+  }
+
+  /* Sorotan yang mengikuti kursor. Variabel diisi oleh MotionRuntime. */
+  .spotlight {
+    position: relative;
+  }
+  .spotlight::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 400ms ease;
+    background: radial-gradient(
+      380px circle at var(--mx, 50%) var(--my, 50%),
+      hsl(var(--signal) / 0.16),
+      transparent 65%
+    );
+  }
+  .spotlight:hover::before {
+    opacity: 1;
+  }
+
+  /* ===================== Aksen sinyal ===================== */
+
+  /* Sapuan stabilo di belakang kata kunci. */
+  .marker {
+    position: relative;
+    display: inline-block;
+    isolation: isolate;
+  }
+  .marker::before {
+    content: "";
+    position: absolute;
+    left: -0.08em;
+    right: -0.08em;
+    bottom: 0.06em;
+    height: 0.38em;
+    z-index: -1;
+    background: hsl(var(--signal));
+    transform: scaleX(0);
+    transform-origin: left center;
+    animation: marker-in 700ms cubic-bezier(0.16, 1, 0.3, 1) 1150ms forwards;
+  }
+
+  /* Titik status berdenyut. */
+  .pulse-dot {
+    position: relative;
+    display: inline-block;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 9999px;
+    background: hsl(var(--signal));
+  }
+  .pulse-dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background: hsl(var(--signal));
+    animation: signal-ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  /* Permukaan terbalik (panel tinta). Fokus keyboard ikut dibalik agar
+     cincinnya tetap terlihat di atas latar gelap maupun terang. */
+  .on-ink {
+    --ring: var(--background);
+  }
+  .on-ink :focus-visible {
+    outline-color: hsl(var(--background));
+  }
+
+  /* Tautan teks dengan garis bawah yang menyapu dari kiri. */
+  .link-sweep {
+    position: relative;
+    display: inline-block;
+  }
+  .link-sweep::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 1.5px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .link-sweep:hover::after,
+  .link-sweep:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+
+  /* ===================== Kartu & baris ===================== */
+
+  .card-lift {
+    transition:
+      border-color 260ms ease,
+      transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 260ms ease;
+  }
+  .card-lift:hover {
+    border-color: hsl(var(--foreground) / 0.28);
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px -24px hsl(var(--foreground) / 0.45);
+  }
+
+  /* Baris layanan bergaya daftar editorial: bilah sinyal menyapu dari kiri. */
+  .row-sweep {
+    position: relative;
+    isolation: isolate;
+  }
+  .row-sweep::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: hsl(var(--muted));
+    transform: scaleY(0);
+    transform-origin: bottom center;
+    transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .row-sweep:hover::before,
+  .row-sweep:focus-within::before {
+    transform: scaleY(1);
+    transform-origin: top center;
+  }
+  .row-sweep::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    height: 2px;
+    width: 100%;
+    background: hsl(var(--signal));
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .row-sweep:hover::after,
+  .row-sweep:focus-within::after {
+    transform: scaleX(1);
+  }
+
+  /* ===================== Marquee ===================== */
+
+  .marquee {
+    display: flex;
+    overflow: hidden;
+    user-select: none;
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 8%,
+      black 92%,
+      transparent
+    );
+  }
+  .marquee__track {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 2.5rem;
+    padding-right: 2.5rem;
+    min-width: 100%;
+    animation: marquee var(--marquee-duration, 34s) linear infinite;
+  }
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+  .marquee--reverse .marquee__track {
+    animation-direction: reverse;
+  }
+
+  /* ===================== Teks judul bertopeng ===================== */
+
+  .line-mask {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.08em;
+  }
+  .line-inner {
+    display: block;
+    animation: line-rise 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* Wordmark besar bergaris di footer. */
+  .text-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px hsl(var(--foreground) / 0.16);
+  }
+
+  /* ===================== Akordeon FAQ =====================
+     Tetap memakai <details> asli agar dapat diakses dan bekerja tanpa
+     JavaScript. Pada browser yang mendukung ::details-content, tinggi
+     isinya beranimasi halus; selebihnya terbuka seketika. */
+
+  @supports selector(::details-content) {
+    .accordion::details-content {
+      block-size: 0;
+      overflow: hidden;
+      transition:
+        block-size 420ms cubic-bezier(0.16, 1, 0.3, 1),
+        content-visibility 420ms allow-discrete;
+    }
+    .accordion[open]::details-content {
+      block-size: auto;
+    }
+  }
+
+  /* ===================== Rich text (Tiptap & artikel) ===================== */
+
   .prose {
     color: hsl(var(--foreground));
-    line-height: 1.75;
+    line-height: 1.8;
+    font-size: 1.0625rem;
   }
   .prose > * + * {
-    margin-top: 1em;
+    margin-top: 1.15em;
   }
   .prose h1,
   .prose h2,
   .prose h3 {
+    font-family: var(--font-display);
     font-weight: 600;
-    letter-spacing: -0.01em;
-    line-height: 1.3;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
   }
   .prose h1 {
-    font-size: 1.875rem;
+    font-size: 2rem;
   }
   .prose h2 {
-    font-size: 1.5rem;
-    margin-top: 1.6em;
+    font-size: 1.6rem;
+    margin-top: 1.9em;
   }
   .prose h3 {
     font-size: 1.25rem;
-    margin-top: 1.4em;
+    margin-top: 1.5em;
   }
   .prose a {
-    color: hsl(var(--primary));
+    color: hsl(var(--foreground));
     text-decoration: underline;
-    text-underline-offset: 2px;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    text-decoration-color: hsl(var(--signal));
+  }
+  .prose a:hover {
+    background: hsl(var(--signal) / 0.25);
   }
   .prose ul {
     list-style: disc;
@@ -136,33 +450,46 @@
     padding-left: 1.5rem;
   }
   .prose li + li {
-    margin-top: 0.25em;
+    margin-top: 0.35em;
+  }
+  .prose li::marker {
+    color: hsl(var(--muted-foreground));
   }
   .prose blockquote {
-    border-left: 3px solid hsl(var(--border));
-    padding-left: 1rem;
+    border-left: 2px solid hsl(var(--signal));
+    padding-left: 1.25rem;
     color: hsl(var(--muted-foreground));
-    font-style: italic;
+    font-style: normal;
   }
   .prose code {
+    font-family: var(--font-mono);
     background: hsl(var(--muted));
-    padding: 0.15em 0.35em;
+    padding: 0.15em 0.4em;
     border-radius: 0.25rem;
     font-size: 0.875em;
   }
   .prose pre {
-    background: hsl(var(--muted));
-    padding: 1rem;
-    border-radius: 0.5rem;
+    font-family: var(--font-mono);
+    background: hsl(var(--foreground));
+    color: hsl(var(--background));
+    padding: 1.25rem;
+    border-radius: var(--radius);
     overflow-x: auto;
+    font-size: 0.875rem;
+    line-height: 1.7;
   }
   .prose pre code {
     background: transparent;
     padding: 0;
+    color: inherit;
   }
   .prose hr {
     border: 0;
     border-top: 1px solid hsl(var(--border));
+    margin-block: 2.5em;
+  }
+  .prose img {
+    border-radius: var(--radius);
   }
   /* Placeholder ProseMirror saat kosong */
   .prose p.is-editor-empty:first-child::before {
@@ -172,97 +499,166 @@
     height: 0;
     pointer-events: none;
   }
-
-  /* ===== Design system: dekorasi & micro-interaction ===== */
-
-  /* Latar grid halus (hero) — memudar ke bawah via mask */
-  .bg-grid {
-    background-image:
-      linear-gradient(to right, hsl(var(--border) / 0.7) 1px, transparent 1px),
-      linear-gradient(to bottom, hsl(var(--border) / 0.7) 1px, transparent 1px);
-    background-size: 44px 44px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 25%, transparent 75%);
-    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 25%, transparent 75%);
-  }
-
-  /* Teks aksen bergradasi (foreground → primary) */
-  .text-gradient {
-    background: linear-gradient(120deg, hsl(var(--foreground)) 20%, hsl(var(--primary)) 90%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  /* Kartu interaktif: lift + glow tipis saat hover */
-  .card-lift {
-    transition:
-      border-color 200ms ease,
-      transform 200ms ease,
-      box-shadow 200ms ease;
-  }
-  .card-lift:hover {
-    border-color: hsl(var(--primary) / 0.35);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 28px -14px hsl(var(--primary) / 0.3);
-  }
 }
 
-/* Entrance animation (CSS-only; hormati prefers-reduced-motion) */
-@keyframes fade-up {
+/* ==================== Keyframes ==================== */
+
+@keyframes line-rise {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(105%);
   }
   to {
     opacity: 1;
     transform: none;
   }
 }
-.animate-fade-up {
-  animation: fade-up 0.6s ease-out both;
+
+@keyframes marker-in {
+  to {
+    transform: scaleX(1);
+  }
 }
 
-/* Reveal-on-scroll: elemen [data-reveal] dianimasikan masuk oleh RevealInit.
-   Stagger diatur per elemen lewat inline style transition-delay. */
+@keyframes signal-ping {
+  75%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -22px, 0) scale(1.06);
+  }
+}
+
+@keyframes scroll-hint {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top center;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top center;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom center;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom center;
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-drift {
+  animation: drift 14s ease-in-out infinite;
+}
+.animate-scroll-hint {
+  animation: scroll-hint 2.4s ease-in-out infinite;
+}
+
+/* ==================== Reveal saat scroll ====================
+   Elemen [data-reveal] dianimasikan masuk oleh MotionRuntime.
+   Nilai atribut memilih varian: kosong (naik), wipe, scale, left. */
+
 [data-reveal] {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(24px);
   transition:
-    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    clip-path 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-reveal="wipe"] {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(0 0 100% 0);
+}
+[data-reveal="scale"] {
+  transform: scale(0.94);
+}
+[data-reveal="left"] {
+  transform: translateX(-28px);
 }
 [data-reveal].is-visible {
   opacity: 1;
   transform: none;
+  clip-path: inset(0 0 0 0);
 }
 
-/* Orb dekoratif yang mengapung pelan (hero) */
-@keyframes float {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(0, -16px, 0);
+/* Garis progres proses: terisi mengikuti scroll bila browser mendukung.
+   Bila tidak, tampil sebagai gradasi yang memudar (tetap rapi). */
+.progress-line {
+  transform-origin: top center;
+  background: linear-gradient(to bottom, hsl(var(--signal)), hsl(var(--signal) / 0));
+}
+@supports (animation-timeline: view()) {
+  .progress-line {
+    background: hsl(var(--signal));
+    transform: scaleY(0);
+    animation: progress-grow linear both;
+    animation-timeline: view();
+    animation-range: entry 30% cover 70%;
   }
 }
-.animate-float {
-  animation: float 9s ease-in-out infinite;
+@keyframes progress-grow {
+  to {
+    transform: scaleY(1);
+  }
 }
+
+/* ==================== Hormati preferensi gerak ==================== */
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-fade-up {
-    animation: none;
+  html {
+    scroll-behavior: auto;
   }
-  .animate-float {
-    animation: none;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .marker::before,
+  .progress-line {
+    transform: scaleX(1) scaleY(1);
   }
   [data-reveal] {
     opacity: 1;
     transform: none;
-    transition: none;
+    clip-path: none;
   }
-  .card-lift,
   .card-lift:hover {
     transform: none;
   }

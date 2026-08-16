@@ -12,7 +12,7 @@ import { requirePagePermission } from "@/server/rbac/guard";
 export const dynamic = "force-dynamic";
 
 function formatDateTime(value: Date | null): string {
-  if (!value) return "—";
+  if (!value) return "·";
   return new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short" }).format(value);
 }
 
@@ -46,8 +46,8 @@ export default async function ActivityLogsPage() {
               {rows.map((row) => (
                 <TableRow key={row.id}>
                   <TableCell className="font-medium">{row.action}</TableCell>
-                  <TableCell className="text-muted-foreground">{row.entityType ?? "—"}</TableCell>
-                  <TableCell className="text-muted-foreground">{row.userName ?? "—"}</TableCell>
+                  <TableCell className="text-muted-foreground">{row.entityType ?? "·"}</TableCell>
+                  <TableCell className="text-muted-foreground">{row.userName ?? "·"}</TableCell>
                   <TableCell className="text-muted-foreground">{formatDateTime(row.createdAt)}</TableCell>
                 </TableRow>
               ))}

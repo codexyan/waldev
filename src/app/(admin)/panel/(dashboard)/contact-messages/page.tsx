@@ -15,7 +15,7 @@ import { requireSession } from "@/server/auth/session";
 export const dynamic = "force-dynamic";
 
 function formatDate(value: Date | null): string {
-  if (!value) return "—";
+  if (!value) return "·";
   return new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(value);
 }
 

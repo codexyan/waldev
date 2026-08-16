@@ -141,7 +141,7 @@ export function TestimonialManager({
           <div className="space-y-1.5">
             <Label htmlFor="t-rating">Rating</Label>
             <Select id="t-rating" value={rating} onChange={(e) => setRating(e.target.value)}>
-              <option value="">—</option>
+              <option value="">Belum dinilai</option>
               {[1, 2, 3, 4, 5].map((n) => (
                 <option key={n} value={n}>
                   {n}
@@ -167,7 +167,7 @@ export function TestimonialManager({
         <div className="space-y-1.5">
           <Label htmlFor="t-client">Klien (opsional)</Label>
           <Select id="t-client" value={clientId} onChange={(e) => setClientId(e.target.value)}>
-            <option value="">—</option>
+            <option value="">Tanpa klien</option>
             {clients.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}

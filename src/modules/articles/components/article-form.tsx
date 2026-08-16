@@ -195,7 +195,7 @@ export function ArticleForm({
           <div className="space-y-1.5">
             <Label htmlFor="category">Kategori</Label>
             <Select id="category" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-              <option value="">— Tanpa kategori —</option>
+              <option value="">Tanpa kategori</option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CalendarDays, Clock, UserRound } from "lucide-react";
-import { ReadingProgress } from "@/components/reading-progress";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { CtaPanel } from "@/components/cta-panel";
+import { Eyebrow } from "@/components/ui/section-heading";
 import { getPublishedArticleBySlug, getRelatedArticles } from "@/modules/articles/article.dal";
 import { getSeoMeta } from "@/modules/seo/seo.dal";
 
@@ -59,110 +60,134 @@ export default async function ArticleDetailPage({
   };
 
   return (
-    <article className="mx-auto max-w-3xl px-6 py-20">
-      <ReadingProgress />
+    <>
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <Link
-        href="/articles"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Semua artikel
-      </Link>
+      <header className="bg-noise relative overflow-hidden border-b border-border">
+        <div aria-hidden className="bg-grid absolute inset-0" />
+        <div className="relative mx-auto max-w-3xl px-6 pb-14 pt-10">
+          <Link
+            href="/articles"
+            className="link-sweep group inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
+            Semua tulisan
+          </Link>
 
-      <header className="mt-8">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
-          {article.categoryName ? (
-            <span className="rounded-full border border-primary/20 bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-              {article.categoryName}
-            </span>
+          <span className="label-mono animate-fade-up mt-12 flex flex-wrap items-center gap-2.5 text-muted-foreground [animation-delay:80ms]">
+            {article.categoryName ? (
+              <>
+                <span className="inline-flex items-center gap-2">
+                  <span aria-hidden className="h-2 w-2 bg-signal" />
+                  {article.categoryName}
+                </span>
+                <span aria-hidden>·</span>
+              </>
+            ) : null}
+            <span>{article.readingTime} menit baca</span>
+            {article.publishedAt ? (
+              <>
+                <span aria-hidden>·</span>
+                <span>{formatDate(article.publishedAt)}</span>
+              </>
+            ) : null}
+          </span>
+
+          <h1 className="display animate-fade-up mt-7 text-balance text-[clamp(2rem,5.5vw,3.5rem)] [animation-delay:160ms]">
+            {article.title}
+          </h1>
+          {article.summary ? (
+            <p className="animate-fade-up mt-6 text-pretty text-lg leading-relaxed text-muted-foreground [animation-delay:260ms]">
+              {article.summary}
+            </p>
           ) : null}
-          <span className="inline-flex items-center gap-1.5">
-            <Clock className="h-3.5 w-3.5" />
-            {article.readingTime} mnt baca
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <CalendarDays className="h-3.5 w-3.5" />
-            {formatDate(article.publishedAt)}
-          </span>
-        </div>
-        <h1 className="mt-5 text-balance text-4xl font-semibold tracking-tight sm:text-5xl sm:leading-[1.15]">
-          {article.title}
-        </h1>
-        {article.summary ? (
-          <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
-            {article.summary}
-          </p>
-        ) : null}
-        {article.authorName ? (
-          <div className="mt-6 flex items-center gap-3 border-y border-border py-4">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <UserRound className="h-4 w-4" aria-hidden />
-            </span>
-            <div>
-              <p className="text-sm font-medium">{article.authorName}</p>
-              <p className="text-xs text-muted-foreground">Tim WalDev</p>
+          {article.authorName ? (
+            <div className="animate-fade-up mt-9 flex items-center gap-3 [animation-delay:340ms]">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-sm font-medium">
+                {article.authorName.charAt(0)}
+              </span>
+              <span>
+                <span className="block text-sm font-medium">{article.authorName}</span>
+                <span className="label-mono mt-1 block text-muted-foreground">Tim WalDev</span>
+              </span>
             </div>
-          </div>
-        ) : null}
+          ) : null}
+        </div>
       </header>
 
-      {article.coverUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={article.coverUrl}
-          alt={article.title}
-          className="mt-8 aspect-video w-full rounded-2xl border border-border object-cover"
+      <article className="mx-auto max-w-3xl px-6 py-14">
+        {article.coverUrl ? (
+          <div className="overflow-hidden rounded-lg border border-border" data-reveal="wipe">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={article.coverUrl}
+              alt={article.title}
+              className="aspect-[16/9] w-full object-cover"
+            />
+          </div>
+        ) : null}
+
+        <div
+          className="prose mt-12 max-w-none"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: article.contentHtml ?? "" }}
         />
-      ) : null}
 
-      <div
-        className="prose mt-10 max-w-none"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: article.contentHtml ?? "" }}
-      />
-
-      {article.tags.length > 0 ? (
-        <div className="mt-10 flex flex-wrap gap-2">
-          {article.tags.map((tag) => (
-            <span
-              key={tag.slug}
-              className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary"
-            >
-              #{tag.name}
-            </span>
-          ))}
-        </div>
-      ) : null}
+        {article.tags.length > 0 ? (
+          <div className="mt-14 flex flex-wrap gap-2.5 border-t border-border pt-8">
+            {article.tags.map((tag) => (
+              <span
+                key={tag.slug}
+                className="rounded-full border border-border px-3.5 py-1.5 text-xs text-muted-foreground transition-colors duration-300 hover:border-foreground/40 hover:text-foreground"
+              >
+                #{tag.name}
+              </span>
+            ))}
+          </div>
+        ) : null}
+      </article>
 
       {related.length > 0 ? (
-        <section className="mt-16 border-t border-border pt-10" data-reveal>
-          <p className="text-xs font-semibold uppercase tracking-widest text-primary">
-            Lanjutkan membaca
-          </p>
-          <h2 className="mt-2 text-lg font-semibold tracking-tight">Artikel terkait</h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
-            {related.map((item) => (
+        <section className="mx-auto max-w-7xl px-6 pb-16 lg:px-10">
+          <div className="border-t border-border pt-6" data-reveal>
+            <Eyebrow>Lanjutkan membaca</Eyebrow>
+            <h2 className="display mt-8 text-balance text-3xl sm:text-4xl">Tulisan terkait</h2>
+          </div>
+          <div className="mt-12 grid gap-10 sm:grid-cols-3">
+            {related.map((item, index) => (
               <Link
                 key={item.slug}
                 href={`/articles/${item.slug}`}
-                className="card-lift group rounded-lg border border-border p-4"
+                className="group flex flex-col border-t border-border pt-7"
+                data-reveal
+                style={{ transitionDelay: `${index * 80}ms` }}
               >
-                <h3 className="text-sm font-medium group-hover:text-primary">{item.title}</h3>
-                <span className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground">
-                  <Clock className="h-3 w-3" />
-                  {item.readingTime} mnt baca
+                <span className="label-mono text-muted-foreground">
+                  {item.readingTime} menit baca
+                </span>
+                <h3 className="display-sm mt-5 text-balance text-lg">{item.title}</h3>
+                <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium">
+                  <span className="link-sweep">Baca</span>
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
                 </span>
               </Link>
             ))}
           </div>
         </section>
       ) : null}
-    </article>
+
+      <section className="mx-auto max-w-7xl px-6 pb-8 lg:px-10">
+        <CtaPanel
+          eyebrow="Butuh bantuan?"
+          title="Ingin menerapkannya di produk Anda?"
+          body="Kami bantu terjemahkan tulisan seperti ini menjadi pekerjaan nyata, mulai dari audit singkat sampai pengerjaan penuh."
+          ctaLabel="Bicarakan dengan kami"
+        />
+      </section>
+    </>
   );
 }

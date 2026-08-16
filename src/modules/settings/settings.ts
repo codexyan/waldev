@@ -1,8 +1,8 @@
 export const SITE_SETTINGS_DEFAULTS = {
   brand_name: "WalDev",
-  tagline: "Build Digital Products.",
+  tagline: "Studio Digital Indonesia",
   description:
-    "WalDev adalah studio digital yang membangun website, sistem informasi, web application, dan produk digital yang modern, cepat, dan profesional.",
+    "WalDev merancang dan membangun website, sistem informasi, dan dashboard internal untuk bisnis di Indonesia. Dari riset sampai peluncuran, dikerjakan oleh satu tim.",
   contact_email: "",
   contact_whatsapp: "",
   social_instagram: "",

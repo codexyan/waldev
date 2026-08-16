@@ -24,7 +24,7 @@ const STATUS_VARIANT = {
 } as const;
 
 function formatDate(value: Date | null): string {
-  if (!value) return "—";
+  if (!value) return "·";
   return new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(value);
 }
 
@@ -73,7 +73,7 @@ export default async function ArticlesAdminPage() {
                   <TableCell>
                     <Badge variant={STATUS_VARIANT[row.status]}>{row.status}</Badge>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{row.categoryName ?? "—"}</TableCell>
+                  <TableCell className="text-muted-foreground">{row.categoryName ?? "·"}</TableCell>
                   <TableCell className="text-muted-foreground">{formatDate(row.updatedAt)}</TableCell>
                   <TableCell>
                     <ArticleRowActions id={row.id} />

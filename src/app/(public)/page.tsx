@@ -1,223 +1,203 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Clock, Quote, Sparkles } from "lucide-react";
-import { ServiceIcon } from "@/components/service-icon";
-import { Button } from "@/components/ui/button";
-import { SITE } from "@/lib/constants";
+import { ArrowRight } from "lucide-react";
+import { CtaPanel } from "@/components/cta-panel";
+import { FaqAccordion, GENERAL_FAQS } from "@/components/faq-accordion";
+import { Hero, type HeroStat } from "@/components/home/hero";
+import { ServiceRows } from "@/components/home/service-rows";
+import { ValueGrid } from "@/components/home/value-grid";
+import { Marquee } from "@/components/motion/marquee";
+import { ProcessTimeline } from "@/components/process-timeline";
+import { ProjectCard } from "@/components/project-card";
+import { Eyebrow, SectionHeading } from "@/components/ui/section-heading";
+import { CAPABILITIES, SITE } from "@/lib/constants";
 import { listPublishedArticles } from "@/modules/articles/article.dal";
 import { listPublishedPortfolios } from "@/modules/portfolio/portfolio.dal";
 import { listActiveServices } from "@/modules/services/service.dal";
+import { getSiteSettings } from "@/modules/settings/settings.dal";
 import { listPublishedTestimonials } from "@/modules/testimonials/testimonial.dal";
 
 export const dynamic = "force-dynamic";
 
-function SectionHeader({
-  eyebrow,
-  title,
-  href,
-  linkLabel,
-}: {
-  eyebrow: string;
-  title: string;
-  href?: string;
-  linkLabel?: string;
-}) {
-  return (
-    <div className="flex items-end justify-between gap-4" data-reveal>
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-widest text-primary">{eyebrow}</p>
-        <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h2>
-      </div>
-      {href ? (
-        <Link
-          href={href}
-          className="group inline-flex shrink-0 items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
-        >
-          {linkLabel ?? "Lihat semua"}
-          <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-        </Link>
-      ) : null}
-    </div>
-  );
-}
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
+
+const SECTION = "mx-auto max-w-7xl px-6 py-20 sm:py-28 lg:px-10";
 
 export default async function HomePage() {
-  const [services, portfolios, articlesResult, testimonials] = await Promise.all([
+  const [settings, services, portfolios, articlesResult, testimonials] = await Promise.all([
+    getSiteSettings(),
     listActiveServices(),
     listPublishedPortfolios(),
     listPublishedArticles({ limit: 3 }),
     listPublishedTestimonials(),
   ]);
+
   const articles = articlesResult.rows;
   const featuredServices = services.slice(0, 6);
   const featuredPortfolio = portfolios.slice(0, 3);
   const featuredTestimonials = testimonials.slice(0, 3);
 
-  // Kata terakhir tagline diberi aksen gradien.
-  const taglineWords = SITE.tagline.replace(/\.$/, "").split(" ");
-  const taglineLast = taglineWords.pop();
+  // Angka diambil dari isi CMS supaya selalu jujur, bukan klaim hafalan.
+  const stats: HeroStat[] = [
+    { value: portfolios.length, label: "Proyek dipublikasikan" },
+    { value: services.length, label: "Bidang layanan" },
+    { value: 5, label: "Tahap proses kerja" },
+    { value: "1x24", label: "Jam waktu respons" },
+  ];
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div aria-hidden className="bg-grid absolute inset-0" />
-        <div
-          aria-hidden
-          className="absolute left-1/2 top-[-14rem] h-[26rem] w-[40rem] -translate-x-1/2 rounded-full bg-primary/20 blur-[120px]"
-        />
-        {/* Orb mengapung: wrapper untuk posisi, inner untuk animasi float */}
-        <div aria-hidden className="absolute left-[8%] top-24 hidden lg:block">
-          <div className="animate-float h-40 w-40 rounded-full bg-primary/10 blur-[60px]" />
-        </div>
-        <div aria-hidden className="absolute right-[6%] top-48 hidden lg:block">
-          <div className="animate-float h-52 w-52 rounded-full bg-primary/10 blur-[70px] [animation-delay:-4s]" />
-        </div>
-        <div className="relative mx-auto max-w-6xl px-6 pb-20 pt-24 sm:pb-28 sm:pt-32">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="animate-fade-up inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3.5 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
-              Digital Studio
-            </span>
-            <h1 className="animate-fade-up mt-6 text-balance text-4xl font-semibold tracking-tight [animation-delay:80ms] sm:text-6xl sm:leading-[1.1]">
-              {taglineWords.join(" ")} <span className="text-gradient">{taglineLast}</span>.
-            </h1>
-            <p className="animate-fade-up mx-auto mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground [animation-delay:160ms]">
-              {SITE.description}
-            </p>
-            <div className="animate-fade-up mt-10 flex flex-wrap items-center justify-center gap-4 [animation-delay:240ms]">
-              <Link href="/collaboration">
-                <Button size="lg">
-                  Start a Project
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
-              <Link href="/portfolio">
-                <Button size="lg" variant="outline">
-                  Lihat Portfolio
-                </Button>
+      <Hero description={settings.description || SITE.description} stats={stats} />
+
+      {/* Pita kapabilitas yang berjalan pelan. */}
+      <section className="border-y border-border py-7">
+        <Marquee items={CAPABILITIES} />
+      </section>
+
+      {featuredServices.length > 0 ? (
+        <section className={SECTION}>
+          <SectionHeading
+            index="01"
+            eyebrow="Layanan"
+            title="Yang bisa kami kerjakan untuk Anda"
+            description="Dari halaman perkenalan sederhana sampai sistem informasi yang dipakai puluhan staf setiap hari. Semuanya dibangun end to end oleh tim yang sama."
+            href="/services"
+            linkLabel="Semua layanan"
+          />
+          <div className="mt-14">
+            <ServiceRows services={featuredServices} />
+          </div>
+        </section>
+      ) : null}
+
+      {featuredPortfolio.length > 0 ? (
+        <section className={SECTION}>
+          <SectionHeading
+            index="02"
+            eyebrow="Karya"
+            title="Proyek terpilih"
+            description="Setiap proyek punya cerita: masalah yang dipecahkan, keputusan desain yang diambil, dan hasil yang dirasakan penggunanya."
+            href="/portfolio"
+            linkLabel="Semua karya"
+          />
+          <div className="mt-14 grid gap-14 sm:grid-cols-2">
+            {featuredPortfolio.map((project, index) => (
+              <div key={project.slug} className={index === 0 ? "sm:col-span-2" : undefined}>
+                <ProjectCard
+                  item={project}
+                  index={index}
+                  wide={index === 0}
+                  delay={(index % 2) * 90}
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {/* Proses: kolom kiri menempel, kolom kanan bergulir. */}
+      <section className={SECTION}>
+        <div className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <div className="border-t border-border pt-6" data-reveal>
+              <div className="flex items-start justify-between gap-6">
+                <Eyebrow>Proses</Eyebrow>
+                <span className="label-mono text-muted-foreground">03</span>
+              </div>
+              <h2 className="display mt-8 text-balance text-3xl sm:text-4xl lg:text-[2.75rem]">
+                Cara kami bekerja
+              </h2>
+              <p className="mt-5 max-w-md text-pretty leading-relaxed text-muted-foreground">
+                Kami memakai pendekatan design thinking. Solusi tidak berangkat dari asumsi,
+                melainkan dari pemahaman atas pengguna dan tujuan bisnis Anda, lalu diuji dan
+                disempurnakan bertahap.
+              </p>
+              <Link
+                href="/about"
+                className="link-sweep group mt-8 inline-flex items-center gap-2 text-sm font-medium"
+              >
+                Kenali tim kami
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </div>
           </div>
+          <ProcessTimeline />
         </div>
       </section>
 
-      {/* Services */}
-      {featuredServices.length > 0 ? (
-        <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <SectionHeader eyebrow="Layanan" title="Apa yang kami sediakan" href="/services" />
-          <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground" data-reveal>
-            Solusi digital menyeluruh untuk bisnis Anda, mulai dari website dan sistem informasi
-            hingga otomasi dan integrasi AI.
-          </p>
-          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {featuredServices.map((s, i) => (
-              <Link
-                key={s.slug}
-                href={`/services/${s.slug}`}
-                className="card-lift group rounded-xl border border-border bg-card p-6"
-                data-reveal
-                style={{ transitionDelay: `${(i % 3) * 80}ms` }}
-              >
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
-                  <ServiceIcon slug={s.slug} className="h-5 w-5" />
-                </span>
-                <h3 className="mt-4 font-semibold tracking-tight group-hover:text-primary">
-                  {s.name}
-                </h3>
-                {s.description ? (
-                  <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                    {s.description}
-                  </p>
-                ) : null}
-                <span className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
-                  Selengkapnya <ArrowRight className="h-3 w-3" />
-                </span>
-              </Link>
-            ))}
-          </div>
-        </section>
-      ) : null}
+      <section className={SECTION}>
+        <SectionHeading
+          index="04"
+          eyebrow="Kenapa WalDev"
+          title="Alasan klien bertahan bersama kami"
+          description="Bukan sekadar situs yang enak dilihat, tetapi produk yang mudah dirawat dan tumbuh bersama bisnis Anda."
+        />
+        <div className="mt-14">
+          <ValueGrid />
+        </div>
+      </section>
 
-      {/* Portfolio */}
-      {featuredPortfolio.length > 0 ? (
-        <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <SectionHeader eyebrow="Portfolio" title="Karya pilihan" href="/portfolio" />
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {featuredPortfolio.map((p, i) => (
-              <Link
-                key={p.slug}
-                href={`/portfolio/${p.slug}`}
-                className="card-lift group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card"
+      {featuredTestimonials.length > 0 ? (
+        <section className={SECTION}>
+          <SectionHeading
+            index="05"
+            eyebrow="Testimoni"
+            title="Kata mereka yang sudah bekerja sama"
+            href="/testimonials"
+            linkLabel="Semua testimoni"
+          />
+          <div className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+            {featuredTestimonials.map((testimonial, index) => (
+              <figure
+                key={`${testimonial.authorName}-${index}`}
+                className="flex flex-col justify-between border-t border-border pt-7"
                 data-reveal
-                style={{ transitionDelay: `${(i % 3) * 80}ms` }}
+                style={{ transitionDelay: `${(index % 3) * 80}ms` }}
               >
-                <div className="overflow-hidden">
-                  {p.thumbnailUrl ? (
+                <div>
+                  {testimonial.rating ? (
+                    <div
+                      className="flex gap-1"
+                      aria-label={`Nilai ${testimonial.rating} dari 5`}
+                    >
+                      {Array.from({ length: 5 }).map((_, star) => (
+                        <span
+                          key={star}
+                          aria-hidden
+                          className={
+                            star < (testimonial.rating ?? 0)
+                              ? "h-1.5 w-6 bg-signal"
+                              : "h-1.5 w-6 bg-border"
+                          }
+                        />
+                      ))}
+                    </div>
+                  ) : null}
+                  <blockquote className="display-sm mt-6 text-balance text-lg leading-snug">
+                    “{testimonial.content}”
+                  </blockquote>
+                </div>
+                <figcaption className="mt-8 flex items-center gap-3">
+                  {testimonial.photoUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={p.thumbnailUrl}
+                      src={testimonial.photoUrl}
                       alt=""
-                      className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="h-10 w-10 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="flex aspect-video w-full items-center justify-center bg-muted transition-transform duration-500 group-hover:scale-105">
-                      <span className="text-2xl font-semibold tracking-tight text-muted-foreground/40">
-                        {p.title.charAt(0)}
-                      </span>
-                    </div>
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-sm font-medium">
+                      {testimonial.authorName.charAt(0)}
+                    </span>
                   )}
-                </div>
-                <span className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background/80 text-foreground opacity-0 backdrop-blur transition-all duration-300 group-hover:opacity-100">
-                  <ArrowUpRight className="h-4 w-4" />
-                </span>
-                <div className="p-6">
-                  <span className="text-xs text-muted-foreground">
-                    {p.isConfidential ? "Confidential Project" : (p.clientName ?? "Proyek")}
+                  <span>
+                    <span className="block text-sm font-medium">{testimonial.authorName}</span>
+                    <span className="label-mono mt-1 block text-muted-foreground">
+                      {[testimonial.authorRole, testimonial.company].filter(Boolean).join(" · ")}
+                    </span>
                   </span>
-                  <h3 className="mt-1 font-semibold tracking-tight group-hover:text-primary">
-                    {p.title}
-                  </h3>
-                  {p.summary ? (
-                    <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                      {p.summary}
-                    </p>
-                  ) : null}
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      ) : null}
-
-      {/* Testimonials */}
-      {featuredTestimonials.length > 0 ? (
-        <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <SectionHeader eyebrow="Testimoni" title="Kata mereka" href="/testimonials" />
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {featuredTestimonials.map((t, i) => (
-              <figure
-                key={`${t.authorName}-${i}`}
-                className="card-lift flex flex-col rounded-xl border border-border bg-card p-6"
-                data-reveal
-                style={{ transitionDelay: `${(i % 3) * 80}ms` }}
-              >
-                <div className="flex items-center justify-between">
-                  <Quote className="h-5 w-5 text-primary/50" aria-hidden />
-                  {t.rating ? (
-                    <div className="text-sm text-amber-500" aria-label={`${t.rating} dari 5`}>
-                      {"★".repeat(t.rating)}
-                      <span className="text-muted-foreground/40">{"★".repeat(5 - t.rating)}</span>
-                    </div>
-                  ) : null}
-                </div>
-                <blockquote className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
-                  “{t.content}”
-                </blockquote>
-                <figcaption className="mt-5 text-sm font-medium">
-                  {t.authorName}
-                  {t.company ? (
-                    <span className="font-normal text-muted-foreground"> · {t.company}</span>
-                  ) : null}
                 </figcaption>
               </figure>
             ))}
@@ -225,33 +205,38 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      {/* Articles */}
       {articles.length > 0 ? (
-        <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <SectionHeader eyebrow="Blog" title="Artikel terbaru" href="/articles" />
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {articles.map((a, i) => (
+        <section className={SECTION}>
+          <SectionHeading
+            index="06"
+            eyebrow="Jurnal"
+            title="Catatan dan wawasan terbaru"
+            href="/articles"
+            linkLabel="Semua tulisan"
+          />
+          <div className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+            {articles.map((article, index) => (
               <Link
-                key={a.slug}
-                href={`/articles/${a.slug}`}
-                className="card-lift group rounded-xl border border-border bg-card p-6"
+                key={article.slug}
+                href={`/articles/${article.slug}`}
+                className="group flex flex-col border-t border-border pt-7"
                 data-reveal
-                style={{ transitionDelay: `${(i % 3) * 80}ms` }}
+                style={{ transitionDelay: `${(index % 3) * 80}ms` }}
               >
-                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Clock className="h-3.5 w-3.5" />
-                  {a.readingTime} mnt baca
+                <span className="label-mono flex items-center gap-2.5 text-muted-foreground">
+                  {article.categoryName ? <span>{article.categoryName}</span> : null}
+                  {article.categoryName ? <span aria-hidden>·</span> : null}
+                  <span>{article.readingTime} menit</span>
                 </span>
-                <h3 className="mt-2 font-semibold tracking-tight group-hover:text-primary">
-                  {a.title}
-                </h3>
-                {a.summary ? (
-                  <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                    {a.summary}
+                <h3 className="display-sm mt-5 text-balance text-xl">{article.title}</h3>
+                {article.summary ? (
+                  <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+                    {article.summary}
                   </p>
                 ) : null}
-                <span className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
-                  Baca artikel <ArrowRight className="h-3 w-3" />
+                <span className="mt-7 inline-flex items-center gap-2 text-sm font-medium">
+                  <span className="link-sweep">Baca tulisan</span>
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
                 </span>
               </Link>
             ))}
@@ -259,31 +244,23 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      {/* CTA */}
-      <section className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
-        <div
-          className="relative overflow-hidden rounded-2xl border border-border bg-card p-10 text-center sm:p-14"
-          data-reveal
-        >
-          <div
-            aria-hidden
-            className="absolute left-1/2 top-[-10rem] h-[18rem] w-[30rem] -translate-x-1/2 rounded-full bg-primary/15 blur-[100px]"
-          />
-          <div className="relative">
-            <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
-              Siap membangun produk digital?
-            </h2>
-            <p className="mx-auto mt-4 max-w-xl text-pretty text-muted-foreground">
-              Ceritakan ide Anda, tim {SITE.name} siap mewujudkannya.
-            </p>
-            <Link href="/collaboration" className="mt-8 inline-block">
-              <Button size="lg">
-                Start a Project
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
+      <section className={SECTION}>
+        <SectionHeading
+          index="07"
+          eyebrow="Pertanyaan"
+          title="Hal yang paling sering ditanyakan"
+          description="Belum terjawab? Kirim pertanyaan Anda lewat halaman kontak, kami balas dengan bahasa yang mudah dipahami."
+        />
+        <div className="mt-14">
+          <FaqAccordion items={GENERAL_FAQS} />
         </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 pb-8 lg:px-10">
+        <CtaPanel
+          title="Ceritakan idenya, sisanya kami yang susun."
+          body="Isi brief terpandu selama tiga menit. Jawaban Anda otomatis menjadi dokumen kebutuhan, dan tim kami menghubungi dalam 1x24 jam kerja."
+        />
       </section>
     </>
   );

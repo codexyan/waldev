@@ -15,7 +15,7 @@ import { requireSession } from "@/server/auth/session";
 export const dynamic = "force-dynamic";
 
 function formatDate(value: Date | null): string {
-  if (!value) return "—";
+  if (!value) return "·";
   return new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(value);
 }
 
@@ -62,7 +62,7 @@ export default async function CollaborationAdminPage() {
                     ) : null}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {row.projectType ?? "—"}
+                    {row.projectType ?? "·"}
                     {row.budget || row.deadline ? (
                       <span className="block text-xs">
                         {[row.budget, row.deadline].filter(Boolean).join(" · ")}

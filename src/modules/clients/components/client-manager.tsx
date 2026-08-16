@@ -107,7 +107,7 @@ export function ClientManager({
         <div className="space-y-1.5">
           <Label htmlFor="c-cat">Kategori</Label>
           <Select id="c-cat" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-            <option value="">— Tanpa kategori —</option>
+            <option value="">Tanpa kategori</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -156,7 +156,7 @@ export function ClientManager({
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={c.logo.url} alt={c.name} className="h-full w-full object-contain" />
                   ) : (
-                    <span className="text-xs text-muted-foreground">—</span>
+                    <span className="text-xs text-muted-foreground">·</span>
                   )}
                 </div>
                 <div>

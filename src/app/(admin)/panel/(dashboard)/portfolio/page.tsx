@@ -66,7 +66,7 @@ export default async function PortfolioAdminPage() {
                     <Badge variant={STATUS_VARIANT[row.status]}>{row.status}</Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {row.isConfidential ? "Confidential" : (row.clientName ?? "—")}
+                    {row.isConfidential ? "Confidential" : (row.clientName ?? "·")}
                   </TableCell>
                   <TableCell>
                     <EntityRowActions

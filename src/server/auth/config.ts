@@ -12,7 +12,7 @@ type AuthSecrets = {
 
 /**
  * Membuat instance Better Auth per-request (bindings D1 & secrets edge-scoped).
- * Tanpa registrasi publik — akun admin dibuat oleh Owner via CMS (fase Users).
+ * Tanpa registrasi publik, akun admin dibuat oleh Owner via CMS (fase Users).
  */
 export function getAuth() {
   const db = getDb();
@@ -39,7 +39,7 @@ export function getAuth() {
       expiresIn: 60 * 60 * 24 * 7, // 7 hari
       updateAge: 60 * 60 * 24, // refresh tiap 24 jam
     },
-    // Origin tepercaya (CSRF) — domain kustom + workers.dev.
+    // Origin tepercaya (CSRF): domain kustom + workers.dev.
     trustedOrigins: [
       "https://wolue.cloud",
       "https://www.wolue.cloud",

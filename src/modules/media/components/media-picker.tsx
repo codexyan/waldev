@@ -115,7 +115,7 @@ export function MediaPickerField({
       <p className="text-sm font-medium">{label}</p>
       <div className="flex items-center gap-3">
         <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border border-border bg-muted">
-          {value ? <Preview media={value} /> : <span className="text-xs text-muted-foreground">—</span>}
+          {value ? <Preview media={value} /> : <span className="text-xs text-muted-foreground">·</span>}
         </div>
         <div className="flex gap-2">
           <Button type="button" variant="outline" size="sm" onClick={() => setOpen(true)}>

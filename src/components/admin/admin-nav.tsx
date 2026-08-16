@@ -75,7 +75,7 @@ export function AdminNav() {
       {GROUPS.map((group) => (
         <div key={group.label ?? "root"}>
           {group.label ? (
-            <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+            <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               {group.label}
             </p>
           ) : null}

@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { ServiceIcon } from "@/components/service-icon";
+import { CtaPanel } from "@/components/cta-panel";
+import { ServiceRows } from "@/components/home/service-rows";
+import { PageHeader } from "@/components/page-header";
+import { ProcessTimeline } from "@/components/process-timeline";
+import { Eyebrow } from "@/components/ui/section-heading";
 import { listActiveServices } from "@/modules/services/service.dal";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Services",
-  description: "Layanan pengembangan produk digital dari WalDev.",
+  title: "Layanan",
+  description:
+    "Layanan pengembangan produk digital WalDev: website, sistem informasi, dashboard internal, integrasi AI, dan otomasi proses.",
   alternates: { canonical: "/services" },
 };
 
@@ -16,45 +19,47 @@ export default async function ServicesPage() {
   const rows = await listActiveServices();
 
   return (
-    <section className="mx-auto max-w-6xl px-6 py-20">
-      <header className="max-w-2xl" data-reveal>
-        <p className="text-xs font-semibold uppercase tracking-widest text-primary">Layanan</p>
-        <h1 className="mt-2 text-4xl font-semibold tracking-tight">Services</h1>
-        <p className="mt-3 leading-relaxed text-muted-foreground">
-          Dari website hingga sistem informasi dan otomasi, semuanya dibangun end-to-end.
-        </p>
-      </header>
+    <>
+      <PageHeader
+        eyebrow="Layanan"
+        title={["Dibangun sesuai", "kebutuhan nyata."]}
+        marked="nyata."
+        description="Kami tidak menjual paket seragam. Cakupan disusun dari masalah yang ingin Anda selesaikan, lalu dikerjakan bertahap sampai benar benar dipakai."
+      />
 
-      {rows.length === 0 ? (
-        <p className="mt-16 text-muted-foreground">Belum ada layanan yang ditampilkan.</p>
-      ) : (
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {rows.map((service, i) => (
-            <Link
-              key={service.slug}
-              href={`/services/${service.slug}`}
-              className="card-lift group flex flex-col rounded-xl border border-border bg-card p-6"
-              data-reveal
-              style={{ transitionDelay: `${(i % 3) * 80}ms` }}
-            >
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
-                <ServiceIcon slug={service.slug} className="h-5 w-5" />
-              </span>
-              <h2 className="mt-4 text-lg font-semibold tracking-tight group-hover:text-primary">
-                {service.name}
+      <section className="mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:px-10">
+        {rows.length === 0 ? (
+          <p className="text-muted-foreground">Belum ada layanan yang ditampilkan.</p>
+        ) : (
+          <ServiceRows services={rows} />
+        )}
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:px-10">
+        <div className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <div className="border-t border-border pt-6" data-reveal>
+              <Eyebrow>Proses</Eyebrow>
+              <h2 className="display mt-8 text-balance text-3xl sm:text-4xl">
+                Sama untuk setiap layanan
               </h2>
-              {service.description ? (
-                <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
-                  {service.description}
-                </p>
-              ) : null}
-              <span className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
-                Selengkapnya <ArrowRight className="h-3 w-3" />
-              </span>
-            </Link>
-          ))}
+              <p className="mt-5 max-w-md text-pretty leading-relaxed text-muted-foreground">
+                Apa pun jenis pekerjaannya, urutan kerjanya sama dan transparan. Anda tahu persis
+                sedang berada di tahap mana dan apa yang akan diterima berikutnya.
+              </p>
+            </div>
+          </div>
+          <ProcessTimeline />
         </div>
-      )}
-    </section>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 pb-8 lg:px-10">
+        <CtaPanel
+          title="Belum yakin butuh layanan yang mana?"
+          body="Ceritakan kondisi bisnis Anda. Kami bantu pilihkan cakupan yang paling masuk akal, termasuk bila jawabannya adalah mulai dari yang paling kecil."
+          ctaLabel="Konsultasi gratis"
+        />
+      </section>
+    </>
   );
 }

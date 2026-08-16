@@ -16,19 +16,28 @@ export function ThemeToggle({ className }: { className?: string }) {
   return (
     <button
       type="button"
-      aria-label="Ganti tema terang/gelap"
+      aria-label="Ganti tema terang atau gelap"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className={cn(
-        "inline-flex h-9 w-9 items-center justify-center rounded-md border border-border text-foreground/70 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-border text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         className,
       )}
     >
       {mounted ? (
-        isDark ? (
-          <Sun className="h-4 w-4" />
-        ) : (
-          <Moon className="h-4 w-4" />
-        )
+        <>
+          <Sun
+            className={cn(
+              "absolute h-4 w-4 transition-all duration-500",
+              isDark ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-50 opacity-0",
+            )}
+          />
+          <Moon
+            className={cn(
+              "absolute h-4 w-4 transition-all duration-500",
+              isDark ? "rotate-90 scale-50 opacity-0" : "rotate-0 scale-100 opacity-100",
+            )}
+          />
+        </>
       ) : (
         <span className="h-4 w-4" />
       )}

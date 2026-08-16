@@ -1,70 +1,114 @@
 import type { Metadata } from "next";
-import { Clock, Mail, MessageSquare, type LucideIcon } from "lucide-react";
+import { Clock, Mail, MessageSquare, ShieldCheck, type LucideIcon } from "lucide-react";
+import { PageHeader } from "@/components/page-header";
 import { ContactForm } from "@/modules/leads/components/contact-form";
+import { getSiteSettings } from "@/modules/settings/settings.dal";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Contact",
-  description: "Hubungi WalDev untuk pertanyaan seputar layanan dan produk digital.",
+  title: "Kontak",
+  description:
+    "Hubungi WalDev untuk pertanyaan seputar layanan, estimasi biaya, atau sekadar konsultasi ringan.",
   alternates: { canonical: "/contact" },
 };
 
 const POINTS: { icon: LucideIcon; title: string; body: string }[] = [
   {
     icon: MessageSquare,
-    title: "Pertanyaan apa pun",
-    body: "Seputar layanan, estimasi, atau sekadar konsultasi ringan.",
+    title: "Pertanyaan apa pun boleh",
+    body: "Seputar layanan, perkiraan biaya, pilihan teknologi, atau sekadar meminta pendapat sebelum mengambil keputusan.",
   },
   {
     icon: Clock,
-    title: "Balasan cepat",
-    body: "Kami membalas dalam 1x24 jam kerja.",
+    title: "Dibalas dalam 1x24 jam",
+    body: "Pesan yang masuk pada hari kerja kami balas paling lambat keesokan harinya.",
   },
   {
     icon: Mail,
-    title: "Langsung ke tim",
-    body: "Pesan Anda masuk langsung ke tim WalDev, bukan bot.",
+    title: "Langsung ke tim, bukan bot",
+    body: "Pesan Anda dibaca dan dijawab oleh orang yang nantinya mengerjakan proyeknya.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Data Anda kami jaga",
+    body: "Detail yang Anda kirim hanya dipakai untuk menindaklanjuti permintaan ini.",
   },
 ];
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const settings = await getSiteSettings();
+  const whatsappHref = settings.contact_whatsapp
+    ? `https://wa.me/${settings.contact_whatsapp.replace(/[^0-9]/g, "")}`
+    : null;
+
   return (
-    <section className="mx-auto max-w-5xl px-6 py-20">
-      <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
-        <div data-reveal>
-          <p className="text-xs font-semibold uppercase tracking-widest text-primary">Kontak</p>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight">Contact</h1>
-          <p className="mt-3 leading-relaxed text-muted-foreground">
-            Ada pertanyaan? Kirim pesan dan kami akan segera membalas.
-          </p>
+    <>
+      <PageHeader
+        eyebrow="Kontak"
+        title={["Mari mulai dari", "sebuah pesan."]}
+        marked="pesan."
+        description="Tidak perlu formal. Ceritakan saja apa yang sedang Anda pikirkan, kami balas dengan jawaban yang jujur dan mudah dipahami."
+      />
 
-          <ul className="mt-10 space-y-6">
-            {POINTS.map((point, i) => (
-              <li
-                key={point.title}
-                className="flex gap-4"
-                data-reveal
-                style={{ transitionDelay: `${i * 80}ms` }}
-              >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary">
-                  <point.icon className="h-4 w-4" aria-hidden />
-                </span>
-                <div>
-                  <p className="font-medium tracking-tight">{point.title}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                    {point.body}
-                  </p>
+      <section className="mx-auto max-w-7xl px-6 py-16 sm:py-24 lg:px-10">
+        <div className="grid gap-14 lg:grid-cols-[1fr_1.15fr] lg:gap-20">
+          <div>
+            <ul className="space-y-px overflow-hidden rounded-lg border border-border bg-border">
+              {POINTS.map((point, index) => (
+                <li
+                  key={point.title}
+                  className="group flex gap-5 bg-background p-7 transition-colors duration-500 hover:bg-muted"
+                  data-reveal
+                  style={{ transitionDelay: `${index * 70}ms` }}
+                >
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border transition-all duration-500 group-hover:border-transparent group-hover:bg-signal group-hover:text-signal-foreground">
+                    <point.icon className="h-4 w-4" aria-hidden />
+                  </span>
+                  <div>
+                    <p className="display-sm text-base">{point.title}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      {point.body}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            {settings.contact_email || whatsappHref ? (
+              <div className="mt-10 border-t border-border pt-8" data-reveal>
+                <p className="label-mono text-muted-foreground">Jalur langsung</p>
+                <div className="mt-5 flex flex-col gap-3">
+                  {settings.contact_email ? (
+                    <a
+                      href={`mailto:${settings.contact_email}`}
+                      className="display-sm link-sweep w-fit text-xl"
+                    >
+                      {settings.contact_email}
+                    </a>
+                  ) : null}
+                  {whatsappHref ? (
+                    <a
+                      href={whatsappHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="display-sm link-sweep w-fit text-xl"
+                    >
+                      WhatsApp {settings.contact_whatsapp}
+                    </a>
+                  ) : null}
                 </div>
-              </li>
-            ))}
-          </ul>
-        </div>
+              </div>
+            ) : null}
+          </div>
 
-        <div data-reveal style={{ transitionDelay: "120ms" }}>
-          <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
-            <ContactForm />
+          <div data-reveal style={{ transitionDelay: "120ms" }}>
+            <div className="rounded-lg border border-border bg-card p-7 sm:p-9">
+              <ContactForm />
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
