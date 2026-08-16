@@ -23,7 +23,7 @@ export default async function ActivityLogsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Activity Logs</h1>
+        <h1 className="text-3xl">Log Aktivitas</h1>
         <p className="mt-1 text-sm text-muted-foreground">150 aktivitas terakhir.</p>
       </div>
 

@@ -18,7 +18,7 @@ export default async function EditPortfolioPage({ params }: { params: Promise<{ 
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Edit Proyek</h1>
+      <h1 className="text-3xl">Edit Karya</h1>
       <PortfolioForm
         initial={{
           id: portfolio.id,

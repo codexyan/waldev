@@ -149,6 +149,16 @@
     line-height: 1.08;
   }
 
+  /* Judul halaman di panel admin ikut memakai wajah display tanpa harus
+     menyentuh setiap berkas modul. :where() menjaga kekhususan tetap rendah
+     sehingga kelas eksplisit pada elemen tetap menang. */
+  .admin-scope :where(h1) {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
   /* Label mikro monospace untuk eyebrow, indeks, dan meta. */
   .label-mono {
     font-family: var(--font-mono);

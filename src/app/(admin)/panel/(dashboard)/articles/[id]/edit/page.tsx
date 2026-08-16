@@ -33,7 +33,7 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Edit Artikel</h1>
+      <h1 className="text-3xl">Edit Tulisan</h1>
       <ArticleForm
         initial={{
           id: article.id,

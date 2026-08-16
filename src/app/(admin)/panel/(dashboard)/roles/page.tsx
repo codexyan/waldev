@@ -17,7 +17,7 @@ export default async function RolesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Roles &amp; Permissions</h1>
+        <h1 className="text-3xl">Peran dan Izin</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Peran bawaan sistem dan hak akses masing-masing ({PERMISSIONS.length} permission).
         </p>

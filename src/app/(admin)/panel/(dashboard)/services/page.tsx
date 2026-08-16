@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ADMIN_BASE } from "@/lib/constants";
+import { statusLabel, statusTone } from "@/lib/status";
 import { deleteService } from "@/modules/services/service.actions";
 import { listServicesAdmin } from "@/modules/services/service.dal";
 import { requireSession } from "@/server/auth/session";
@@ -26,7 +27,7 @@ export default async function ServicesAdminPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Services</h1>
+          <h1 className="text-3xl">Layanan</h1>
           <p className="mt-1 text-sm text-muted-foreground">{total} layanan</p>
         </div>
         <Link href={`${ADMIN_BASE}/services/new`}>
@@ -57,8 +58,8 @@ export default async function ServicesAdminPage() {
                 <TableRow key={row.id}>
                   <TableCell className="font-medium">{row.name}</TableCell>
                   <TableCell>
-                    <Badge variant={row.status === "active" ? "success" : "secondary"}>
-                      {row.status}
+                    <Badge variant={statusTone(row.status)}>
+                      {statusLabel(row.status)}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">{row.price ?? "·"}</TableCell>

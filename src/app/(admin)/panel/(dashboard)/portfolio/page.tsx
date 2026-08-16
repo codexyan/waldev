@@ -12,17 +12,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ADMIN_BASE } from "@/lib/constants";
+import { statusLabel, statusTone } from "@/lib/status";
 import { deletePortfolio } from "@/modules/portfolio/portfolio.actions";
 import { listPortfoliosAdmin } from "@/modules/portfolio/portfolio.dal";
 import { requireSession } from "@/server/auth/session";
 
 export const dynamic = "force-dynamic";
-
-const STATUS_VARIANT = {
-  ongoing: "warning",
-  completed: "success",
-  archived: "secondary",
-} as const;
 
 export default async function PortfolioAdminPage() {
   await requireSession();
@@ -32,13 +27,13 @@ export default async function PortfolioAdminPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Portfolio</h1>
+          <h1 className="text-3xl">Karya</h1>
           <p className="mt-1 text-sm text-muted-foreground">{total} proyek</p>
         </div>
         <Link href={`${ADMIN_BASE}/portfolio/new`}>
           <Button>
             <Plus className="h-4 w-4" />
-            Proyek Baru
+            Karya Baru
           </Button>
         </Link>
       </div>
@@ -63,7 +58,7 @@ export default async function PortfolioAdminPage() {
                 <TableRow key={row.id}>
                   <TableCell className="font-medium">{row.title}</TableCell>
                   <TableCell>
-                    <Badge variant={STATUS_VARIANT[row.status]}>{row.status}</Badge>
+                    <Badge variant={statusTone(row.status)}>{statusLabel(row.status)}</Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {row.isConfidential ? "Confidential" : (row.clientName ?? "·")}

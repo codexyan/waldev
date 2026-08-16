@@ -26,7 +26,7 @@ export default async function ContactMessagesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Contact Messages</h1>
+        <h1 className="text-3xl">Pesan Masuk</h1>
         <p className="mt-1 text-sm text-muted-foreground">{rows.length} pesan</p>
       </div>
 

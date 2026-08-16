@@ -50,6 +50,24 @@ export async function getCurrentUser(): Promise<CurrentUser> {
   };
 }
 
+/**
+ * Penjaga masuk panel. Sesi saja tidak cukup: akun harus aktif DAN punya peran.
+ * Tanpa ini, akun apa pun yang berhasil dibuat (misalnya lewat endpoint
+ * pendaftaran Better Auth) bisa membuka /panel dan melihat ringkasan isi situs
+ * beserta data prospek, walaupun setiap aksinya nanti ditolak RBAC.
+ */
+export async function requireAdminAccess(): Promise<CurrentUser> {
+  let current: CurrentUser;
+  try {
+    current = await getCurrentUser();
+  } catch (error) {
+    if (error instanceof AuthzError) redirect(`${ADMIN_BASE}/login?error=no-access`);
+    throw error;
+  }
+  if (!current.roleName) redirect(`${ADMIN_BASE}/login?error=no-access`);
+  return current;
+}
+
 /** Pastikan user punya permission; jika tidak, lempar AuthzError (dipakai di server action). */
 export async function requirePermission(permission: Permission): Promise<CurrentUser> {
   const current = await getCurrentUser();

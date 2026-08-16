@@ -18,6 +18,12 @@ export function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // Ditandai oleh penjaga panel saat akun tidak aktif atau belum diberi peran.
+  const notice =
+    params.get("error") === "no-access"
+      ? "Akun Anda belum memiliki akses ke panel. Hubungi pemilik situs untuk diberi peran."
+      : null;
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
@@ -37,6 +43,13 @@ export function LoginForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
+      {notice ? (
+        <div className="flex items-start gap-2.5 rounded-md border border-border bg-muted px-3.5 py-3 text-sm text-muted-foreground">
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+          {notice}
+        </div>
+      ) : null}
+
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <div className="relative">

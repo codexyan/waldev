@@ -11,7 +11,7 @@ export default async function NavigationPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Navigation</h1>
+        <h1 className="text-3xl">Navigasi</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Menu header & footer situs publik. Kosongkan untuk memakai menu bawaan.
         </p>

@@ -8,7 +8,7 @@ export default async function NewServicePage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Layanan Baru</h1>
+      <h1 className="text-3xl">Layanan Baru</h1>
       <ServiceForm
         initial={{
           name: "",

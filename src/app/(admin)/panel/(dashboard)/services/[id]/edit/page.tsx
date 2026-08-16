@@ -14,7 +14,7 @@ export default async function EditServicePage({ params }: { params: Promise<{ id
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Edit Layanan</h1>
+      <h1 className="text-3xl">Edit Layanan</h1>
       <ServiceForm
         initial={{
           id: service.id,

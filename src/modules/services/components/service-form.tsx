@@ -13,6 +13,7 @@ import { slugify } from "@/lib/slug";
 import { createService, updateService } from "@/modules/services/service.actions";
 import { SERVICE_STATUSES, type ServiceStatus } from "@/modules/services/service.schema";
 import { SeoFields, type SeoValue } from "@/modules/seo/components/seo-fields";
+import { statusLabel } from "@/lib/status";
 
 export interface ServiceFormInitial {
   id?: string;
@@ -152,7 +153,7 @@ export function ServiceForm({ initial }: { initial: ServiceFormInitial }) {
             <Select id="status" value={status} onChange={(e) => setStatus(e.target.value as ServiceStatus)}>
               {SERVICE_STATUSES.map((s) => (
                 <option key={s} value={s}>
-                  {s}
+                  {statusLabel(s)}
                 </option>
               ))}
             </Select>

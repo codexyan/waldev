@@ -18,6 +18,7 @@ import {
 import { createPortfolio, updatePortfolio } from "@/modules/portfolio/portfolio.actions";
 import { PORTFOLIO_STATUSES, type PortfolioStatus } from "@/modules/portfolio/portfolio.schema";
 import { SeoFields, type SeoValue } from "@/modules/seo/components/seo-fields";
+import { statusLabel } from "@/lib/status";
 
 export interface PortfolioFormInitial {
   id?: string;
@@ -164,7 +165,7 @@ export function PortfolioForm({
             <Select id="status" value={status} onChange={(e) => setStatus(e.target.value as PortfolioStatus)}>
               {PORTFOLIO_STATUSES.map((s) => (
                 <option key={s} value={s}>
-                  {s}
+                  {statusLabel(s)}
                 </option>
               ))}
             </Select>

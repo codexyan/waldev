@@ -19,6 +19,7 @@ import {
   TESTIMONIAL_STATUSES,
   type TestimonialStatus,
 } from "@/modules/testimonials/testimonial.schema";
+import { statusLabel } from "@/lib/status";
 
 interface TestimonialItem {
   id: string;
@@ -154,7 +155,7 @@ export function TestimonialManager({
             <Select id="t-status" value={status} onChange={(e) => setStatus(e.target.value as TestimonialStatus)}>
               {TESTIMONIAL_STATUSES.map((s) => (
                 <option key={s} value={s}>
-                  {s}
+                  {statusLabel(s)}
                 </option>
               ))}
             </Select>

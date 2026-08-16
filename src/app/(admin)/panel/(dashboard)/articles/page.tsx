@@ -11,17 +11,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ADMIN_BASE } from "@/lib/constants";
+import { statusLabel, statusTone } from "@/lib/status";
 import { listArticlesAdmin } from "@/modules/articles/article.dal";
 import { ArticleRowActions } from "@/modules/articles/components/article-row-actions";
 import { requireSession } from "@/server/auth/session";
 
 export const dynamic = "force-dynamic";
-
-const STATUS_VARIANT = {
-  draft: "secondary",
-  scheduled: "warning",
-  published: "success",
-} as const;
 
 function formatDate(value: Date | null): string {
   if (!value) return "·";
@@ -36,13 +31,13 @@ export default async function ArticlesAdminPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Articles</h1>
+          <h1 className="text-3xl">Tulisan</h1>
           <p className="mt-1 text-sm text-muted-foreground">{total} artikel</p>
         </div>
         <Link href={`${ADMIN_BASE}/articles/new`}>
           <Button>
             <Plus className="h-4 w-4" />
-            Artikel Baru
+            Tulisan Baru
           </Button>
         </Link>
       </div>
@@ -71,7 +66,7 @@ export default async function ArticlesAdminPage() {
                 <TableRow key={row.id}>
                   <TableCell className="font-medium">{row.title}</TableCell>
                   <TableCell>
-                    <Badge variant={STATUS_VARIANT[row.status]}>{row.status}</Badge>
+                    <Badge variant={statusTone(row.status)}>{statusLabel(row.status)}</Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">{row.categoryName ?? "·"}</TableCell>
                   <TableCell className="text-muted-foreground">{formatDate(row.updatedAt)}</TableCell>

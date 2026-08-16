@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Select } from "@/components/ui/select";
 import type { ActionResult } from "@/lib/action";
+import { statusLabel } from "@/lib/status";
 
 export function LeadStatusSelect({
   id,
@@ -40,9 +41,9 @@ export function LeadStatusSelect({
       onChange={(e) => handle(e.target.value)}
       className="h-8 w-auto text-xs"
     >
-      {options.map((o) => (
-        <option key={o} value={o}>
-          {o}
+      {options.map((option) => (
+        <option key={option} value={option}>
+          {statusLabel(option)}
         </option>
       ))}
     </Select>
