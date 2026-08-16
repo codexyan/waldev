@@ -37,7 +37,11 @@ export default async function TestimonialsPublicPage() {
               >
                 <div>
                   {testimonial.rating ? (
-                    <div className="flex gap-1" aria-label={`Nilai ${testimonial.rating} dari 5`}>
+                    <div
+                      role="img"
+                      className="flex gap-1"
+                      aria-label={`Nilai ${testimonial.rating} dari 5`}
+                    >
                       {Array.from({ length: 5 }).map((_, star) => (
                         <span
                           key={star}

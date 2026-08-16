@@ -159,6 +159,7 @@ export default async function HomePage() {
                 <div>
                   {testimonial.rating ? (
                     <div
+                      role="img"
                       className="flex gap-1"
                       aria-label={`Nilai ${testimonial.rating} dari 5`}
                     >

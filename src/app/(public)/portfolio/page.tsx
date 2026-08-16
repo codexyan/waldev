@@ -30,6 +30,7 @@ export default async function PortfolioPage() {
           <p className="text-muted-foreground">Belum ada proyek yang ditampilkan.</p>
         ) : (
           <div className="grid gap-14 sm:grid-cols-2 sm:gap-x-10 lg:gap-x-14">
+            <h2 className="sr-only sm:col-span-2">Daftar karya</h2>
             {rows.map((item, index) => {
               const wide = index % 3 === 0;
               return (

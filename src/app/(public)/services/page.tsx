@@ -31,7 +31,10 @@ export default async function ServicesPage() {
         {rows.length === 0 ? (
           <p className="text-muted-foreground">Belum ada layanan yang ditampilkan.</p>
         ) : (
-          <ServiceRows services={rows} />
+          <>
+            <h2 className="sr-only">Daftar layanan</h2>
+            <ServiceRows services={rows} />
+          </>
         )}
       </section>
 

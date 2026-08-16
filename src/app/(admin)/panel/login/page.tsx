@@ -48,7 +48,7 @@ export default function AdminLoginPage() {
           </p>
         </div>
 
-        <p className="relative label-mono text-background/55">
+        <p className="relative label-mono text-background/60">
           {SITE.name} · {SITE.tagline}
         </p>
       </aside>
