@@ -44,6 +44,26 @@ pnpm preview   # build OpenNext + jalankan di runtime Workers lokal
 pnpm deploy    # build + deploy ke Cloudflare Workers
 ```
 
+### Kenapa `build` memakai `--webpack`
+Sejak Next.js 16, `next build` memakai Turbopack secara default. Bundel server yang
+dihasilkannya **tidak jalan di Cloudflare Workers**: setiap rute mati dengan
+`ChunkLoadError: Failed to load chunk server/chunks/ssr/...` sehingga seluruh situs
+membalas 500. Karena itu skrip `build` dikunci ke `next build --webpack`. Jangan
+melepas flag ini tanpa memverifikasi lebih dulu lewat `wrangler versions upload` dan
+membuka URL pratinjaunya — kesalahannya tidak terlihat saat `next build` maupun
+`pnpm dev`, hanya setelah tayang.
+
+### Membangun dari Windows
+OpenNext memang menyarankan WSL. Bila tetap dibangun langsung di Windows, esbuild
+bisa gagal dengan `Cannot read directory ... Access is denied` karena langkah
+penyalinan membuat symlink **berkas** yang menunjuk direktori di dalam
+`.open-next/.../node_modules/.pnpm/next@*/node_modules`. Jalan pintasnya: ganti
+symlink `react`, `react-dom`, dan `styled-jsx` pada store sumber dengan salinan
+direktori sungguhan. Selain itu pnpm 11 mengabaikan `pnpm.onlyBuiltDependencies` di
+`package.json` dan menghentikan `pnpm build` dengan `ERR_PNPM_IGNORED_BUILDS`;
+sementara ini bisa dilewati dengan `pnpm-workspace.yaml` berisi `allowBuilds` dan
+`.npmrc` berisi `verify-deps-before-run=false` (keduanya lokal, jangan di-commit).
+
 ## Scheduled publish (cron)
 Artikel berstatus `scheduled` dipublikasikan oleh endpoint `/api/cron/publish-scheduled`
 (dilindungi header `x-cron-secret`). Pemicunya ada di worker terpisah `workers/cron-scheduler`:
