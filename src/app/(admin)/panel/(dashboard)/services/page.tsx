@@ -28,7 +28,7 @@ export default async function ServicesAdminPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl">Layanan</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{total} layanan</p>
+          <p className="text-muted-foreground mt-1 text-sm">{total} layanan</p>
         </div>
         <Link href={`${ADMIN_BASE}/services/new`}>
           <Button>
@@ -39,11 +39,11 @@ export default async function ServicesAdminPage() {
       </div>
 
       {rows.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-12 text-center">
-          <p className="text-sm text-muted-foreground">Belum ada layanan.</p>
+        <div className="border-border rounded-xl border border-dashed p-12 text-center">
+          <p className="text-muted-foreground text-sm">Belum ada layanan.</p>
         </div>
       ) : (
-        <div className="rounded-xl border border-border">
+        <div className="border-border rounded-xl border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -58,9 +58,7 @@ export default async function ServicesAdminPage() {
                 <TableRow key={row.id}>
                   <TableCell className="font-medium">{row.name}</TableCell>
                   <TableCell>
-                    <Badge variant={statusTone(row.status)}>
-                      {statusLabel(row.status)}
-                    </Badge>
+                    <Badge variant={statusTone(row.status)}>{statusLabel(row.status)}</Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">{row.price ?? "·"}</TableCell>
                   <TableCell>

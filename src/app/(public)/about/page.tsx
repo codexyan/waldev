@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
-import { FileSignature, Gem, Repeat2, type LucideIcon } from "lucide-react";
+import { Gem, MessageCircleQuestion, Repeat2 } from "lucide-react";
 import { CtaPanel } from "@/components/cta-panel";
 import { PageHeader } from "@/components/page-header";
+import { PointList, type Point } from "@/components/ui/point-list";
 import { ProcessTimeline } from "@/components/process-timeline";
 import { Eyebrow, SectionHeading } from "@/components/ui/section-heading";
 import { SITE } from "@/lib/constants";
+import { getSiteSettings } from "@/modules/settings/settings.dal";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Tentang",
@@ -12,95 +16,94 @@ export const metadata: Metadata = {
   alternates: { canonical: "/about" },
 };
 
-const PRINCIPLES: { icon: LucideIcon; title: string; body: string }[] = [
+/**
+ * Cara kami mengambil keputusan — bukan daftar jaminan.
+ *
+ * Ketiganya dulu nyaris sama dengan daftar jaminan di beranda (kepastian biaya,
+ * kecepatan, kepemilikan kode), sehingga /about hanya mengulang halaman yang
+ * baru saja dibaca pengunjung. Sekarang isinya sikap kerja yang tidak muncul
+ * di tempat lain.
+ */
+const PRINCIPLES: Point[] = [
   {
-    icon: FileSignature,
-    title: "Jelas sejak awal",
-    body: "Cakupan, jadwal, dan biaya disepakati tertulis sebelum pekerjaan dimulai. Tidak ada tambahan biaya yang muncul tiba tiba di tengah jalan.",
+    icon: MessageCircleQuestion,
+    title: "Bertanya dulu, membangun kemudian",
+    body: "Permintaan pertama jarang sama dengan kebutuhan sebenarnya. Kami menggali dulu apa yang macet di keseharian Anda, karena solusi yang salah tetap salah meski dikerjakan dengan rapi.",
   },
   {
     icon: Gem,
-    title: "Detail yang terasa",
-    body: "Kecepatan muat, keterbacaan, dan alur yang masuk akal kami perlakukan sepenting daftar fiturnya. Itulah yang membedakan produk yang enak dipakai.",
+    title: "Sederhana dulu, canggih kalau perlu",
+    body: "Fitur ditambahkan karena ada yang memakainya, bukan karena bisa dibuat. Versi pertama sengaja kecil supaya cepat dipakai, cepat dikoreksi, dan tidak membebani anggaran di awal.",
   },
   {
     icon: Repeat2,
-    title: "Dibangun untuk dilanjutkan",
-    body: "Kode dan dokumentasi ditulis agar tim mana pun bisa meneruskan, termasuk tim internal Anda sendiri di kemudian hari.",
+    title: "Yang dipakai, bukan yang dipamerkan",
+    body: "Ukuran keberhasilan kami bukan tampilan yang enak dipandang di layar presentasi, melainkan tim Anda yang berhenti mengeluh soal alat kerjanya sebulan setelah rilis.",
   },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const settings = await getSiteSettings();
+  const brand = settings.brand_name || SITE.name;
+  const kota = settings.location_city;
+  const provinsi = settings.location_region;
+  const tahun = settings.founded_year;
+
+  /* Fakta yang paling dicari pengunjung yang ragu: ini studio beneran atau
+     bukan, di mana, dan sudah berapa lama. Sebelumnya /about tidak menyebut
+     satu pun di antaranya. Semua dibaca dari Site Settings, tidak di-hardcode,
+     dan tiap baris hanya muncul bila nilainya benar-benar terisi. */
+  const identitas = [
+    kota ? { label: "Berbasis di", value: [kota, provinsi].filter(Boolean).join(", ") } : null,
+    tahun ? { label: "Berdiri sejak", value: tahun } : null,
+    { label: "Cara kerja", value: "Satu tim, dari awal sampai serah terima" },
+  ].filter((item) => item !== null);
+
   return (
     <>
       <PageHeader
         eyebrow="Tentang Kami"
         title={["Studio kecil,", "standar besar."]}
-        marked="besar."
-        description={`${SITE.name} merancang dan membangun website, sistem informasi, dan produk digital lain untuk UMKM, perusahaan, startup, hingga instansi. Satu tim mengerjakan dari riset sampai peluncuran.`}
+        description={`${brand} merancang dan membangun website, sistem informasi, dan produk digital lain untuk UMKM, perusahaan, startup, hingga instansi${kota ? `, dikerjakan dari ${kota}` : ""}. Satu tim mengerjakan dari perencanaan sampai peluncuran.`}
       />
 
-      {/* Pernyataan sikap dalam tipografi besar. */}
-      <section className="mx-auto max-w-7xl px-6 py-20 sm:py-28 lg:px-10">
-        <div className="border-t border-border pt-10" data-reveal>
-          <Eyebrow>Sikap kami</Eyebrow>
-          <p className="display mt-10 max-w-4xl text-balance text-2xl leading-[1.25] sm:text-4xl lg:text-[2.75rem]">
-            Produk digital yang baik terasa sederhana bagi penggunanya. Itu hanya terjadi kalau
-            kerumitannya sudah <span className="marker">diselesaikan</span> lebih dulu di belakang
-            layar.
-          </p>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-6 pb-20 sm:pb-28 lg:px-10">
-        <SectionHeading
-          index="01"
-          eyebrow="Prinsip"
-          title="Tiga hal yang tidak kami tawar"
-        />
-        <div className="mt-14 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
-          {PRINCIPLES.map((principle, index) => (
-            <div
-              key={principle.title}
-              className="group bg-background p-8 transition-colors duration-500 hover:bg-muted"
-              data-reveal
-              style={{ transitionDelay: `${index * 80}ms` }}
-            >
-              <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-border transition-all duration-500 group-hover:border-transparent group-hover:bg-signal group-hover:text-signal-foreground">
-                <principle.icon className="h-5 w-5" aria-hidden />
-              </span>
-              <h2 className="display-sm mt-6 text-lg">{principle.title}</h2>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                {principle.body}
-              </p>
+      <section className="mx-auto max-w-5xl px-6 pt-14">
+        <dl className="divide-border border-border grid divide-y overflow-hidden rounded-xl border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+          {identitas.map((item) => (
+            <div key={item.label} className="bg-card px-6 py-5">
+              <dt className="text-faint text-xs">{item.label}</dt>
+              <dd className="display-sm mt-1.5 text-[0.9375rem]">{item.value}</dd>
             </div>
           ))}
-        </div>
+        </dl>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 pb-20 sm:pb-28 lg:px-10">
-        <div className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
-          <div className="lg:sticky lg:top-28 lg:self-start">
-            <div className="border-t border-border pt-6" data-reveal>
-              <div className="flex items-start justify-between gap-6">
-                <Eyebrow>Proses</Eyebrow>
-                <span className="label-mono text-muted-foreground">02</span>
-              </div>
-              <h2 className="display mt-8 text-balance text-3xl sm:text-4xl">
-                Berbasis design thinking
-              </h2>
-              <p className="mt-5 max-w-md text-pretty leading-relaxed text-muted-foreground">
-                Kami tidak memulai dari asumsi. Setiap keputusan desain berangkat dari pemahaman
-                atas pengguna dan tujuan bisnis Anda, lalu diuji dan disempurnakan bertahap sampai
-                benar benar tepat sasaran.
-              </p>
-            </div>
-          </div>
+      {/* Pernyataan sikap, satu-satunya paragraf berukuran judul di halaman ini. */}
+      <section className="mx-auto max-w-5xl px-6 py-16 sm:py-24">
+        <Eyebrow>Sikap kami</Eyebrow>
+        <p className="display mt-4 max-w-3xl text-xl leading-snug text-balance sm:text-2xl lg:text-[2rem]">
+          Produk digital yang baik terasa sederhana bagi penggunanya. Itu hanya terjadi kalau
+          kerumitannya sudah diselesaikan lebih dulu di belakang layar.
+        </p>
+      </section>
+
+      <section className="border-border mx-auto max-w-5xl border-t px-6 py-16 sm:py-24">
+        <SectionHeading eyebrow="Prinsip" title="Tiga hal yang menentukan keputusan kami" />
+        <PointList points={PRINCIPLES} columns={3} className="mt-10" />
+      </section>
+
+      <section className="border-border mx-auto max-w-5xl border-t px-6 py-16 sm:py-24">
+        <SectionHeading
+          eyebrow="Proses"
+          title="Kami tidak menebak-nebak"
+          description="Setiap keputusan desain berangkat dari pemahaman atas pengguna dan tujuan bisnis Anda, lalu diuji dan disempurnakan bertahap sampai benar-benar tepat sasaran."
+        />
+        <div className="mt-10">
           <ProcessTimeline />
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 pb-8 lg:px-10">
+      <section className="mx-auto max-w-5xl px-6 pt-16 pb-4 sm:pt-24">
         <CtaPanel
           title="Punya proyek dalam pikiran?"
           body="Kami senang mendengar rencana Anda, sekalipun masih berupa gagasan kasar. Obrolan pertama selalu gratis dan tanpa kewajiban apa pun."

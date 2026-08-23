@@ -12,7 +12,7 @@ export default async function TagsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl">Tag</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Label untuk artikel.</p>
+        <p className="text-muted-foreground mt-1 text-sm">Label untuk artikel.</p>
       </div>
       <TagManager tags={tags} />
     </div>

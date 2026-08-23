@@ -32,7 +32,7 @@ export default async function ArticlesAdminPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl">Tulisan</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{total} artikel</p>
+          <p className="text-muted-foreground mt-1 text-sm">{total} artikel</p>
         </div>
         <Link href={`${ADMIN_BASE}/articles/new`}>
           <Button>
@@ -43,14 +43,14 @@ export default async function ArticlesAdminPage() {
       </div>
 
       {rows.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-12 text-center">
-          <p className="text-sm text-muted-foreground">Belum ada artikel.</p>
+        <div className="border-border rounded-xl border border-dashed p-12 text-center">
+          <p className="text-muted-foreground text-sm">Belum ada artikel.</p>
           <Link href={`${ADMIN_BASE}/articles/new`} className="mt-4 inline-block">
             <Button variant="outline">Buat artikel pertama</Button>
           </Link>
         </div>
       ) : (
-        <div className="rounded-xl border border-border">
+        <div className="border-border rounded-xl border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -69,7 +69,9 @@ export default async function ArticlesAdminPage() {
                     <Badge variant={statusTone(row.status)}>{statusLabel(row.status)}</Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">{row.categoryName ?? "·"}</TableCell>
-                  <TableCell className="text-muted-foreground">{formatDate(row.updatedAt)}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatDate(row.updatedAt)}
+                  </TableCell>
                   <TableCell>
                     <ArticleRowActions id={row.id} />
                   </TableCell>

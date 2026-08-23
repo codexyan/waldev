@@ -21,26 +21,20 @@ export default async function PortfolioPage() {
       <PageHeader
         eyebrow="Karya"
         title={["Bukti lebih baik", "daripada janji."]}
-        marked="janji."
-        description="Setiap karya di bawah ini kami tulis sebagai studi kasus: apa masalahnya, keputusan apa yang diambil, dan bagaimana hasilnya dipakai sehari hari."
+        description="Setiap karya di bawah ini kami tulis sebagai studi kasus: apa masalahnya, keputusan apa yang diambil, dan bagaimana hasilnya dipakai sehari-hari."
       />
 
-      <section className="mx-auto max-w-7xl px-6 py-16 sm:py-24 lg:px-10">
+      <section className="mx-auto max-w-5xl px-6 py-16 sm:py-24">
         {rows.length === 0 ? (
           <p className="text-muted-foreground">Belum ada proyek yang ditampilkan.</p>
         ) : (
-          <div className="grid gap-14 sm:grid-cols-2 sm:gap-x-10 lg:gap-x-14">
+          <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2">
             <h2 className="sr-only sm:col-span-2">Daftar karya</h2>
             {rows.map((item, index) => {
               const wide = index % 3 === 0;
               return (
                 <div key={item.slug} className={wide ? "sm:col-span-2" : undefined}>
-                  <ProjectCard
-                    item={item}
-                    index={index}
-                    wide={wide}
-                    delay={wide ? 0 : (index % 2) * 90}
-                  />
+                  <ProjectCard item={item} index={index} wide={wide} />
                 </div>
               );
             })}
@@ -48,7 +42,7 @@ export default async function PortfolioPage() {
         )}
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 pb-8 lg:px-10">
+      <section className="mx-auto max-w-5xl px-6 pt-16 pb-4 sm:pt-24">
         <CtaPanel
           title="Proyek Anda bisa jadi cerita berikutnya."
           body="Ceritakan apa yang sedang Anda bangun. Kami bantu rumuskan cakupannya, lalu kerjakan dengan proses yang sama seperti karya di atas."

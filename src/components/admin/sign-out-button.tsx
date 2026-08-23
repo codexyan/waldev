@@ -25,7 +25,7 @@ export function SignOutButton({ className }: { className?: string }) {
       disabled={loading}
       aria-label="Keluar dari panel"
       className={cn(
-        "inline-flex h-10 items-center justify-center gap-2 rounded-full border border-border px-3 text-sm text-muted-foreground transition-colors hover:border-foreground/40 hover:bg-muted hover:text-foreground disabled:opacity-50 sm:px-4",
+        "border-border text-muted-foreground hover:border-foreground/40 hover:bg-muted hover:text-foreground inline-flex h-10 items-center justify-center gap-2 rounded-full border px-3 text-sm transition-colors disabled:opacity-50 sm:px-4",
         className,
       )}
     >

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { CtaPanel } from "@/components/cta-panel";
-import { Eyebrow } from "@/components/ui/section-heading";
+import { WA_PESAN } from "@/lib/whatsapp";
+import { ArrowLink } from "@/components/ui/arrow-link";
+import { SectionHeading } from "@/components/ui/section-heading";
 import { getPublishedArticleBySlug, getRelatedArticles } from "@/modules/articles/article.dal";
 import { getSeoMeta } from "@/modules/seo/seo.dal";
 
@@ -39,11 +41,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function ArticleDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function ArticleDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const article = await getPublishedArticleBySlug(slug);
   if (!article) notFound();
@@ -63,28 +61,19 @@ export default async function ArticleDetailPage({
     <>
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <header className="bg-noise relative overflow-hidden border-b border-border">
-        <div aria-hidden className="bg-grid absolute inset-0" />
-        <div className="relative mx-auto max-w-3xl px-6 pb-14 pt-10">
-          <Link
-            href="/articles"
-            className="link-sweep group inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
+      <header className="border-border border-b">
+        <div className="mx-auto max-w-3xl px-6 pt-8 pb-12">
+          <ArrowLink href="/articles" className="text-muted-foreground hover:text-link" back>
             Semua tulisan
-          </Link>
+          </ArrowLink>
 
-          <span className="label-mono animate-fade-up mt-12 flex flex-wrap items-center gap-2.5 text-muted-foreground [animation-delay:80ms]">
+          <span className="text-faint mt-10 flex flex-wrap items-center gap-2 text-xs">
             {article.categoryName ? (
               <>
-                <span className="inline-flex items-center gap-2">
-                  <span aria-hidden className="h-2 w-2 bg-signal" />
-                  {article.categoryName}
-                </span>
+                <span className="text-link">{article.categoryName}</span>
                 <span aria-hidden>·</span>
               </>
             ) : null}
@@ -97,22 +86,25 @@ export default async function ArticleDetailPage({
             ) : null}
           </span>
 
-          <h1 className="display animate-fade-up mt-7 text-balance text-[clamp(2rem,5.5vw,3.5rem)] [animation-delay:160ms]">
+          <h1 className="display mt-3 text-[2rem] text-balance sm:text-4xl lg:text-5xl">
             {article.title}
           </h1>
           {article.summary ? (
-            <p className="animate-fade-up mt-6 text-pretty text-lg leading-relaxed text-muted-foreground [animation-delay:260ms]">
+            <p className="text-muted-foreground mt-5 leading-relaxed text-pretty">
               {article.summary}
             </p>
           ) : null}
           {article.authorName ? (
-            <div className="animate-fade-up mt-9 flex items-center gap-3 [animation-delay:340ms]">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-sm font-medium">
+            <div className="mt-7 flex items-center gap-3">
+              <span
+                aria-hidden
+                className="bg-surface flex h-8 w-8 items-center justify-center rounded-full font-medium"
+              >
                 {article.authorName.charAt(0)}
               </span>
               <span>
-                <span className="block text-sm font-medium">{article.authorName}</span>
-                <span className="label-mono mt-1 block text-muted-foreground">Tim WalDev</span>
+                <span className="text-heading block font-medium">{article.authorName}</span>
+                <span className="text-faint block text-xs">Tim WalDev</span>
               </span>
             </div>
           ) : null}
@@ -121,7 +113,7 @@ export default async function ArticleDetailPage({
 
       <article className="mx-auto max-w-3xl px-6 py-14">
         {article.coverUrl ? (
-          <div className="overflow-hidden rounded-lg border border-border" data-reveal="wipe">
+          <div className="border-border bg-surface overflow-hidden rounded-xl border">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={article.coverUrl}
@@ -133,16 +125,15 @@ export default async function ArticleDetailPage({
 
         <div
           className="prose mt-12 max-w-none"
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: article.contentHtml ?? "" }}
         />
 
         {article.tags.length > 0 ? (
-          <div className="mt-14 flex flex-wrap gap-2.5 border-t border-border pt-8">
+          <div className="border-border mt-14 flex flex-wrap gap-2.5 border-t pt-8">
             {article.tags.map((tag) => (
               <span
                 key={tag.slug}
-                className="rounded-full border border-border px-3.5 py-1.5 text-xs text-muted-foreground transition-colors duration-300 hover:border-foreground/40 hover:text-foreground"
+                className="border-border bg-card text-muted-foreground rounded-md border px-2.5 py-1 text-xs"
               >
                 #{tag.name}
               </span>
@@ -152,27 +143,23 @@ export default async function ArticleDetailPage({
       </article>
 
       {related.length > 0 ? (
-        <section className="mx-auto max-w-7xl px-6 pb-16 lg:px-10">
-          <div className="border-t border-border pt-6" data-reveal>
-            <Eyebrow>Lanjutkan membaca</Eyebrow>
-            <h2 className="display mt-8 text-balance text-3xl sm:text-4xl">Tulisan terkait</h2>
-          </div>
-          <div className="mt-12 grid gap-10 sm:grid-cols-3">
-            {related.map((item, index) => (
-              <Link
-                key={item.slug}
-                href={`/articles/${item.slug}`}
-                className="group flex flex-col border-t border-border pt-7"
-                data-reveal
-                style={{ transitionDelay: `${index * 80}ms` }}
-              >
-                <span className="label-mono text-muted-foreground">
-                  {item.readingTime} menit baca
-                </span>
-                <h3 className="display-sm mt-5 text-balance text-lg">{item.title}</h3>
-                <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium">
-                  <span className="link-sweep">Baca</span>
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+        <section className="mx-auto max-w-5xl px-6 pb-16">
+          <SectionHeading
+            eyebrow="Lanjutkan membaca"
+            title="Tulisan terkait"
+            className="border-border border-t pt-12"
+          />
+          <div className="mt-8 grid gap-x-10 gap-y-8 sm:grid-cols-3">
+            {related.map((item) => (
+              <Link key={item.slug} href={`/articles/${item.slug}`} className="group flex flex-col">
+                <span className="text-faint text-xs">{item.readingTime} menit baca</span>
+                <h3 className="display-sm mt-1.5 text-[0.9375rem] text-balance">{item.title}</h3>
+                <span className="text-link mt-3 inline-flex items-center gap-1.5 font-medium">
+                  Baca
+                  <ArrowRight
+                    className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
+                    aria-hidden
+                  />
                 </span>
               </Link>
             ))}
@@ -180,12 +167,12 @@ export default async function ArticleDetailPage({
         </section>
       ) : null}
 
-      <section className="mx-auto max-w-7xl px-6 pb-8 lg:px-10">
+      <section className="mx-auto max-w-5xl px-6 pt-16 pb-4 sm:pt-24">
         <CtaPanel
           eyebrow="Butuh bantuan?"
           title="Ingin menerapkannya di produk Anda?"
-          body="Kami bantu terjemahkan tulisan seperti ini menjadi pekerjaan nyata, mulai dari audit singkat sampai pengerjaan penuh."
-          ctaLabel="Bicarakan dengan kami"
+          body="Kami bantu terjemahkan tulisan seperti ini menjadi pekerjaan nyata, mulai dari pemeriksaan singkat sampai pengerjaan penuh."
+          waMessage={WA_PESAN.artikel(article.title)}
         />
       </section>
     </>

@@ -1,3 +1,4 @@
+import { createElement } from "react";
 import {
   Bot,
   Database,
@@ -24,6 +25,8 @@ export function serviceIconFor(slug: string): LucideIcon {
 }
 
 export function ServiceIcon({ slug, className }: { slug: string; className?: string }) {
-  const Icon = serviceIconFor(slug);
-  return <Icon className={className} aria-hidden />;
+  // createElement, bukan `const Icon = ...` lalu `<Icon />`: pola kedua terbaca
+  // seperti membuat komponen baru di setiap render, padahal ini hanya pencarian
+  // dari peta statis.
+  return createElement(serviceIconFor(slug), { className, "aria-hidden": true });
 }

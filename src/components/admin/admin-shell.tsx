@@ -33,7 +33,13 @@ export function AdminShell({
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  useEffect(() => setOpen(false), [pathname]);
+  /* Tutup laci saat pindah halaman. Disesuaikan ketika render, bukan lewat efek,
+     agar tidak memicu render berantai. */
+  const [pathSaatIni, setPathSaatIni] = useState(pathname);
+  if (pathSaatIni !== pathname) {
+    setPathSaatIni(pathname);
+    setOpen(false);
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -52,18 +58,12 @@ export function AdminShell({
   const brand = (
     <Link href={ADMIN_BASE} className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/logo-mark.png"
-        alt=""
-        width={211}
-        height={96}
-        className="h-6 w-auto dark:invert"
-      />
+      <img src="/logo-mark.png" alt="" width={211} height={96} className="h-6 w-auto dark:invert" />
       <span className="display-sm flex items-baseline gap-1 text-base">
         {SITE.name}
-        <span aria-hidden className="h-1.5 w-1.5 bg-signal" />
+        <span aria-hidden className="bg-primary h-1.5 w-1.5" />
       </span>
-      <span className="label-mono text-muted-foreground">Panel</span>
+      <span className="label text-muted-foreground">Panel</span>
     </Link>
   );
 
@@ -72,12 +72,12 @@ export function AdminShell({
       <div className="flex-1 overflow-y-auto px-3 py-6">
         <AdminNav counts={counts} onNavigate={() => setOpen(false)} />
       </div>
-      <div className="border-t border-border px-3 py-4">
+      <div className="border-border border-t px-3 py-4">
         <a
           href="/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="text-muted-foreground hover:bg-muted hover:text-foreground flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors"
         >
           <ExternalLink className="h-4 w-4 shrink-0" aria-hidden />
           Lihat situs
@@ -87,41 +87,41 @@ export function AdminShell({
   );
 
   return (
-    <div className="admin-scope flex min-h-dvh bg-muted/25">
+    <div className="admin-scope bg-muted/25 flex min-h-dvh">
       {/* Sisi kiri tetap, layar lebar. */}
-      <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r border-border bg-background md:flex">
-        <div className="flex h-16 shrink-0 items-center border-b border-border px-6">{brand}</div>
+      <aside className="border-border bg-background sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r md:flex">
+        <div className="border-border flex h-16 shrink-0 items-center border-b px-6">{brand}</div>
         {sidebarBody}
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-4 border-b border-border bg-background/85 px-4 backdrop-blur-xl sm:px-6 lg:px-8">
+        <header className="border-border bg-background/85 sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-4 border-b px-4 backdrop-blur-xl sm:px-6 lg:px-8">
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
               aria-label={open ? "Tutup menu" : "Buka menu"}
               aria-expanded={open}
               onClick={() => setOpen((value) => !value)}
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:bg-muted md:hidden"
+              className="border-border text-foreground hover:bg-muted inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-colors md:hidden"
             >
               {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </button>
             <div className="min-w-0 md:hidden">{brand}</div>
-            <p className="hidden min-w-0 truncate text-sm text-muted-foreground md:block">
-              Halo, <span className="font-medium text-foreground">{user.name}</span>
+            <p className="text-muted-foreground hidden min-w-0 truncate text-sm md:block">
+              Halo, <span className="text-foreground font-medium">{user.name}</span>
             </p>
           </div>
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <ThemeToggle />
-            <div className="hidden items-center gap-2.5 border-l border-border pl-3 sm:flex">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-sm font-medium">
+            <div className="border-border hidden items-center gap-2.5 border-l pl-3 sm:flex">
+              <span className="border-border flex h-9 w-9 items-center justify-center rounded-full border text-sm font-medium">
                 {user.name.charAt(0).toUpperCase()}
               </span>
               <span className="flex flex-col leading-tight">
                 <span className="max-w-44 truncate text-xs font-medium">{user.email}</span>
                 {user.role ? (
-                  <span className="label-mono mt-0.5 text-muted-foreground">{user.role}</span>
+                  <span className="label text-muted-foreground mt-0.5">{user.role}</span>
                 ) : null}
               </span>
             </div>
@@ -150,23 +150,23 @@ export function AdminShell({
           aria-label="Tutup menu"
           onClick={() => setOpen(false)}
           className={cn(
-            "absolute inset-0 bg-foreground/40 transition-opacity duration-300",
+            "bg-foreground/40 absolute inset-0 transition-opacity duration-300",
             open ? "opacity-100" : "opacity-0",
           )}
         />
         <div
           className={cn(
-            "absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-r border-border bg-background transition-transform duration-300 ease-out",
+            "border-border bg-background absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-r transition-transform duration-300 ease-out",
             open ? "translate-x-0" : "-translate-x-full",
           )}
         >
-          <div className="flex h-16 shrink-0 items-center justify-between border-b border-border px-5">
+          <div className="border-border flex h-16 shrink-0 items-center justify-between border-b px-5">
             {brand}
             <button
               type="button"
               aria-label="Tutup menu"
               onClick={() => setOpen(false)}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:bg-muted"
+              className="border-border text-foreground hover:bg-muted inline-flex h-9 w-9 items-center justify-center rounded-full border transition-colors"
             >
               <X className="h-4 w-4" />
             </button>

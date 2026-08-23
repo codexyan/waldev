@@ -44,19 +44,24 @@ function MediaModal({
       onClick={onClose}
     >
       <div
-        className="max-h-[80vh] w-full max-w-3xl overflow-auto rounded-xl border border-border bg-card p-6"
+        className="border-border bg-card max-h-[80vh] w-full max-w-3xl overflow-auto rounded-xl border p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-semibold">Pilih Media</h3>
-          <button type="button" onClick={onClose} aria-label="Tutup" className="text-muted-foreground hover:text-foreground">
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Tutup"
+            className="text-muted-foreground hover:text-foreground"
+          >
             <X className="h-5 w-5" />
           </button>
         </div>
         {loading ? (
-          <p className="py-8 text-center text-sm text-muted-foreground">Memuat…</p>
+          <p className="text-muted-foreground py-8 text-center text-sm">Memuat…</p>
         ) : items.length === 0 ? (
-          <p className="py-8 text-center text-sm text-muted-foreground">
+          <p className="text-muted-foreground py-8 text-center text-sm">
             Belum ada media. Unggah dulu di menu Media.
           </p>
         ) : (
@@ -69,14 +74,18 @@ function MediaModal({
                   onPick(item);
                   onClose();
                 }}
-                className="overflow-hidden rounded-lg border border-border text-left transition-colors hover:border-primary"
+                className="border-border hover:border-primary overflow-hidden rounded-lg border text-left transition-colors"
               >
-                <div className="flex aspect-square items-center justify-center bg-muted">
+                <div className="bg-muted flex aspect-square items-center justify-center">
                   {item.kind === "image" ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={item.url} alt={item.filename} className="h-full w-full object-cover" />
+                    <img
+                      src={item.url}
+                      alt={item.filename}
+                      className="h-full w-full object-cover"
+                    />
                   ) : (
-                    <FileText className="h-8 w-8 text-muted-foreground" />
+                    <FileText className="text-muted-foreground h-8 w-8" />
                   )}
                 </div>
                 <p className="truncate p-1.5 text-xs" title={item.filename}>
@@ -96,7 +105,7 @@ function Preview({ media }: { media: PickedMedia }) {
     // eslint-disable-next-line @next/next/no-img-element
     <img src={media.url} alt={media.filename} className="h-full w-full object-cover" />
   ) : (
-    <FileText className="h-8 w-8 text-muted-foreground" />
+    <FileText className="text-muted-foreground h-8 w-8" />
   );
 }
 
@@ -114,8 +123,12 @@ export function MediaPickerField({
     <div className="space-y-2">
       <p className="text-sm font-medium">{label}</p>
       <div className="flex items-center gap-3">
-        <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border border-border bg-muted">
-          {value ? <Preview media={value} /> : <span className="text-xs text-muted-foreground">·</span>}
+        <div className="border-border bg-muted flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border">
+          {value ? (
+            <Preview media={value} />
+          ) : (
+            <span className="text-muted-foreground text-xs">·</span>
+          )}
         </div>
         <div className="flex gap-2">
           <Button type="button" variant="outline" size="sm" onClick={() => setOpen(true)}>
@@ -148,13 +161,16 @@ export function MediaGalleryField({
       <p className="text-sm font-medium">{label}</p>
       <div className="flex flex-wrap gap-2">
         {value.map((m) => (
-          <div key={m.id} className="relative h-16 w-16 overflow-hidden rounded-lg border border-border bg-muted">
+          <div
+            key={m.id}
+            className="border-border bg-muted relative h-16 w-16 overflow-hidden rounded-lg border"
+          >
             <Preview media={m} />
             <button
               type="button"
               onClick={() => onChange(value.filter((x) => x.id !== m.id))}
               aria-label="Hapus dari galeri"
-              className="absolute right-0.5 top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-black/60 text-white"
+              className="absolute top-0.5 right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-black/60 text-white"
             >
               <X className="h-3 w-3" />
             </button>
@@ -163,7 +179,7 @@ export function MediaGalleryField({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="flex h-16 w-16 items-center justify-center rounded-lg border border-dashed border-border text-muted-foreground hover:border-primary hover:text-foreground"
+          className="border-border text-muted-foreground hover:border-primary hover:text-foreground flex h-16 w-16 items-center justify-center rounded-lg border border-dashed"
           aria-label="Tambah media"
         >
           <Plus className="h-5 w-5" />

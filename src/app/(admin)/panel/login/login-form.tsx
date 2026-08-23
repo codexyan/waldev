@@ -44,7 +44,7 @@ export function LoginForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-5">
       {notice ? (
-        <div className="flex items-start gap-2.5 rounded-md border border-border bg-muted px-3.5 py-3 text-sm text-muted-foreground">
+        <div className="border-border bg-muted text-muted-foreground flex items-start gap-2.5 rounded-md border px-3.5 py-3 text-sm">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
           {notice}
         </div>
@@ -54,7 +54,7 @@ export function LoginForm() {
         <Label htmlFor="email">Email</Label>
         <div className="relative">
           <Mail
-            className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            className="text-muted-foreground pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2"
             aria-hidden
           />
           <Input
@@ -74,7 +74,7 @@ export function LoginForm() {
         <Label htmlFor="password">Password</Label>
         <div className="relative">
           <Lock
-            className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            className="text-muted-foreground pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2"
             aria-hidden
           />
           <Input
@@ -85,13 +85,13 @@ export function LoginForm() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="h-11 pl-10 pr-11"
+            className="h-11 pr-11 pl-10"
           />
           <button
             type="button"
             aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
             onClick={() => setShowPassword((v) => !v)}
-            className="absolute right-2 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="text-muted-foreground hover:bg-muted hover:text-foreground absolute top-1/2 right-2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md transition-colors"
           >
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
@@ -99,7 +99,7 @@ export function LoginForm() {
       </div>
 
       {error ? (
-        <div className="flex items-start gap-2.5 rounded-lg border border-destructive/30 bg-destructive/10 px-3.5 py-3 text-sm text-destructive">
+        <div className="border-destructive/30 bg-destructive/10 text-destructive flex items-start gap-2.5 rounded-lg border px-3.5 py-3 text-sm">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
           {error}
         </div>

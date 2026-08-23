@@ -74,44 +74,40 @@ export function MediaManager({ items }: { items: MediaItem[] }) {
           className="hidden"
           id="media-upload"
         />
-        <Button
-          type="button"
-          onClick={() => inputRef.current?.click()}
-          disabled={uploading}
-        >
+        <Button type="button" onClick={() => inputRef.current?.click()} disabled={uploading}>
           <Upload className="h-4 w-4" />
           {uploading ? "Mengunggah…" : "Unggah Media"}
         </Button>
-        <span className="text-xs text-muted-foreground">Maks 10MB · gambar, PDF, dokumen</span>
+        <span className="text-muted-foreground text-xs">Maks 10MB · gambar, PDF, dokumen</span>
       </div>
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {error ? <p className="text-destructive text-sm">{error}</p> : null}
 
       {items.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-12 text-center">
-          <p className="text-sm text-muted-foreground">Belum ada media.</p>
+        <div className="border-border rounded-xl border border-dashed p-12 text-center">
+          <p className="text-muted-foreground text-sm">Belum ada media.</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {items.map((item) => (
-            <div key={item.id} className="overflow-hidden rounded-xl border border-border bg-card">
-              <div className="flex aspect-video items-center justify-center bg-muted">
+            <div key={item.id} className="border-border bg-card overflow-hidden rounded-xl border">
+              <div className="bg-muted flex aspect-video items-center justify-center">
                 {item.kind === "image" ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={item.url} alt={item.filename} className="h-full w-full object-cover" />
                 ) : (
-                  <FileText className="h-10 w-10 text-muted-foreground" />
+                  <FileText className="text-muted-foreground h-10 w-10" />
                 )}
               </div>
               <div className="p-3">
                 <p className="truncate text-xs font-medium" title={item.filename}>
                   {item.filename}
                 </p>
-                <p className="mt-0.5 text-xs text-muted-foreground">{formatBytes(item.size)}</p>
+                <p className="text-muted-foreground mt-0.5 text-xs">{formatBytes(item.size)}</p>
                 <div className="mt-2 flex gap-1">
                   <button
                     type="button"
                     onClick={() => copyUrl(item.url)}
-                    className="inline-flex h-7 flex-1 items-center justify-center gap-1 rounded-md border border-border text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+                    className="border-border text-muted-foreground hover:bg-muted hover:text-foreground inline-flex h-7 flex-1 items-center justify-center gap-1 rounded-md border text-xs"
                   >
                     <Copy className="h-3 w-3" />
                     {copied === item.url ? "Tersalin" : "URL"}
@@ -120,7 +116,7 @@ export function MediaManager({ items }: { items: MediaItem[] }) {
                     type="button"
                     onClick={() => onDelete(item.id)}
                     aria-label="Hapus"
-                    className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                    className="border-border text-muted-foreground hover:bg-destructive/10 hover:text-destructive inline-flex h-7 w-7 items-center justify-center rounded-md border"
                   >
                     <Trash2 className="h-3 w-3" />
                   </button>

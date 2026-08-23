@@ -13,7 +13,9 @@ export const dynamic = "force-dynamic";
 
 function formatDateTime(value: Date | null): string {
   if (!value) return "·";
-  return new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short" }).format(value);
+  return new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short" }).format(
+    value,
+  );
 }
 
 export default async function ActivityLogsPage() {
@@ -24,15 +26,15 @@ export default async function ActivityLogsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl">Log Aktivitas</h1>
-        <p className="mt-1 text-sm text-muted-foreground">150 aktivitas terakhir.</p>
+        <p className="text-muted-foreground mt-1 text-sm">150 aktivitas terakhir.</p>
       </div>
 
       {rows.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-12 text-center">
-          <p className="text-sm text-muted-foreground">Belum ada aktivitas.</p>
+        <div className="border-border rounded-xl border border-dashed p-12 text-center">
+          <p className="text-muted-foreground text-sm">Belum ada aktivitas.</p>
         </div>
       ) : (
-        <div className="rounded-xl border border-border">
+        <div className="border-border rounded-xl border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -48,7 +50,9 @@ export default async function ActivityLogsPage() {
                   <TableCell className="font-medium">{row.action}</TableCell>
                   <TableCell className="text-muted-foreground">{row.entityType ?? "·"}</TableCell>
                   <TableCell className="text-muted-foreground">{row.userName ?? "·"}</TableCell>
-                  <TableCell className="text-muted-foreground">{formatDateTime(row.createdAt)}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatDateTime(row.createdAt)}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

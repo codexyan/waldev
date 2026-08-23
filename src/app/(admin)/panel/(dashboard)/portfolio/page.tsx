@@ -28,7 +28,7 @@ export default async function PortfolioAdminPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl">Karya</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{total} proyek</p>
+          <p className="text-muted-foreground mt-1 text-sm">{total} proyek</p>
         </div>
         <Link href={`${ADMIN_BASE}/portfolio/new`}>
           <Button>
@@ -39,11 +39,11 @@ export default async function PortfolioAdminPage() {
       </div>
 
       {rows.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-12 text-center">
-          <p className="text-sm text-muted-foreground">Belum ada proyek.</p>
+        <div className="border-border rounded-xl border border-dashed p-12 text-center">
+          <p className="text-muted-foreground text-sm">Belum ada proyek.</p>
         </div>
       ) : (
-        <div className="rounded-xl border border-border">
+        <div className="border-border rounded-xl border">
           <Table>
             <TableHeader>
               <TableRow>

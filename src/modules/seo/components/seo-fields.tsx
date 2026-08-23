@@ -18,7 +18,7 @@ export function SeoFields({
   onChange: (v: SeoValue) => void;
 }) {
   return (
-    <div className="space-y-4 rounded-xl border border-border bg-card p-5">
+    <div className="border-border bg-card space-y-4 rounded-xl border p-5">
       <p className="text-sm font-medium">SEO (opsional)</p>
       <div className="space-y-1.5">
         <Label htmlFor="seo-title">Meta title</Label>

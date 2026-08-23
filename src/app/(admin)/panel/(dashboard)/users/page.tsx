@@ -12,7 +12,7 @@ export default async function UsersPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl">Pengguna</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Kelola akun admin & perannya.</p>
+        <p className="text-muted-foreground mt-1 text-sm">Kelola akun admin & perannya.</p>
       </div>
       <UserManager users={users} roles={roles} currentUserId={actor.id} />
     </div>

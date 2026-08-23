@@ -54,23 +54,23 @@ export function TagManager({ tags }: { tags: Tag[] }) {
           {loading ? "…" : "Tambah"}
         </Button>
       </form>
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {error ? <p className="text-destructive text-sm">{error}</p> : null}
 
       {tags.length === 0 ? (
-        <p className="text-sm text-muted-foreground">Belum ada tag.</p>
+        <p className="text-muted-foreground text-sm">Belum ada tag.</p>
       ) : (
         <div className="flex flex-wrap gap-2">
           {tags.map((t) => (
             <span
               key={t.id}
-              className="inline-flex items-center gap-2 rounded-full border border-border py-1 pl-3 pr-1 text-sm"
+              className="border-border inline-flex items-center gap-2 rounded-full border py-1 pr-1 pl-3 text-sm"
             >
               {t.name}
               <button
                 type="button"
                 onClick={() => onDelete(t.id)}
                 aria-label={`Hapus ${t.name}`}
-                className="inline-flex h-5 w-5 items-center justify-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive inline-flex h-5 w-5 items-center justify-center rounded-full"
               >
                 <Trash2 className="h-3 w-3" />
               </button>

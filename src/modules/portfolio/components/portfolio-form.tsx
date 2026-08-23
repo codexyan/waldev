@@ -131,7 +131,12 @@ export function PortfolioForm({
       <div className="space-y-5">
         <div className="space-y-1.5">
           <Label htmlFor="title">Judul</Label>
-          <Input id="title" value={title} onChange={(e) => onTitleChange(e.target.value)} required />
+          <Input
+            id="title"
+            value={title}
+            onChange={(e) => onTitleChange(e.target.value)}
+            required
+          />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="summary">Ringkasan</Label>
@@ -139,7 +144,11 @@ export function PortfolioForm({
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="challenge">Challenge</Label>
-          <Textarea id="challenge" value={challenge} onChange={(e) => setChallenge(e.target.value)} />
+          <Textarea
+            id="challenge"
+            value={challenge}
+            onChange={(e) => setChallenge(e.target.value)}
+          />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="solution">Solution</Label>
@@ -159,10 +168,14 @@ export function PortfolioForm({
       </div>
 
       <aside className="space-y-5">
-        <div className="space-y-4 rounded-xl border border-border bg-card p-5">
+        <div className="border-border bg-card space-y-4 rounded-xl border p-5">
           <div className="space-y-1.5">
             <Label htmlFor="status">Status</Label>
-            <Select id="status" value={status} onChange={(e) => setStatus(e.target.value as PortfolioStatus)}>
+            <Select
+              id="status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value as PortfolioStatus)}
+            >
               {PORTFOLIO_STATUSES.map((s) => (
                 <option key={s} value={s}>
                   {statusLabel(s)}
@@ -186,7 +199,7 @@ export function PortfolioForm({
               type="checkbox"
               checked={isConfidential}
               onChange={(e) => setIsConfidential(e.target.checked)}
-              className="h-4 w-4 rounded border-input"
+              className="border-input h-4 w-4 rounded"
             />
             Confidential (sembunyikan klien)
           </label>
@@ -194,14 +207,18 @@ export function PortfolioForm({
             <Button type="submit" className="flex-1" disabled={loading}>
               {loading ? "Menyimpan…" : isEdit ? "Simpan" : "Buat"}
             </Button>
-            <Button type="button" variant="outline" onClick={() => router.push(`${ADMIN_BASE}/portfolio`)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.push(`${ADMIN_BASE}/portfolio`)}
+            >
               Batal
             </Button>
           </div>
-          {error ? <p className="text-sm text-destructive">{error}</p> : null}
+          {error ? <p className="text-destructive text-sm">{error}</p> : null}
         </div>
 
-        <div className="space-y-4 rounded-xl border border-border bg-card p-5">
+        <div className="border-border bg-card space-y-4 rounded-xl border p-5">
           <MediaPickerField label="Thumbnail" value={thumbnail} onChange={setThumbnail} />
           <MediaPickerField label="Cover" value={cover} onChange={setCover} />
           <div className="space-y-1.5">
@@ -218,7 +235,12 @@ export function PortfolioForm({
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="timeline">Timeline</Label>
-            <Input id="timeline" value={timeline} onChange={(e) => setTimeline(e.target.value)} placeholder="mis. 6 minggu" />
+            <Input
+              id="timeline"
+              value={timeline}
+              onChange={(e) => setTimeline(e.target.value)}
+              placeholder="mis. 6 minggu"
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="tech">Tech stack</Label>
@@ -239,7 +261,12 @@ export function PortfolioForm({
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="order">Urutan</Label>
-            <Input id="order" type="number" value={order} onChange={(e) => setOrder(e.target.value)} />
+            <Input
+              id="order"
+              type="number"
+              value={order}
+              onChange={(e) => setOrder(e.target.value)}
+            />
           </div>
         </div>
         <SeoFields value={seo} onChange={setSeo} />

@@ -1,23 +1,26 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowLink } from "@/components/ui/arrow-link";
 import { cn } from "@/lib/utils";
 
-/** Label mikro monospace dengan penanda kotak sinyal. */
-export function Eyebrow({ children, className }: { children: React.ReactNode; className?: string }) {
-  return (
-    <span className={cn("label-mono inline-flex items-center gap-2 text-muted-foreground", className)}>
-      <span aria-hidden className="h-2 w-2 shrink-0 bg-signal" />
-      {children}
-    </span>
-  );
+/** Label mikro di atas judul seksi. Huruf kapital kecil berwarna aksen. */
+export function Eyebrow({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return <p className={cn("label text-link", className)}>{children}</p>;
 }
 
 /**
- * Kepala seksi bergaya editorial: nomor urut, eyebrow, judul display,
- * deskripsi opsional, dan tautan "lihat semua" di sisi kanan.
+ * Kepala seksi: judul, satu kalimat penjelas, dan tautan "lihat semua".
+ *
+ * Tautannya sengaja menempel di ujung kalimat penjelas, bukan berdiri sendiri
+ * di sisi kanan judul. Dengan begitu satu seksi hanya punya satu blok teks
+ * yang perlu dibaca, dan judulnya tidak pernah bersaing dengan tautan kecil
+ * di seberangnya pada layar sempit.
  */
 export function SectionHeading({
-  index,
   eyebrow,
   title,
   description,
@@ -25,8 +28,7 @@ export function SectionHeading({
   linkLabel = "Lihat semua",
   className,
 }: {
-  index?: string;
-  eyebrow: string;
+  eyebrow?: string;
   title: React.ReactNode;
   description?: string;
   href?: string;
@@ -34,32 +36,26 @@ export function SectionHeading({
   className?: string;
 }) {
   return (
-    <div className={cn("border-t border-border pt-6", className)} data-reveal>
-      <div className="flex items-start justify-between gap-6">
-        <Eyebrow>{eyebrow}</Eyebrow>
-        {index ? (
-          <span className="label-mono text-muted-foreground">{index}</span>
-        ) : null}
-      </div>
+    <div className={className}>
+      {eyebrow ? <Eyebrow className="mb-3">{eyebrow}</Eyebrow> : null}
 
-      <div className="mt-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <h2 className="display max-w-2xl text-balance text-3xl sm:text-4xl lg:text-[2.75rem]">
-          {title}
-        </h2>
-        {href ? (
-          <Link
-            href={href}
-            className="link-sweep group inline-flex shrink-0 items-center gap-2 text-sm font-medium"
-          >
-            {linkLabel}
-            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-          </Link>
-        ) : null}
-      </div>
+      <h2 className="display max-w-2xl text-2xl text-balance sm:text-[1.75rem] lg:text-[2rem]">
+        {title}
+      </h2>
 
       {description ? (
-        <p className="mt-5 max-w-2xl text-pretty leading-relaxed text-muted-foreground">
+        <p className="text-muted-foreground mt-3 max-w-2xl leading-relaxed text-pretty">
           {description}
+          {href ? (
+            <>
+              {" "}
+              <ArrowLink href={href}>{linkLabel}</ArrowLink>
+            </>
+          ) : null}
+        </p>
+      ) : href ? (
+        <p className="mt-3">
+          <ArrowLink href={href}>{linkLabel}</ArrowLink>
         </p>
       ) : null}
     </div>

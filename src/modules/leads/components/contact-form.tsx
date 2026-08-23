@@ -34,9 +34,11 @@ export function ContactForm() {
 
   if (done) {
     return (
-      <div className="rounded-xl border border-border bg-card p-8 text-center">
+      <div className="border-border bg-card rounded-xl border p-8 text-center">
         <h2 className="text-xl font-semibold tracking-tight">Pesan terkirim</h2>
-        <p className="mt-2 text-sm text-muted-foreground">Terima kasih, kami akan segera membalas.</p>
+        <p className="text-muted-foreground mt-2 text-sm">
+          Terima kasih, kami akan segera membalas.
+        </p>
       </div>
     );
   }
@@ -46,16 +48,31 @@ export function ContactForm() {
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">
           <Label htmlFor="c-name">Nama *</Label>
-          <Input id="c-name" value={form.name} onChange={(e) => set("name", e.target.value)} required />
+          <Input
+            id="c-name"
+            value={form.name}
+            onChange={(e) => set("name", e.target.value)}
+            required
+          />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="c-email">Email *</Label>
-          <Input id="c-email" type="email" value={form.email} onChange={(e) => set("email", e.target.value)} required />
+          <Input
+            id="c-email"
+            type="email"
+            value={form.email}
+            onChange={(e) => set("email", e.target.value)}
+            required
+          />
         </div>
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="c-subject">Subjek</Label>
-        <Input id="c-subject" value={form.subject} onChange={(e) => set("subject", e.target.value)} />
+        <Input
+          id="c-subject"
+          value={form.subject}
+          onChange={(e) => set("subject", e.target.value)}
+        />
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="c-message">Pesan *</Label>
@@ -68,7 +85,7 @@ export function ContactForm() {
         />
       </div>
       <TurnstileWidget onVerify={setToken} />
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {error ? <p className="text-destructive text-sm">{error}</p> : null}
       <Button type="submit" size="lg" disabled={loading}>
         {loading ? "Mengirim…" : "Kirim Pesan"}
       </Button>

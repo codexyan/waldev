@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { CtaPanel } from "@/components/cta-panel";
-import { ProcessTimeline } from "@/components/process-timeline";
+import { ArrowLink } from "@/components/ui/arrow-link";
 import { Eyebrow } from "@/components/ui/section-heading";
-import { getPublishedPortfolioBySlug } from "@/modules/portfolio/portfolio.dal";
+import { SHELL } from "@/components/ui/shell";
+import { cn } from "@/lib/utils";
+import { WA_PESAN } from "@/lib/whatsapp";
+import {
+  getPublishedPortfolioBySlug,
+  listPublishedPortfolios,
+} from "@/modules/portfolio/portfolio.dal";
 import { getSeoMeta } from "@/modules/seo/seo.dal";
 
 export const dynamic = "force-dynamic";
-
-const STATUS_LABEL: Record<string, string> = {
-  ongoing: "Berjalan",
-  completed: "Selesai",
-  archived: "Arsip",
-};
 
 export async function generateMetadata({
   params,
@@ -44,7 +44,7 @@ function Narrative({ text }: { text: string }) {
   return (
     <div className="mt-6 space-y-5">
       {paragraphs.map((paragraph, index) => (
-        <p key={index} className="whitespace-pre-line leading-relaxed text-muted-foreground">
+        <p key={index} className="text-muted-foreground leading-relaxed whitespace-pre-line">
           {paragraph}
         </p>
       ))}
@@ -54,9 +54,9 @@ function Narrative({ text }: { text: string }) {
 
 function MetaItem({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="py-6 sm:px-8 sm:first:pl-0 sm:[&:not(:first-child)]:border-l sm:[&:not(:first-child)]:border-border">
-      <dt className="label-mono text-muted-foreground">{label}</dt>
-      <dd className="display-sm mt-3 text-base">{value}</dd>
+    <div className="sm:[&:not(:first-child)]:border-border py-5 sm:px-6 sm:first:pl-0 sm:[&:not(:first-child)]:border-l">
+      <dt className="text-faint text-xs">{label}</dt>
+      <dd className="display-sm mt-1.5 text-[0.9375rem]">{value}</dd>
     </div>
   );
 }
@@ -67,83 +67,97 @@ export default async function PortfolioDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = await getPublishedPortfolioBySlug(slug);
+  const [project, semuaKarya] = await Promise.all([
+    getPublishedPortfolioBySlug(slug),
+    listPublishedPortfolios(),
+  ]);
   if (!project) notFound();
 
-  const clientLabel = project.isConfidential
-    ? "Proyek rahasia"
-    : (project.clientName ?? "Proyek internal");
+  /* Dengan hanya beberapa studi kasus, membaca yang berikutnya adalah cara
+     termurah menaikkan keyakinan sebelum menghubungi. Tanpa ini satu-satunya
+     jalan keluar selain CTA ada di puncak halaman. */
+  const posisi = semuaKarya.findIndex((item) => item.slug === slug);
+  const sebelumnya = posisi > 0 ? semuaKarya[posisi - 1] : undefined;
+  const berikutnya = posisi >= 0 ? semuaKarya[posisi + 1] : undefined;
+
+  /* Tanpa nama klien, label "Proyek internal" terbaca sebagai "ini cuma latihan
+     mereka sendiri" — dan tampil dua kali di halaman yang sama. Lebih baik tidak
+     menampilkan apa pun, sama seperti kartu di daftar karya. */
+  const clientLabel = project.isConfidential ? "Proyek rahasia" : project.clientName;
+
+  /* Menandai proyek rahasia tidak ada gunanya bila tautan ke situs live klien
+     tetap tayang di sel sebelahnya. Repositori sengaja tidak pernah dirender di
+     rute publik: kolomnya tetap ada di CMS sebagai catatan internal. */
+  const demoHref = project.isConfidential ? null : project.demoUrl;
+
+  const meta: { label: string; value: React.ReactNode }[] = [];
+  if (clientLabel) meta.push({ label: "Klien", value: clientLabel });
+  if (project.timeline) meta.push({ label: "Durasi", value: project.timeline });
+  if (project.status === "ongoing") meta.push({ label: "Status", value: "Sedang berjalan" });
+  if (demoHref) {
+    meta.push({
+      label: "Situs",
+      value: (
+        <a
+          href={demoHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="link inline-flex items-center gap-1.5"
+        >
+          Lihat situsnya
+          <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+        </a>
+      ),
+    });
+  }
+
+  /* Tailwind tidak memindai kelas yang dirangkai saat runtime, jadi jumlah
+     kolomnya dipetakan sebagai kelas statis. */
+  const KOLOM_META: Record<number, string> = {
+    1: "sm:grid-cols-1",
+    2: "sm:grid-cols-2",
+    3: "sm:grid-cols-3",
+    4: "sm:grid-cols-4",
+  };
 
   return (
     <>
-      <header className="bg-noise relative overflow-hidden border-b border-border">
-        <div aria-hidden className="bg-grid absolute inset-0" />
-        <div className="relative mx-auto max-w-7xl px-6 pb-16 pt-10 lg:px-10">
-          <Link
-            href="/portfolio"
-            className="link-sweep group inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
+      <header className="border-border border-b">
+        <div className={cn(SHELL, "pt-8 pb-14")}>
+          <ArrowLink href="/portfolio" className="text-muted-foreground hover:text-link" back>
             Semua karya
-          </Link>
+          </ArrowLink>
 
-          <div className="animate-fade-up mt-12 [animation-delay:80ms]">
-            <Eyebrow>{clientLabel}</Eyebrow>
-          </div>
-          <h1 className="display animate-fade-up mt-8 max-w-4xl text-balance text-[clamp(2.25rem,6vw,4.25rem)] [animation-delay:160ms]">
+          {clientLabel ? <Eyebrow className="mt-10">{clientLabel}</Eyebrow> : null}
+          <h1
+            className={cn(
+              "display max-w-3xl text-[2rem] text-balance sm:text-4xl lg:text-5xl",
+              /* Tanpa eyebrow, judul mengambil alih jaraknya. */
+              clientLabel ? "mt-4" : "mt-10",
+            )}
+          >
             {project.title}
           </h1>
           {project.summary ? (
-            <p className="animate-fade-up mt-7 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground [animation-delay:280ms]">
+            <p className="text-muted-foreground mt-5 max-w-2xl leading-relaxed text-pretty">
               {project.summary}
             </p>
           ) : null}
         </div>
       </header>
 
-      <article className="mx-auto max-w-7xl px-6 lg:px-10">
+      <article className="mx-auto max-w-5xl px-6">
         {/* Ringkasan fakta proyek. */}
-        <dl className="grid grid-cols-2 border-b border-border sm:grid-cols-4" data-reveal>
-          <MetaItem label="Klien" value={clientLabel} />
-          <MetaItem label="Durasi" value={project.timeline || "Fleksibel"} />
-          <MetaItem label="Status" value={STATUS_LABEL[project.status] ?? project.status} />
-          <MetaItem
-            label="Tautan"
-            value={
-              project.demoUrl || project.repoUrl ? (
-                <span className="flex flex-wrap gap-4">
-                  {project.demoUrl ? (
-                    <a
-                      href={project.demoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="link-sweep inline-flex items-center gap-1.5"
-                    >
-                      Demo
-                      <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-                    </a>
-                  ) : null}
-                  {project.repoUrl ? (
-                    <a
-                      href={project.repoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="link-sweep inline-flex items-center gap-1.5"
-                    >
-                      Repositori
-                      <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-                    </a>
-                  ) : null}
-                </span>
-              ) : (
-                "Tidak dipublikasikan"
-              )
-            }
-          />
-        </dl>
+        {meta.length > 0 ? (
+          <dl className={cn("border-border grid grid-cols-2 border-b", KOLOM_META[meta.length])}>
+            {meta.map((item) => (
+              <MetaItem key={item.label} label={item.label} value={item.value} />
+            ))}
+          </dl>
+        ) : null}
 
         {project.coverUrl ? (
-          <div className="mt-14 overflow-hidden rounded-lg border border-border" data-reveal="wipe">
+          <div className="border-border bg-surface mt-12 overflow-hidden rounded-xl border">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={project.coverUrl}
@@ -154,15 +168,15 @@ export default async function PortfolioDetailPage({
         ) : null}
 
         {project.challenge || project.solution ? (
-          <div className="mt-20 grid gap-14 border-t border-border pt-12 sm:grid-cols-2 sm:gap-16">
+          <div className="border-border mt-20 grid gap-14 border-t pt-12 sm:grid-cols-2 sm:gap-16">
             {project.challenge ? (
-              <section data-reveal>
+              <section>
                 <Eyebrow>Tantangan</Eyebrow>
                 <Narrative text={project.challenge} />
               </section>
             ) : null}
             {project.solution ? (
-              <section data-reveal style={{ transitionDelay: "100ms" }}>
+              <section>
                 <Eyebrow>Pendekatan dan solusi</Eyebrow>
                 <Narrative text={project.solution} />
               </section>
@@ -171,13 +185,13 @@ export default async function PortfolioDetailPage({
         ) : null}
 
         {project.technologies.length > 0 ? (
-          <section className="mt-20 border-t border-border pt-12" data-reveal>
+          <section className="border-border mt-20 border-t pt-12">
             <Eyebrow>Teknologi</Eyebrow>
             <div className="mt-6 flex flex-wrap gap-2.5">
               {project.technologies.map((tech) => (
                 <span
                   key={tech}
-                  className="rounded-full border border-border px-4 py-2 text-sm transition-colors duration-300 hover:border-foreground/40"
+                  className="border-border bg-card rounded-md border px-2.5 py-1 text-xs"
                 >
                   {tech}
                 </span>
@@ -187,84 +201,87 @@ export default async function PortfolioDetailPage({
         ) : null}
 
         {project.features.length > 0 ? (
-          <section className="mt-20 border-t border-border pt-12">
-            <div data-reveal>
+          <section className="border-border mt-20 border-t pt-12">
+            <div>
               <Eyebrow>Fitur utama</Eyebrow>
-              <h2 className="display mt-8 text-balance text-3xl sm:text-4xl">
+              <h2 className="display mt-3 text-2xl text-balance sm:text-[1.75rem]">
                 Apa saja yang dibangun
               </h2>
             </div>
-            <div className="mt-12 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2">
+            <ul className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2">
               {project.features.map((feature, index) => (
-                <div
-                  key={feature.title}
-                  className="bg-background p-7 transition-colors duration-500 hover:bg-muted"
-                  data-reveal
-                  style={{ transitionDelay: `${(index % 2) * 70}ms` }}
-                >
-                  <span className="label-mono text-muted-foreground">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <p className="display-sm mt-4 text-base">{feature.title}</p>
+                <li key={feature.title}>
+                  <h3 className="display-sm flex items-baseline gap-2 text-[0.9375rem]">
+                    <span className="text-link font-mono text-xs">{index + 1}</span>
+                    {feature.title}
+                  </h3>
                   {feature.description ? (
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    <p className="text-muted-foreground mt-2 leading-relaxed">
                       {feature.description}
                     </p>
                   ) : null}
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </section>
         ) : null}
 
         {project.gallery.length > 0 ? (
-          <section className="mt-20 border-t border-border pt-12">
-            <div data-reveal>
+          <section className="border-border mt-20 border-t pt-12">
+            <div>
               <Eyebrow>Galeri</Eyebrow>
             </div>
             <div className="mt-8 grid gap-6 sm:grid-cols-2">
-              {project.gallery.map((image, index) => (
+              {project.gallery.map((image) => (
                 <div
                   key={image.url}
-                  className="group overflow-hidden rounded-lg border border-border"
-                  data-reveal="wipe"
-                  style={{ transitionDelay: `${(index % 2) * 90}ms` }}
+                  className="border-border bg-surface overflow-hidden rounded-xl border"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={image.url}
-                    alt={image.filename}
-                    className="w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.04]"
-                  />
+                  <img src={image.url} alt={image.filename} className="w-full object-cover" />
                 </div>
               ))}
             </div>
           </section>
         ) : null}
-
-        <section className="mt-20 border-t border-border pt-12">
-          <div className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
-            <div className="lg:sticky lg:top-28 lg:self-start">
-              <div data-reveal>
-                <Eyebrow>Proses</Eyebrow>
-                <h2 className="display mt-8 text-balance text-3xl sm:text-4xl">
-                  Bagaimana kami mengerjakannya
-                </h2>
-                <p className="mt-5 max-w-md text-pretty leading-relaxed text-muted-foreground">
-                  Proyek ini dijalankan end to end dengan pendekatan design thinking, dari memahami
-                  masalah sampai peluncuran dan penyempurnaan berkelanjutan.
-                </p>
-              </div>
-            </div>
-            <ProcessTimeline />
-          </div>
-        </section>
       </article>
 
-      <section className="mx-auto max-w-7xl px-6 pb-8 pt-20 lg:px-10">
+      {sebelumnya || berikutnya ? (
+        <nav
+          aria-label="Karya lainnya"
+          className="border-border mx-auto mt-16 max-w-5xl border-t px-6"
+        >
+          <div className="divide-border grid divide-y sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+            {sebelumnya ? (
+              <Link href={`/portfolio/${sebelumnya.slug}`} className="group py-8 sm:pr-8">
+                <span className="text-faint text-xs">Sebelumnya</span>
+                <span className="display-sm group-hover:text-link mt-2 block text-base transition-colors">
+                  {sebelumnya.title}
+                </span>
+              </Link>
+            ) : (
+              <span className="hidden sm:block" />
+            )}
+            {berikutnya ? (
+              <Link
+                href={`/portfolio/${berikutnya.slug}`}
+                className="group py-8 sm:pl-8 sm:text-right"
+              >
+                <span className="text-faint text-xs">Berikutnya</span>
+                <span className="display-sm group-hover:text-link mt-2 block text-base transition-colors">
+                  {berikutnya.title}
+                </span>
+              </Link>
+            ) : null}
+          </div>
+        </nav>
+      ) : null}
+
+      <section className="mx-auto max-w-5xl px-6 pt-16 pb-4 sm:pt-24">
         <CtaPanel
           title="Punya kebutuhan serupa?"
           body="Ceritakan kondisi Anda saat ini. Kami bantu wujudkan dengan proses dan standar yang sama seperti proyek ini."
+          waMessage={WA_PESAN.karya(project.title)}
         />
       </section>
     </>

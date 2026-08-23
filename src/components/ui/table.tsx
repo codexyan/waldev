@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 export function Table({ className, ...props }: ComponentProps<"table">) {
   return (
-    <div className="w-full overflow-x-auto border border-border bg-background">
+    <div className="border-border bg-background w-full overflow-x-auto border">
       <table className={cn("w-full caption-bottom text-sm", className)} {...props} />
     </div>
   );
@@ -12,7 +12,7 @@ export function Table({ className, ...props }: ComponentProps<"table">) {
 export function TableHeader({ className, ...props }: ComponentProps<"thead">) {
   return (
     <thead
-      className={cn("bg-muted/50 [&_tr]:border-b [&_tr]:border-border", className)}
+      className={cn("bg-muted/50 [&_tr]:border-border [&_tr]:border-b", className)}
       {...props}
     />
   );
@@ -21,7 +21,7 @@ export function TableHeader({ className, ...props }: ComponentProps<"thead">) {
 export function TableBody({ className, ...props }: ComponentProps<"tbody">) {
   return (
     <tbody
-      className={cn("[&_tr:last-child]:border-0 [&_tr]:border-b [&_tr]:border-border", className)}
+      className={cn("[&_tr]:border-border [&_tr]:border-b [&_tr:last-child]:border-0", className)}
       {...props}
     />
   );
@@ -29,7 +29,7 @@ export function TableBody({ className, ...props }: ComponentProps<"tbody">) {
 
 export function TableRow({ className, ...props }: ComponentProps<"tr">) {
   return (
-    <tr className={cn("transition-colors duration-200 hover:bg-muted/60", className)} {...props} />
+    <tr className={cn("hover:bg-muted/60 transition-colors duration-200", className)} {...props} />
   );
 }
 
@@ -37,7 +37,7 @@ export function TableHead({ className, ...props }: ComponentProps<"th">) {
   return (
     <th
       className={cn(
-        "label-mono h-11 whitespace-nowrap px-5 text-left align-middle text-muted-foreground",
+        "label text-muted-foreground h-11 px-5 text-left align-middle whitespace-nowrap",
         className,
       )}
       {...props}

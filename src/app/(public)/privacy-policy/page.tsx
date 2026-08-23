@@ -14,11 +14,11 @@ export default function PrivacyPolicyPage() {
       <PageHeader
         eyebrow="Legal"
         title="Kebijakan Privasi"
-        description="Ditulis singkat dan jelas, tanpa kalimat berbelit. Kami hanya menyimpan data yang benar benar diperlukan untuk melayani Anda."
+        description="Ditulis singkat dan jelas, tanpa kalimat berbelit. Kami hanya menyimpan data yang benar-benar diperlukan untuk melayani Anda."
       />
 
       <section className="mx-auto max-w-3xl px-6 py-16 sm:py-20">
-        <div className="prose max-w-none" data-reveal>
+        <div className="prose max-w-none">
           <p>
             {SITE.name} menghormati privasi Anda. Halaman ini menjelaskan data apa yang kami
             kumpulkan, bagaimana data itu digunakan, dan langkah yang kami ambil untuk menjaganya.

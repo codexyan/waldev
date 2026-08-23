@@ -37,7 +37,7 @@ const STATUS_LABELS: Record<ArticleStatus, string> = {
 
 function FieldError({ errors }: { errors?: string[] }) {
   if (!errors?.length) return null;
-  return <p className="text-xs text-destructive">{errors[0]}</p>;
+  return <p className="text-destructive text-xs">{errors[0]}</p>;
 }
 
 export function ArticleForm({
@@ -114,7 +114,12 @@ export function ArticleForm({
       <div className="space-y-5">
         <div className="space-y-1.5">
           <Label htmlFor="title">Judul</Label>
-          <Input id="title" value={title} onChange={(e) => onTitleChange(e.target.value)} required />
+          <Input
+            id="title"
+            value={title}
+            onChange={(e) => onTitleChange(e.target.value)}
+            required
+          />
           <FieldError errors={fieldErrors.title} />
         </div>
 
@@ -136,10 +141,14 @@ export function ArticleForm({
       </div>
 
       <aside className="space-y-5">
-        <div className="rounded-xl border border-border bg-card p-5 space-y-4">
+        <div className="border-border bg-card space-y-4 rounded-xl border p-5">
           <div className="space-y-1.5">
             <Label htmlFor="status">Status</Label>
-            <Select id="status" value={status} onChange={(e) => setStatus(e.target.value as ArticleStatus)}>
+            <Select
+              id="status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value as ArticleStatus)}
+            >
               {ARTICLE_STATUSES.map((s) => (
                 <option key={s} value={s}>
                   {STATUS_LABELS[s]}
@@ -173,10 +182,10 @@ export function ArticleForm({
               Batal
             </Button>
           </div>
-          {error ? <p className="text-sm text-destructive">{error}</p> : null}
+          {error ? <p className="text-destructive text-sm">{error}</p> : null}
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-5 space-y-4">
+        <div className="border-border bg-card space-y-4 rounded-xl border p-5">
           <MediaPickerField label="Cover" value={cover} onChange={setCover} />
           <div className="space-y-1.5">
             <Label htmlFor="slug">Slug</Label>
@@ -194,7 +203,11 @@ export function ArticleForm({
 
           <div className="space-y-1.5">
             <Label htmlFor="category">Kategori</Label>
-            <Select id="category" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
+            <Select
+              id="category"
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+            >
               <option value="">Tanpa kategori</option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>

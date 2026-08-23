@@ -19,42 +19,41 @@ export default async function ClientsPublicPage() {
       <PageHeader
         eyebrow="Klien dan Mitra"
         title={["Dipercaya lintas", "bidang usaha."]}
-        marked="bidang usaha."
         description="Dari usaha kecil sampai instansi. Sebagian proyek tidak dapat kami tampilkan karena terikat perjanjian kerahasiaan."
       />
 
-      <section className="mx-auto max-w-7xl px-6 py-16 sm:py-24 lg:px-10">
+      <section className="mx-auto max-w-5xl px-6 py-16 sm:py-24">
         {rows.length === 0 ? (
           <p className="text-muted-foreground">Belum ada klien yang ditampilkan.</p>
         ) : (
-          <div className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3 lg:grid-cols-4">
+          <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {rows.map((client, index) => (
-              <div
+              <li
                 key={`${client.name}-${index}`}
-                className="flex h-32 items-center justify-center bg-background p-8 transition-colors duration-500 hover:bg-muted"
+                className="border-border bg-card flex h-24 items-center justify-center rounded-xl border p-6"
                 title={client.name}
-                data-reveal
-                style={{ transitionDelay: `${(index % 4) * 60}ms` }}
               >
                 {client.logoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={client.logoUrl}
                     alt={client.name}
-                    className="max-h-full max-w-full object-contain opacity-60 transition-opacity duration-500 hover:opacity-100"
+                    loading="lazy"
+                    decoding="async"
+                    className="max-h-full max-w-full object-contain opacity-70 dark:invert"
                   />
                 ) : (
-                  <span className="display-sm text-center text-base text-muted-foreground">
+                  <span className="display-sm text-muted-foreground text-center">
                     {client.name}
                   </span>
                 )}
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 pb-8 lg:px-10">
+      <section className="mx-auto max-w-5xl px-6 pt-16 pb-4 sm:pt-24">
         <CtaPanel
           title="Ingin bergabung di daftar ini?"
           body="Kami menerima proyek baru setiap bulan, dengan jumlah terbatas supaya setiap klien mendapat perhatian penuh."

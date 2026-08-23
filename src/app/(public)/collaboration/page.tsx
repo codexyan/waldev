@@ -1,16 +1,21 @@
 import type { Metadata } from "next";
-import { Clock, FileText, ListChecks, ShieldCheck, type LucideIcon } from "lucide-react";
+import { Clock, FileText, ListChecks, ShieldCheck } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
+import { PointList, type Point } from "@/components/ui/point-list";
+import { WA_PESAN, waLink } from "@/lib/whatsapp";
 import { CollaborationForm } from "@/modules/leads/components/collaboration-form";
+import { getSiteSettings } from "@/modules/settings/settings.dal";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Mulai Proyek",
+  title: "Konsultasi Gratis",
   description:
-    "Jawab beberapa pertanyaan singkat, jawaban Anda otomatis tersusun menjadi brief proyek untuk tim WalDev.",
+    "Jawab beberapa pertanyaan singkat, jawaban Anda otomatis tersusun menjadi ringkasan kebutuhan untuk tim WalDev.",
   alternates: { canonical: "/collaboration" },
 };
 
-const POINTS: { icon: LucideIcon; title: string; body: string }[] = [
+const POINTS: Point[] = [
   {
     icon: ListChecks,
     title: "Terpandu langkah demi langkah",
@@ -18,13 +23,13 @@ const POINTS: { icon: LucideIcon; title: string; body: string }[] = [
   },
   {
     icon: FileText,
-    title: "Otomatis menjadi brief proyek",
+    title: "Otomatis menjadi ringkasan kebutuhan",
     body: "Jawaban Anda tersusun menjadi dokumen kebutuhan ringkas yang langsung dipahami tim kami.",
   },
   {
     icon: Clock,
-    title: "Sekitar 3 menit saja",
-    body: "Lima langkah singkat, lalu tim kami menghubungi Anda dalam 1x24 jam kerja.",
+    title: "Sekitar 2 menit saja",
+    body: "Tiga langkah singkat, lalu tim kami menghubungi Anda dalam 1x24 jam kerja.",
   },
   {
     icon: ShieldCheck,
@@ -33,44 +38,30 @@ const POINTS: { icon: LucideIcon; title: string; body: string }[] = [
   },
 ];
 
-export default function CollaborationPage() {
+export default async function CollaborationPage() {
+  const settings = await getSiteSettings();
+  const whatsappHref = waLink(settings.contact_whatsapp, WA_PESAN.umum);
+
   return (
     <>
       <PageHeader
-        eyebrow="Mulai Proyek"
+        eyebrow="Konsultasi Gratis"
         title={["Tidak perlu siapkan", "dokumen apa pun."]}
-        marked="apa pun."
-        description="Jawab beberapa pertanyaan singkat. Sisanya kami yang susun menjadi brief proyek yang rapi, siap dibaca dan ditindaklanjuti."
+        description="Jawab beberapa pertanyaan singkat. Sisanya kami yang susun menjadi ringkasan kebutuhan yang rapi, siap dibaca dan ditindaklanjuti."
       />
 
-      <section className="mx-auto max-w-7xl px-6 py-16 sm:py-24 lg:px-10">
+      <section className="mx-auto max-w-5xl px-6 py-16 sm:py-24">
         <div className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
           <div className="lg:sticky lg:top-28 lg:self-start">
-            <ul className="space-y-px overflow-hidden rounded-lg border border-border bg-border">
-              {POINTS.map((point, index) => (
-                <li
-                  key={point.title}
-                  className="group flex gap-5 bg-background p-7 transition-colors duration-500 hover:bg-muted"
-                  data-reveal
-                  style={{ transitionDelay: `${index * 70}ms` }}
-                >
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border transition-all duration-500 group-hover:border-transparent group-hover:bg-signal group-hover:text-signal-foreground">
-                    <point.icon className="h-4 w-4" aria-hidden />
-                  </span>
-                  <div>
-                    <p className="display-sm text-base">{point.title}</p>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                      {point.body}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <PointList points={POINTS} />
           </div>
 
-          <div data-reveal style={{ transitionDelay: "120ms" }}>
-            <div className="rounded-lg border border-border bg-card p-7 sm:p-9">
-              <CollaborationForm />
+          <div>
+            <div className="border-border bg-card rounded-lg border p-7 sm:p-9">
+              <CollaborationForm
+                whatsappHref={whatsappHref}
+                contactEmail={settings.contact_email || null}
+              />
             </div>
           </div>
         </div>

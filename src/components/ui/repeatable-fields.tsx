@@ -45,7 +45,7 @@ export function RepeatableFields({
     <div className="space-y-3">
       <Label>{label}</Label>
       {value.map((row, i) => (
-        <div key={i} className="space-y-2 rounded-lg border border-border p-3">
+        <div key={i} className="border-border space-y-2 rounded-lg border p-3">
           {fields.map((f) =>
             f.type === "textarea" ? (
               <Textarea
@@ -67,7 +67,7 @@ export function RepeatableFields({
           <button
             type="button"
             onClick={() => remove(i)}
-            className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-destructive"
+            className="text-muted-foreground hover:text-destructive inline-flex items-center gap-1 text-xs"
           >
             <Trash2 className="h-3 w-3" />
             Hapus

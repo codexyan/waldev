@@ -1,88 +1,130 @@
 import Link from "next/link";
-import { ArrowDown, ArrowRight } from "lucide-react";
-import { CountUp } from "@/components/motion/count-up";
-import { LineReveal } from "@/components/motion/line-reveal";
-import { Button } from "@/components/ui/button";
-import { HERO_LINES, HERO_MARKED_WORD } from "@/lib/constants";
+import { MessageCircle } from "lucide-react";
+import { ArrowLink } from "@/components/ui/arrow-link";
+import { buttonVariants } from "@/components/ui/button";
+import { SHELL } from "@/components/ui/shell";
+import { HERO_TITLE } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 
-export interface HeroStat {
-  value: number | string;
-  suffix?: string;
-  label: string;
+/** Karya terbaru yang dipajang sebagai bukti langsung di bawah ajakan. */
+export interface HeroShowcase {
+  slug: string;
+  title: string;
+  clientName: string | null;
+  isConfidential: boolean;
+  thumbnailUrl: string | null;
 }
 
-export function Hero({ description, stats }: { description: string; stats: HeroStat[] }) {
+export function Hero({
+  description,
+  whatsappHref,
+  showcase,
+}: {
+  description: string;
+  /** Null selama nomor WhatsApp belum diisi di Site Settings. */
+  whatsappHref: string | null;
+  /** Undefined bila belum ada karya terbit yang punya gambar sampul. */
+  showcase?: HeroShowcase;
+}) {
   return (
-    <section className="bg-noise relative overflow-hidden">
-      <div aria-hidden className="bg-grid absolute inset-0" />
-      {/* Cahaya sinyal yang bergerak sangat pelan di latar. */}
-      <div aria-hidden className="pointer-events-none absolute -right-32 -top-32 hidden lg:block">
-        <div className="animate-drift h-[32rem] w-[32rem] rounded-full bg-signal/20 blur-[140px]" />
-      </div>
-      <div aria-hidden className="pointer-events-none absolute -left-40 top-64 hidden lg:block">
-        <div className="animate-drift h-80 w-80 rounded-full bg-foreground/5 blur-[120px] [animation-delay:-7s]" />
-      </div>
+    <section className={cn(SHELL, "pt-16 pb-16 sm:pt-24")}>
+      <h1 className="display max-w-2xl text-[2rem] text-balance sm:text-4xl lg:text-5xl">
+        {HERO_TITLE}
+      </h1>
 
-      <div className="relative mx-auto max-w-7xl px-6 pb-16 pt-14 sm:pt-20 lg:px-10 lg:pb-20">
-        <p className="animate-fade-up label-mono flex items-center gap-2.5 text-muted-foreground">
-          <span className="pulse-dot" aria-hidden />
-          Tersedia untuk proyek baru
-        </p>
+      <p className="text-muted-foreground mt-5 max-w-2xl leading-relaxed text-pretty">
+        {description}
+      </p>
 
-        <h1 className="display mt-9 max-w-[16ch] text-[clamp(2.5rem,8.5vw,6rem)] leading-[0.96]">
-          <LineReveal lines={HERO_LINES} marked={HERO_MARKED_WORD} />
-        </h1>
-
-        <div className="mt-12 grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:items-end">
-          <p className="animate-fade-up max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground [animation-delay:560ms] sm:text-xl">
-            {description}
-          </p>
-          <div className="animate-fade-up flex flex-wrap items-center gap-6 [animation-delay:660ms] lg:justify-end">
-            <Link href="/collaboration" data-magnetic="0.18" className="inline-block">
-              <Button size="xl" className="group">
-                Mulai proyek
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </Button>
-            </Link>
-            <Link href="/portfolio" className="link-sweep text-sm font-medium">
-              Lihat karya kami
-            </Link>
-          </div>
-        </div>
-
-        {/* Angka ringkas: bukti cepat sebelum pengunjung menggulir. */}
-        <dl className="animate-fade-up mt-20 grid grid-cols-2 border-t border-border [animation-delay:780ms] sm:grid-cols-4">
-          {stats.map((stat, index) => (
-            <div
-              key={stat.label}
-              className="border-border px-0 py-7 sm:px-6 sm:first:pl-0 sm:[&:not(:first-child)]:border-l"
+      {/* Satu tombol, satu tautan. Dua tombol berdampingan membuat pengunjung
+          harus memilih dulu sebelum boleh bergerak; di sini jalur tercepat
+          yang berbentuk tombol, jalur kedua cukup berupa teks. */}
+      <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-3">
+        {whatsappHref ? (
+          <>
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(buttonVariants({ size: "xl" }), "w-full sm:w-auto")}
             >
-              <dt className="sr-only">{stat.label}</dt>
-              <dd>
-                <span className="num block text-4xl font-semibold sm:text-5xl">
-                  {typeof stat.value === "number" ? (
-                    <CountUp value={stat.value} suffix={stat.suffix ?? ""} />
-                  ) : (
-                    stat.value
-                  )}
-                </span>
-                <span className="label-mono mt-3 block text-muted-foreground">{stat.label}</span>
-              </dd>
-            </div>
-          ))}
-        </dl>
-
-        <div
-          aria-hidden
-          className="animate-fade-up mt-14 hidden items-center gap-3 [animation-delay:880ms] lg:flex"
-        >
-          <span className="relative block h-10 w-px bg-border">
-            <span className="animate-scroll-hint absolute inset-0 block bg-foreground" />
-          </span>
-          <span className="label-mono text-muted-foreground">Gulir untuk menjelajah</span>
-          <ArrowDown className="h-3.5 w-3.5 text-muted-foreground" />
-        </div>
+              <MessageCircle className="h-4 w-4" aria-hidden />
+              Chat WhatsApp
+            </a>
+            <span className="flex items-center gap-2">
+              <span className="text-faint">atau</span>
+              <ArrowLink href="/collaboration">Isi kebutuhan terpandu</ArrowLink>
+            </span>
+          </>
+        ) : (
+          <>
+            <Link
+              href="/collaboration"
+              className={cn(buttonVariants({ size: "xl" }), "w-full sm:w-auto")}
+            >
+              Konsultasi gratis
+            </Link>
+            <span className="flex items-center gap-2">
+              <span className="text-faint">atau</span>
+              <ArrowLink href="/contact">Kirim pesan</ArrowLink>
+            </span>
+          </>
+        )}
       </div>
+
+      {showcase?.thumbnailUrl ? <Showcase item={showcase} /> : null}
     </section>
+  );
+}
+
+/**
+ * Tangkapan layar karya terbaru dalam bingkai jendela.
+ *
+ * Menempati posisi yang sama seperti panel demo pada acuannya: hal pertama
+ * yang terlihat setelah ajakan bukan janji, melainkan sesuatu yang sudah jadi.
+ * Seluruh blok ini hilang bila belum ada karya bersampul di CMS — lebih baik
+ * hero berhenti di tombol daripada memajang kotak kosong.
+ */
+function Showcase({ item }: { item: HeroShowcase }) {
+  const label = item.isConfidential ? "Proyek rahasia" : (item.clientName ?? item.title);
+
+  return (
+    <figure className="mt-14">
+      <Link
+        href={`/portfolio/${item.slug}`}
+        className="border-border bg-surface hover:border-primary/40 block rounded-xl border p-2 transition-colors"
+        aria-label={`Lihat studi kasus ${item.title}`}
+      >
+        <div className="border-border bg-card overflow-hidden rounded-lg border">
+          <div className="border-border flex items-center gap-3 border-b px-3 py-2.5">
+            <span className="flex shrink-0 gap-1.5" aria-hidden>
+              <span className="bg-border h-2.5 w-2.5 rounded-full" />
+              <span className="bg-border h-2.5 w-2.5 rounded-full" />
+              <span className="bg-border h-2.5 w-2.5 rounded-full" />
+            </span>
+            <span className="bg-muted text-faint mx-auto max-w-[60%] truncate rounded-md px-3 py-1 text-xs">
+              {label}
+            </span>
+            <span className="w-[3.375rem] shrink-0" aria-hidden />
+          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={item.thumbnailUrl ?? ""}
+            alt={`Tangkapan layar ${item.title}`}
+            /* Gambar paling atas halaman: dimuat lebih awal, bukan malas. */
+            fetchPriority="high"
+            decoding="async"
+            className="aspect-[16/9] w-full object-cover object-top"
+          />
+        </div>
+      </Link>
+
+      <figcaption className="text-faint mt-3 text-xs">
+        Karya terbaru ·{" "}
+        <Link href={`/portfolio/${item.slug}`} className="link text-muted-foreground">
+          {item.title}
+        </Link>
+      </figcaption>
+    </figure>
   );
 }

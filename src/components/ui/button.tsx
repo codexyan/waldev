@@ -2,28 +2,32 @@ import { cva, type VariantProps } from "class-variance-authority";
 import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
+/**
+ * Tombol. Persegi bersudut lembut, tanpa bayangan dan tanpa terangkat saat
+ * disentuh kursor — satu-satunya perubahan adalah warna bidangnya.
+ */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-medium transition-[background-color,color,border-color,box-shadow,transform] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        /** Tombol utama: pil tinta pekat, terbalik di mode gelap. */
-        default:
-          "bg-primary text-primary-foreground hover:-translate-y-0.5 hover:shadow-lg hover:shadow-foreground/20",
-        /** Aksi penekanan dengan warna sinyal, dipakai pada panel gelap. */
-        signal:
-          "bg-signal text-signal-foreground hover:-translate-y-0.5 hover:shadow-lg hover:shadow-signal/30",
-        outline:
-          "border border-border bg-transparent hover:border-foreground/40 hover:bg-muted",
-        ghost: "hover:bg-muted hover:text-foreground",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        /** Aksi utama: bidang biru, satu-satunya warna di halaman. */
+        default: "bg-primary text-primary-foreground hover:bg-primary-hover",
+        /** Bidang tinta pekat, dipakai untuk aksi sekunder yang tetap tegas. */
+        ink: "bg-ink text-ink-foreground hover:opacity-90",
+        outline: "border border-border bg-card text-foreground hover:bg-muted",
+        ghost: "text-foreground hover:bg-muted",
+        destructive: "bg-destructive text-destructive-foreground hover:opacity-90",
+        /* Alias lama. Dipertahankan agar pemakaian yang belum tersapu tidak
+           berubah bentuk; warnanya kini sama dengan aksi utama. */
+        signal: "bg-primary text-primary-foreground hover:bg-primary-hover",
       },
       size: {
-        default: "h-10 px-5 text-sm",
-        sm: "h-9 px-4 text-sm",
-        lg: "h-12 px-7 text-[0.95rem]",
-        xl: "h-14 px-9 text-base",
-        icon: "h-10 w-10",
+        default: "h-9 px-4 text-sm",
+        sm: "h-8 px-3 text-[0.8125rem]",
+        lg: "h-10 px-5 text-sm",
+        xl: "h-11 px-6 text-[0.9375rem]",
+        icon: "h-9 w-9",
       },
     },
     defaultVariants: { variant: "default", size: "default" },
@@ -31,8 +35,7 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {}
+  extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {}
 
 export function Button({ className, variant, size, ...props }: ButtonProps) {
   return <button className={cn(buttonVariants({ variant, size }), className)} {...props} />;

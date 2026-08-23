@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface ProjectCardItem {
@@ -12,80 +12,79 @@ export interface ProjectCardItem {
 }
 
 /**
- * Kartu proyek: gambar melebar halus saat disentuh kursor, sorotan sinyal
- * mengikuti kursor, dan tanda panah muncul dari bawah.
+ * Kartu proyek: gambar di dalam bingkai tipis, lalu teks di bawahnya.
+ *
+ * Tidak ada pembesaran gambar, kemiringan, maupun tombol melayang yang muncul
+ * saat kursor lewat. Satu-satunya tanda "ini bisa diklik" adalah baris biru di
+ * bawah judul — tanda yang sama seperti seluruh tautan lain di situs ini.
  */
 export function ProjectCard({
   item,
   index,
   wide = false,
-  delay = 0,
 }: {
   item: ProjectCardItem;
   index: number;
   wide?: boolean;
-  delay?: number;
 }) {
-  const clientLabel = item.isConfidential ? "Proyek rahasia" : (item.clientName ?? "Proyek");
+  // Tanpa nama klien, label "Proyek" hanya mengulang hal yang sudah jelas dan
+  // tampil identik di setiap kartu. Lebih baik tidak menampilkan apa pun.
+  const clientLabel = item.isConfidential ? "Proyek rahasia" : item.clientName;
 
   return (
-    <Link
-      href={`/portfolio/${item.slug}`}
-      className="group block"
-      data-reveal
-      style={{ transitionDelay: `${delay}ms` }}
-    >
-      <div
-        className="spotlight relative overflow-hidden rounded-lg border border-border bg-muted"
-        data-spotlight
-        data-tilt="3.5"
-      >
+    <Link href={`/portfolio/${item.slug}`} className="group block">
+      <div className="border-border bg-surface group-hover:border-primary/40 overflow-hidden rounded-xl border transition-colors">
         {item.thumbnailUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={item.thumbnailUrl}
             alt=""
+            loading={index === 0 ? "eager" : "lazy"}
+            decoding="async"
             className={cn(
-              "w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.04]",
-              wide ? "aspect-[16/8]" : "aspect-[4/3]",
+              "w-full object-cover object-top",
+              wide ? "aspect-[16/8]" : "aspect-[16/10]",
             )}
           />
         ) : (
           <div
             className={cn(
-              "bg-grid flex w-full items-center justify-center",
-              wide ? "aspect-[16/8]" : "aspect-[4/3]",
+              "flex w-full items-center justify-center",
+              wide ? "aspect-[16/8]" : "aspect-[16/10]",
             )}
           >
-            <span aria-hidden className="display text-6xl text-foreground/20">
+            <span aria-hidden className="display text-faint text-5xl">
               {item.title.charAt(0)}
             </span>
           </div>
         )}
-        <span className="absolute right-4 top-4 flex h-11 w-11 translate-y-2 items-center justify-center rounded-full bg-signal text-signal-foreground opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-          <ArrowUpRight className="h-4 w-4" aria-hidden />
-        </span>
       </div>
 
-      <div className="mt-5 flex items-start justify-between gap-6">
-        <div className="min-w-0">
-          <p className="label-mono text-muted-foreground">{clientLabel}</p>
-          <h3
-            className={cn(
-              "display-sm mt-3 text-balance transition-colors",
-              wide ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl",
-            )}
-          >
-            {item.title}
-          </h3>
-          {item.summary ? (
-            <p className="mt-3 max-w-xl text-pretty text-sm leading-relaxed text-muted-foreground">
-              {item.summary}
-            </p>
-          ) : null}
-        </div>
-        <span className="label-mono shrink-0 text-muted-foreground">
-          {String(index + 1).padStart(2, "0")}
+      <div className="mt-4">
+        {clientLabel ? <p className="text-faint text-xs">{clientLabel}</p> : null}
+        <h3
+          className={cn(
+            "display-sm text-balance",
+            clientLabel ? "mt-1.5" : "",
+            wide ? "text-lg sm:text-xl" : "text-base sm:text-lg",
+          )}
+        >
+          {item.title}
+        </h3>
+        {item.summary ? (
+          <p className="text-muted-foreground mt-2 line-clamp-2 max-w-xl leading-relaxed text-pretty">
+            {item.summary}
+          </p>
+        ) : null}
+        {/* <span>, bukan komponen tautan: kartu ini sendiri sudah sebuah
+            tautan, dan menyarangkan <a> di dalam <a> menghasilkan markup
+            yang tidak sah sekaligus dua perhentian tab untuk satu tujuan. */}
+        <span className="text-link mt-3 inline-flex items-center gap-1.5 font-medium">
+          Baca studi kasus
+          <ArrowRight
+            className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
+            aria-hidden
+          />
         </span>
       </div>
     </Link>

@@ -75,7 +75,7 @@ export function UserManager({
 
   return (
     <div className="grid gap-8 lg:grid-cols-[22rem_1fr]">
-      <form onSubmit={onCreate} className="space-y-4 rounded-xl border border-border bg-card p-5">
+      <form onSubmit={onCreate} className="border-border bg-card space-y-4 rounded-xl border p-5">
         <p className="text-sm font-medium">User baru</p>
         <div className="space-y-1.5">
           <Label htmlFor="u-name">Nama</Label>
@@ -83,11 +83,24 @@ export function UserManager({
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="u-email">Email</Label>
-          <Input id="u-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <Input
+            id="u-email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="u-pass">Password</Label>
-          <Input id="u-pass" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} />
+          <Input
+            id="u-pass"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={8}
+          />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="u-role">Peran</Label>
@@ -99,7 +112,7 @@ export function UserManager({
             ))}
           </Select>
         </div>
-        {error ? <p className="text-sm text-destructive">{error}</p> : null}
+        {error ? <p className="text-destructive text-sm">{error}</p> : null}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading ? "Membuat…" : "Buat User"}
         </Button>
@@ -109,16 +122,16 @@ export function UserManager({
         {users.map((u) => (
           <div
             key={u.id}
-            className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border px-4 py-3"
+            className="border-border flex flex-wrap items-center justify-between gap-3 rounded-lg border px-4 py-3"
           >
             <div className="min-w-0">
               <p className="text-sm font-medium">
                 {u.name}
                 {u.id === currentUserId ? (
-                  <span className="ml-2 text-xs text-muted-foreground">(Anda)</span>
+                  <span className="text-muted-foreground ml-2 text-xs">(Anda)</span>
                 ) : null}
               </p>
-              <p className="truncate text-xs text-muted-foreground">{u.email}</p>
+              <p className="text-muted-foreground truncate text-xs">{u.email}</p>
             </div>
             <div className="flex items-center gap-2">
               {u.isActive ? (

@@ -1,15 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function ThemeToggle({ className }: { className?: string }) {
   const { setTheme, resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
+  /* Ikon baru dirender setelah hidrasi, karena tema sebenarnya hanya diketahui
+     di klien. useSyncExternalStore dipakai alih-alih setState di dalam efek:
+     hasilnya sama, tetapi tanpa render berantai. */
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
   const isDark = resolvedTheme === "dark";
 
@@ -19,7 +24,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       aria-label="Ganti tema terang atau gelap"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className={cn(
-        "relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-border text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "text-muted-foreground hover:bg-muted hover:text-heading focus-visible:ring-ring relative inline-flex h-8 w-8 items-center justify-center overflow-hidden rounded-md transition-colors focus-visible:ring-2 focus-visible:outline-none",
         className,
       )}
     >
@@ -27,14 +32,14 @@ export function ThemeToggle({ className }: { className?: string }) {
         <>
           <Sun
             className={cn(
-              "absolute h-4 w-4 transition-all duration-500",
-              isDark ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-50 opacity-0",
+              "absolute h-4 w-4 transition-all duration-300",
+              isDark ? "scale-100 rotate-0 opacity-100" : "scale-50 -rotate-90 opacity-0",
             )}
           />
           <Moon
             className={cn(
-              "absolute h-4 w-4 transition-all duration-500",
-              isDark ? "rotate-90 scale-50 opacity-0" : "rotate-0 scale-100 opacity-100",
+              "absolute h-4 w-4 transition-all duration-300",
+              isDark ? "scale-50 rotate-90 opacity-0" : "scale-100 rotate-0 opacity-100",
             )}
           />
         </>

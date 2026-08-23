@@ -74,13 +74,7 @@ export interface NavCounts {
   contacts?: number;
 }
 
-export function AdminNav({
-  counts,
-  onNavigate,
-}: {
-  counts?: NavCounts;
-  onNavigate?: () => void;
-}) {
+export function AdminNav({ counts, onNavigate }: { counts?: NavCounts; onNavigate?: () => void }) {
   const pathname = usePathname();
 
   const badgeFor = (href: string) => {
@@ -94,12 +88,11 @@ export function AdminNav({
       {GROUPS.map((group) => (
         <div key={group.label ?? "root"} className="flex flex-col gap-1.5">
           {group.label ? (
-            <p className="label-mono px-3 pb-1 text-muted-foreground">{group.label}</p>
+            <p className="label text-muted-foreground px-3 pb-1">{group.label}</p>
           ) : null}
           {group.items.map((item) => {
             const href = `${ADMIN_BASE}${item.href}`;
-            const active =
-              item.href === "" ? pathname === ADMIN_BASE : pathname.startsWith(href);
+            const active = item.href === "" ? pathname === ADMIN_BASE : pathname.startsWith(href);
             const badge = badgeFor(item.href);
 
             return (
@@ -109,9 +102,9 @@ export function AdminNav({
                 onClick={onNavigate}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "group relative flex items-center gap-3 rounded-md py-2 pl-3 pr-2.5 text-sm transition-colors duration-200",
+                  "group relative flex items-center gap-3 rounded-md py-2 pr-2.5 pl-3 text-sm transition-colors duration-200",
                   active
-                    ? "bg-foreground font-medium text-background"
+                    ? "bg-foreground text-background font-medium"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground",
                 )}
               >
@@ -119,7 +112,7 @@ export function AdminNav({
                 <span
                   aria-hidden
                   className={cn(
-                    "absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r bg-signal transition-opacity duration-200",
+                    "bg-primary absolute top-1/2 left-0 h-5 w-[3px] -translate-y-1/2 rounded-r transition-opacity duration-200",
                     active ? "opacity-100" : "opacity-0",
                   )}
                 />
@@ -128,8 +121,10 @@ export function AdminNav({
                 {badge > 0 ? (
                   <span
                     className={cn(
-                      "label-mono flex h-5 min-w-5 items-center justify-center rounded-full px-1.5",
-                      active ? "bg-background/20 text-background" : "bg-signal text-signal-foreground",
+                      "label flex h-5 min-w-5 items-center justify-center rounded-full px-1.5",
+                      active
+                        ? "bg-background/20 text-background"
+                        : "bg-primary text-primary-foreground",
                     )}
                   >
                     {badge}

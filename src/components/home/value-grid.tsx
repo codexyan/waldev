@@ -1,43 +1,49 @@
-import { Gauge, PanelsTopLeft, ScrollText, Users, type LucideIcon } from "lucide-react";
+import { FileSignature, Gauge, KeyRound, Users, type LucideIcon } from "lucide-react";
 
-const VALUES: { icon: LucideIcon; title: string; body: string }[] = [
+/**
+ * Empat jaminan yang menurunkan risiko membeli.
+ *
+ * Sengaja tidak tumpang tindih dengan FAQ beranda: pertanyaan yang sudah
+ * dijawab di sini (kepemilikan hasil, kepastian biaya) dikeluarkan dari
+ * daftar FAQ, supaya pengunjung tidak membaca hal yang sama dua kali.
+ */
+const JAMINAN: { icon: LucideIcon; title: string; body: string }[] = [
   {
     icon: Users,
-    title: "Satu tim, satu tanggung jawab",
-    body: "Riset, desain, dan rekayasa dikerjakan tim yang sama. Anda tidak perlu menjadi penerjemah antar vendor.",
+    title: "Satu tim dari awal sampai akhir",
+    body: "Perencanaan, desain, dan pembuatan dikerjakan orang yang sama. Anda tidak perlu jadi penerjemah antar vendor.",
+  },
+  {
+    icon: FileSignature,
+    title: "Biaya disepakati di depan",
+    body: "Cakupan dan harga tertulis sebelum pekerjaan dimulai. Tidak ada tagihan tambahan yang muncul di tengah jalan.",
   },
   {
     icon: Gauge,
-    title: "Cepat dibuka di mana pun",
-    body: "Disajikan lewat jaringan global Cloudflare dan dioptimalkan sejak awal, termasuk untuk jaringan seluler.",
+    title: "Cepat dibuka, juga di sinyal pas-pasan",
+    body: "Halaman disajikan dari server terdekat dengan pengunjung, dan kami uji di jaringan seluler, bukan hanya wifi kantor.",
   },
   {
-    icon: PanelsTopLeft,
-    title: "Bisa Anda kelola sendiri",
-    body: "Setiap proyek dilengkapi dashboard admin, sehingga konten dapat diperbarui tanpa memanggil developer.",
-  },
-  {
-    icon: ScrollText,
-    title: "Rapi dan terdokumentasi",
-    body: "Kode bersih, standar penulisan konsisten, dan dokumentasi serah terima agar mudah dilanjutkan siapa pun.",
+    icon: KeyRound,
+    title: "Hasilnya milik Anda",
+    body: "Kode, berkas desain, dan seluruh akunnya diserahkan setelah pelunasan. Anda bebas melanjutkan dengan siapa pun.",
   },
 ];
 
+/**
+ * Empat blok teks tanpa kotak, tanpa garis pemisah, tanpa efek sentuh.
+ * Yang memisahkan satu jaminan dari jaminan lain hanyalah jarak.
+ */
 export function ValueGrid() {
   return (
-    <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
-      {VALUES.map((value, index) => (
-        <div
-          key={value.title}
-          className="group bg-background p-8 transition-colors duration-500 hover:bg-muted"
-          data-reveal
-          style={{ transitionDelay: `${index * 70}ms` }}
-        >
-          <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-border transition-all duration-500 group-hover:border-transparent group-hover:bg-signal group-hover:text-signal-foreground">
-            <value.icon className="h-5 w-5" aria-hidden />
-          </span>
-          <h3 className="display-sm mt-6 text-lg">{value.title}</h3>
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{value.body}</p>
+    <div className="grid gap-x-12 gap-y-9 sm:grid-cols-2">
+      {JAMINAN.map((item) => (
+        <div key={item.title}>
+          <h3 className="display-sm flex items-center gap-2 text-[0.9375rem]">
+            <item.icon className="text-link h-4 w-4 shrink-0" aria-hidden />
+            {item.title}
+          </h3>
+          <p className="text-muted-foreground mt-2 leading-relaxed">{item.body}</p>
         </div>
       ))}
     </div>

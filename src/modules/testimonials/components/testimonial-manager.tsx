@@ -117,12 +117,17 @@ export function TestimonialManager({
 
   return (
     <div className="grid gap-8 lg:grid-cols-[24rem_1fr]">
-      <form onSubmit={onSubmit} className="space-y-4 rounded-xl border border-border bg-card p-5">
+      <form onSubmit={onSubmit} className="border-border bg-card space-y-4 rounded-xl border p-5">
         <p className="text-sm font-medium">{editingId ? "Edit testimoni" : "Testimoni baru"}</p>
         <MediaPickerField label="Foto" value={photo} onChange={setPhoto} />
         <div className="space-y-1.5">
           <Label htmlFor="t-name">Nama</Label>
-          <Input id="t-name" value={authorName} onChange={(e) => setAuthorName(e.target.value)} required />
+          <Input
+            id="t-name"
+            value={authorName}
+            onChange={(e) => setAuthorName(e.target.value)}
+            required
+          />
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1.5">
@@ -136,7 +141,13 @@ export function TestimonialManager({
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="t-content">Isi testimoni</Label>
-          <Textarea id="t-content" value={content} onChange={(e) => setContent(e.target.value)} required className="min-h-24" />
+          <Textarea
+            id="t-content"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            required
+            className="min-h-24"
+          />
         </div>
         <div className="grid grid-cols-3 gap-3">
           <div className="space-y-1.5">
@@ -152,7 +163,11 @@ export function TestimonialManager({
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="t-status">Status</Label>
-            <Select id="t-status" value={status} onChange={(e) => setStatus(e.target.value as TestimonialStatus)}>
+            <Select
+              id="t-status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value as TestimonialStatus)}
+            >
               {TESTIMONIAL_STATUSES.map((s) => (
                 <option key={s} value={s}>
                   {statusLabel(s)}
@@ -162,7 +177,12 @@ export function TestimonialManager({
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="t-order">Urutan</Label>
-            <Input id="t-order" type="number" value={order} onChange={(e) => setOrder(e.target.value)} />
+            <Input
+              id="t-order"
+              type="number"
+              value={order}
+              onChange={(e) => setOrder(e.target.value)}
+            />
           </div>
         </div>
         <div className="space-y-1.5">
@@ -176,7 +196,7 @@ export function TestimonialManager({
             ))}
           </Select>
         </div>
-        {error ? <p className="text-sm text-destructive">{error}</p> : null}
+        {error ? <p className="text-destructive text-sm">{error}</p> : null}
         <div className="flex gap-2">
           <Button type="submit" disabled={loading} className="flex-1">
             {loading ? "Menyimpan…" : editingId ? "Simpan" : "Tambah"}
@@ -191,10 +211,13 @@ export function TestimonialManager({
 
       <div className="space-y-2">
         {testimonials.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Belum ada testimoni.</p>
+          <p className="text-muted-foreground text-sm">Belum ada testimoni.</p>
         ) : (
           testimonials.map((t) => (
-            <div key={t.id} className="flex items-start justify-between gap-3 rounded-lg border border-border px-4 py-3">
+            <div
+              key={t.id}
+              className="border-border flex items-start justify-between gap-3 rounded-lg border px-4 py-3"
+            >
               <div className="min-w-0">
                 <p className="text-sm font-medium">
                   {t.authorName}
@@ -209,13 +232,23 @@ export function TestimonialManager({
                     </Badge>
                   )}
                 </p>
-                <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{t.content}</p>
+                <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">{t.content}</p>
               </div>
               <div className="flex shrink-0 gap-1">
-                <button type="button" onClick={() => startEdit(t)} aria-label="Edit" className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+                <button
+                  type="button"
+                  onClick={() => startEdit(t)}
+                  aria-label="Edit"
+                  className="text-muted-foreground hover:bg-muted hover:text-foreground inline-flex h-8 w-8 items-center justify-center rounded-md"
+                >
                   <Pencil className="h-4 w-4" />
                 </button>
-                <button type="button" onClick={() => onDelete(t.id)} aria-label="Hapus" className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive">
+                <button
+                  type="button"
+                  onClick={() => onDelete(t.id)}
+                  aria-label="Hapus"
+                  className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive inline-flex h-8 w-8 items-center justify-center rounded-md"
+                >
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>

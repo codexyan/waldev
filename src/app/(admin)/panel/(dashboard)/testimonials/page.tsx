@@ -16,7 +16,7 @@ export default async function TestimonialsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl">Testimoni</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="text-muted-foreground mt-1 text-sm">
           Hanya testimoni berstatus published yang tampil di publik.
         </p>
       </div>

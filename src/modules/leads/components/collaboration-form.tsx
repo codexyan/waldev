@@ -12,13 +12,15 @@ import {
   HelpCircle,
   LayoutDashboard,
   Loader2,
+  MessageCircle,
   Paperclip,
+  Plus,
   Puzzle,
   Rocket,
   type LucideIcon,
 } from "lucide-react";
 import { TurnstileWidget } from "@/components/turnstile-widget";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -103,7 +105,15 @@ const BUDGETS = [
 
 const TIMELINES = ["Kurang dari 1 bulan", "1 sampai 2 bulan", "3 sampai 6 bulan", "Fleksibel"];
 
-const STEPS = ["Jenis", "Tujuan", "Fitur", "Anggaran", "Kontak"];
+/**
+ * Tiga langkah, bukan lima.
+ *
+ * Susunan lama ("Jenis", "Tujuan", "Fitur", "Anggaran", "Kontak") menyodorkan
+ * 37 pilihan sebelum seseorang bisa mengirim, padahal yang benar-benar wajib
+ * hanya jenis proyek, cerita singkat, nama, dan email. Tujuan, pengguna, dan
+ * fitur kini dilipat sebagai detail opsional di langkah kedua.
+ */
+const STEPS = ["Kebutuhan", "Anggaran", "Kontak"];
 
 /* --------------------------------- Helpers -------------------------------- */
 
@@ -128,7 +138,7 @@ function Chip({
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm transition-all",
         active
-          ? "border-primary/50 bg-primary/10 font-medium text-primary"
+          ? "border-primary/50 bg-primary/10 text-primary font-medium"
           : "border-border text-muted-foreground hover:border-primary/30 hover:text-foreground",
       )}
     >
@@ -142,14 +152,21 @@ function StepTitle({ title, hint }: { title: string; hint: string }) {
   return (
     <div>
       <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
-      <p className="mt-1 text-sm text-muted-foreground">{hint}</p>
+      <p className="text-muted-foreground mt-1 text-sm">{hint}</p>
     </div>
   );
 }
 
 /* ---------------------------------- Form ----------------------------------- */
 
-export function CollaborationForm() {
+export function CollaborationForm({
+  whatsappHref,
+  contactEmail,
+}: {
+  /** Null selama nomor WhatsApp belum diisi di Site Settings. */
+  whatsappHref: string | null;
+  contactEmail: string | null;
+}) {
   const [step, setStep] = useState(0);
   const [projectType, setProjectType] = useState("");
   const [goals, setGoals] = useState<string[]>([]);
@@ -172,18 +189,18 @@ export function CollaborationForm() {
 
   const typeLabel = PROJECT_TYPES.find((t) => t.id === projectType)?.label ?? "";
 
+  /** Hanya langkah pertama yang punya isian wajib; sisanya boleh dilewati. */
   function stepValid(s: number): boolean {
-    if (s === 0) return projectType !== "";
-    if (s === 1) return problem.trim().length >= 10;
+    if (s === 0) return projectType !== "" && problem.trim().length >= 10;
     return true;
   }
 
   function next() {
     if (!stepValid(step)) {
       setError(
-        step === 0
+        projectType === ""
           ? "Pilih dulu jenis proyeknya."
-          : "Ceritakan singkat masalah atau kebutuhan Anda (min. 10 karakter).",
+          : "Ceritakan singkat kebutuhan Anda, minimal 10 karakter.",
       );
       return;
     }
@@ -263,12 +280,14 @@ export function CollaborationForm() {
   if (done) {
     return (
       <div className="py-6 text-center">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <span className="bg-primary/10 text-primary mx-auto flex h-14 w-14 items-center justify-center rounded-full">
           <CheckCircle2 className="h-7 w-7" />
         </span>
-        <h2 className="mt-5 text-xl font-semibold tracking-tight">Brief Anda telah terkirim</h2>
-        <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
-          Jawaban Anda sudah tersusun menjadi brief proyek dan diterima tim kami. Kami akan
+        <h2 className="mt-5 text-xl font-semibold tracking-tight">
+          Kebutuhan Anda sudah kami terima
+        </h2>
+        <p className="text-muted-foreground mx-auto mt-2 max-w-sm text-sm leading-relaxed">
+          Jawaban Anda sudah tersusun menjadi ringkasan kebutuhan dan diterima tim kami. Kami
           menghubungi Anda dalam 1x24 jam kerja.
         </p>
       </div>
@@ -277,6 +296,40 @@ export function CollaborationForm() {
 
   return (
     <form onSubmit={onSubmit}>
+      {/* Jalan pintas untuk yang sudah tahu kebutuhannya. Tidak semua orang
+          datang untuk mengisi formulir; sebagian hanya ingin bertanya harga
+          sekarang juga, dan memaksa mereka melewati lima langkah adalah cara
+          tercepat kehilangan prospek yang paling siap. */}
+      {whatsappHref || contactEmail ? (
+        <div className="border-border bg-muted/40 mb-8 rounded-lg border p-5">
+          <p className="text-sm font-medium">Sudah tahu yang Anda butuhkan?</p>
+          <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
+            Tidak perlu mengisi formulir. Hubungi kami langsung, jawabannya sama cepatnya.
+          </p>
+          <div className="mt-4 flex flex-wrap items-center gap-4">
+            {whatsappHref ? (
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(buttonVariants({ size: "sm" }), "gap-1.5")}
+              >
+                <MessageCircle className="h-3.5 w-3.5" aria-hidden />
+                Chat WhatsApp
+              </a>
+            ) : null}
+            {contactEmail ? (
+              <a
+                href={`mailto:${contactEmail}`}
+                className="text-muted-foreground hover:text-foreground text-sm font-medium underline underline-offset-4 transition-colors"
+              >
+                {contactEmail}
+              </a>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+
       {/* Stepper */}
       <ol className="flex items-center gap-1.5" aria-label="Langkah pengisian">
         {STEPS.map((label, i) => {
@@ -288,32 +341,56 @@ export function CollaborationForm() {
                 <span
                   className={cn(
                     "h-px flex-1",
-                    i === 0 ? "bg-transparent" : isDone || isCurrent ? "bg-primary/50" : "bg-border",
+                    i === 0
+                      ? "bg-transparent"
+                      : isDone || isCurrent
+                        ? "bg-primary/50"
+                        : "bg-border",
                   )}
                 />
-                <span
-                  className={cn(
-                    "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-semibold transition-colors",
-                    isDone
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : isCurrent
+                {/* Langkah yang sudah dilewati bisa diklik untuk kembali.
+                    Sebelumnya penanda ini hanya <span>, jadi satu-satunya cara
+                    memperbaiki jawaban adalah menekan "Kembali" berulang kali. */}
+                {isDone ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setError(null);
+                      setStep(i);
+                    }}
+                    aria-label={`Kembali ke langkah ${i + 1}: ${label}`}
+                    className="border-primary bg-primary text-primary-foreground flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-semibold transition-colors"
+                  >
+                    <Check className="h-3.5 w-3.5" aria-hidden />
+                  </button>
+                ) : (
+                  <span
+                    aria-current={isCurrent ? "step" : undefined}
+                    className={cn(
+                      "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-semibold transition-colors",
+                      isCurrent
                         ? "border-primary bg-primary/10 text-primary"
                         : "border-border text-muted-foreground",
-                  )}
-                >
-                  {isDone ? <Check className="h-3.5 w-3.5" /> : i + 1}
-                </span>
+                    )}
+                  >
+                    {i + 1}
+                  </span>
+                )}
                 <span
                   className={cn(
                     "h-px flex-1",
-                    i === STEPS.length - 1 ? "bg-transparent" : isDone ? "bg-primary/50" : "bg-border",
+                    i === STEPS.length - 1
+                      ? "bg-transparent"
+                      : isDone
+                        ? "bg-primary/50"
+                        : "bg-border",
                   )}
                 />
               </div>
               <span
                 className={cn(
                   "text-[11px]",
-                  isCurrent ? "font-medium text-foreground" : "text-muted-foreground",
+                  isCurrent ? "text-foreground font-medium" : "text-muted-foreground",
                 )}
               >
                 {label}
@@ -324,12 +401,12 @@ export function CollaborationForm() {
       </ol>
 
       {/* Konten step (key memicu ulang animasi masuk) */}
-      <div key={step} className="animate-fade-up mt-8 space-y-6">
+      <div key={step} className="mt-8 space-y-6">
         {step === 0 ? (
           <>
             <StepTitle
               title="Apa yang ingin Anda bangun?"
-              hint="Pilih yang paling mendekati. Tidak harus tepat, kami bantu pertajam nanti."
+              hint="Pilih yang paling mendekati, lalu ceritakan singkat kondisinya. Dua hal ini saja sudah cukup bagi kami untuk membalas."
             />
             <div className="grid gap-3 sm:grid-cols-2">
               {PROJECT_TYPES.map((t) => {
@@ -351,7 +428,7 @@ export function CollaborationForm() {
                     )}
                   >
                     {active ? (
-                      <span className="absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                      <span className="bg-primary text-primary-foreground absolute top-3 right-3 flex h-5 w-5 items-center justify-center rounded-full">
                         <Check className="h-3 w-3" />
                       </span>
                     ) : null}
@@ -366,46 +443,14 @@ export function CollaborationForm() {
                       <t.icon className="h-4 w-4" aria-hidden />
                     </span>
                     <p className="mt-3 text-sm font-medium tracking-tight">{t.label}</p>
-                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{t.desc}</p>
+                    <p className="text-muted-foreground mt-1 text-xs leading-relaxed">{t.desc}</p>
                   </button>
                 );
               })}
             </div>
-          </>
-        ) : null}
 
-        {step === 1 ? (
-          <>
-            <StepTitle
-              title="Apa tujuannya?"
-              hint="Pilih yang sesuai (boleh lebih dari satu), lalu ceritakan singkat."
-            />
             <div className="space-y-2">
-              <Label>Tujuan utama</Label>
-              <div className="flex flex-wrap gap-2">
-                {GOALS.map((g) => (
-                  <Chip key={g} active={goals.includes(g)} onClick={() => setGoals(toggle(goals, g))}>
-                    {g}
-                  </Chip>
-                ))}
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label>Siapa penggunanya?</Label>
-              <div className="flex flex-wrap gap-2">
-                {AUDIENCES.map((a) => (
-                  <Chip
-                    key={a}
-                    active={audiences.includes(a)}
-                    onClick={() => setAudiences(toggle(audiences, a))}
-                  >
-                    {a}
-                  </Chip>
-                ))}
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="problem">Masalah atau kebutuhan yang ingin diselesaikan *</Label>
+              <Label htmlFor="problem">Ceritakan singkat kebutuhan Anda *</Label>
               <Textarea
                 id="problem"
                 className="min-h-28"
@@ -417,76 +462,21 @@ export function CollaborationForm() {
           </>
         ) : null}
 
-        {step === 2 ? (
-          <>
-            <StepTitle
-              title="Fitur apa saja yang terbayang?"
-              hint="Centang yang sekiranya dibutuhkan. Lewati saja jika belum terbayang."
-            />
-            <div className="flex flex-wrap gap-2">
-              {FEATURES.map((f) => (
-                <Chip
-                  key={f}
-                  active={features.includes(f)}
-                  onClick={() => setFeatures(toggle(features, f))}
-                >
-                  {f}
-                </Chip>
-              ))}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="featureNotes">Fitur lain atau catatan (opsional)</Label>
-              <Textarea
-                id="featureNotes"
-                className="min-h-20"
-                value={featureNotes}
-                onChange={(e) => setFeatureNotes(e.target.value)}
-              />
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="reference">Referensi yang disukai (opsional)</Label>
-                <Input
-                  id="reference"
-                  placeholder="Tautan website atau aplikasi"
-                  value={reference}
-                  onChange={(e) => setReference(e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="attachment">Lampiran (opsional)</Label>
-                <label
-                  htmlFor="attachment"
-                  className="flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-dashed border-border px-3 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
-                >
-                  <Paperclip className="h-4 w-4 shrink-0" />
-                  <span className="truncate">
-                    {uploading ? "Mengunggah..." : attachmentName || "Pilih file"}
-                  </span>
-                </label>
-                <input
-                  id="attachment"
-                  type="file"
-                  accept="image/*,application/pdf,.doc,.docx,.txt"
-                  onChange={onFile}
-                  className="sr-only"
-                />
-              </div>
-            </div>
-          </>
-        ) : null}
-
-        {step === 3 ? (
+        {step === 1 ? (
           <>
             <StepTitle
               title="Anggaran dan waktu"
-              hint="Perkiraan saja, bukan angka final. Ini membantu kami menyusun opsi yang pas."
+              hint="Perkiraan saja, bukan angka final. Boleh dilewati kalau belum terbayang."
             />
             <div className="space-y-2">
               <Label>Perkiraan anggaran</Label>
               <div className="flex flex-wrap gap-2">
                 {BUDGETS.map((b) => (
-                  <Chip key={b} active={budget === b} onClick={() => setBudget(budget === b ? "" : b)}>
+                  <Chip
+                    key={b}
+                    active={budget === b}
+                    onClick={() => setBudget(budget === b ? "" : b)}
+                  >
                     {b}
                   </Chip>
                 ))}
@@ -506,14 +496,115 @@ export function CollaborationForm() {
                 ))}
               </div>
             </div>
+
+            {/* Tujuan, pengguna, dan fitur dulu menempati dua langkah tersendiri —
+                37 pilihan untuk data yang tidak satu pun wajib. Sekarang semuanya
+                dilipat di sini: yang ingin memperjelas tetap bisa, yang tidak
+                tinggal menekan Lanjut. */}
+            <details className="group border-border rounded-lg border">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 text-sm font-medium [&::-webkit-details-marker]:hidden">
+                Tambahkan detail supaya penawaran lebih akurat
+                <span className="border-border text-muted-foreground flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-transform duration-300 group-open:rotate-45">
+                  <Plus className="h-3.5 w-3.5" aria-hidden />
+                </span>
+              </summary>
+
+              <div className="border-border space-y-5 border-t p-4">
+                <div className="space-y-2">
+                  <Label>Tujuan utama</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {GOALS.map((g) => (
+                      <Chip
+                        key={g}
+                        active={goals.includes(g)}
+                        onClick={() => setGoals(toggle(goals, g))}
+                      >
+                        {g}
+                      </Chip>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Siapa penggunanya?</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {AUDIENCES.map((a) => (
+                      <Chip
+                        key={a}
+                        active={audiences.includes(a)}
+                        onClick={() => setAudiences(toggle(audiences, a))}
+                      >
+                        {a}
+                      </Chip>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Fitur yang terbayang</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {FEATURES.map((f) => (
+                      <Chip
+                        key={f}
+                        active={features.includes(f)}
+                        onClick={() => setFeatures(toggle(features, f))}
+                      >
+                        {f}
+                      </Chip>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="featureNotes">Catatan tambahan</Label>
+                  <Textarea
+                    id="featureNotes"
+                    className="min-h-20"
+                    value={featureNotes}
+                    onChange={(e) => setFeatureNotes(e.target.value)}
+                  />
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="reference">Referensi yang disukai</Label>
+                    <Input
+                      id="reference"
+                      placeholder="Tautan website atau aplikasi"
+                      value={reference}
+                      onChange={(e) => setReference(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="attachment">Lampiran</Label>
+                    <label
+                      htmlFor="attachment"
+                      className="border-border text-muted-foreground hover:border-primary/40 hover:text-foreground flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-dashed px-3 text-sm transition-colors"
+                    >
+                      <Paperclip className="h-4 w-4 shrink-0" />
+                      <span className="truncate">
+                        {uploading ? "Mengunggah..." : attachmentName || "Pilih file"}
+                      </span>
+                    </label>
+                    <input
+                      id="attachment"
+                      type="file"
+                      accept="image/*,application/pdf,.doc,.docx,.txt"
+                      onChange={onFile}
+                      className="sr-only"
+                    />
+                  </div>
+                </div>
+              </div>
+            </details>
           </>
         ) : null}
 
-        {step === 4 ? (
+        {step === 2 ? (
           <>
             <StepTitle
               title="Terakhir, kontak Anda"
-              hint="Brief di bawah tersusun otomatis dari jawaban Anda dan ikut terkirim."
+              hint="Ringkasan di bawah tersusun otomatis dari jawaban Anda dan ikut terkirim."
             />
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
@@ -553,12 +644,12 @@ export function CollaborationForm() {
               </div>
             </div>
 
-            <div className="rounded-xl border border-border bg-muted/40 p-4">
-              <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-primary">
+            <div className="border-border bg-muted/40 rounded-xl border p-4">
+              <p className="text-primary flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
                 <FileText className="h-3.5 w-3.5" />
-                Ringkasan brief Anda
+                Ringkasan kebutuhan Anda
               </p>
-              <p className="mt-3 whitespace-pre-line text-xs leading-relaxed text-muted-foreground">
+              <p className="text-muted-foreground mt-3 text-xs leading-relaxed whitespace-pre-line">
                 {composeBrief().replace(/^BRIEF PROYEK\n\n/, "")}
               </p>
             </div>
@@ -568,7 +659,11 @@ export function CollaborationForm() {
         ) : null}
       </div>
 
-      {error ? <p className="mt-4 text-sm text-destructive">{error}</p> : null}
+      {error ? (
+        <p role="alert" className="text-destructive mt-4 text-sm">
+          {error}
+        </p>
+      ) : null}
 
       {/* Navigasi step */}
       <div className="mt-8 flex items-center justify-between gap-3">
@@ -594,7 +689,7 @@ export function CollaborationForm() {
               </>
             ) : (
               <>
-                Kirim Brief
+                Kirim kebutuhan saya
                 <ArrowRight className="h-4 w-4" />
               </>
             )}

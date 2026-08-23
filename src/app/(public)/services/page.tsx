@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { CtaPanel } from "@/components/cta-panel";
-import { ServiceRows } from "@/components/home/service-rows";
+import { ServiceGrid } from "@/components/home/service-grid";
 import { PageHeader } from "@/components/page-header";
-import { ProcessTimeline } from "@/components/process-timeline";
-import { Eyebrow } from "@/components/ui/section-heading";
+import { ArrowLink } from "@/components/ui/arrow-link";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { SECTION, SHELL } from "@/components/ui/shell";
+import { cn } from "@/lib/utils";
 import { listActiveServices } from "@/modules/services/service.dal";
 
 export const dynamic = "force-dynamic";
@@ -17,50 +19,51 @@ export const metadata: Metadata = {
 
 export default async function ServicesPage() {
   const rows = await listActiveServices();
+  const adaHarga = rows.some((row) => row.price && /rp/i.test(row.price));
 
   return (
     <>
       <PageHeader
         eyebrow="Layanan"
-        title={["Dibangun sesuai", "kebutuhan nyata."]}
-        marked="nyata."
-        description="Kami tidak menjual paket seragam. Cakupan disusun dari masalah yang ingin Anda selesaikan, lalu dikerjakan bertahap sampai benar benar dipakai."
+        title="Dibangun sesuai kebutuhan nyata."
+        description="Cakupan disusun dari masalah yang ingin Anda selesaikan, lalu dikerjakan bertahap sampai benar-benar dipakai. Angka di bawah adalah titik awalnya."
       />
 
-      <section className="mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:px-10">
+      <section className={cn(SHELL, SECTION)}>
         {rows.length === 0 ? (
           <p className="text-muted-foreground">Belum ada layanan yang ditampilkan.</p>
         ) : (
           <>
             <h2 className="sr-only">Daftar layanan</h2>
-            <ServiceRows services={rows} />
+            <ServiceGrid services={rows} />
+            {adaHarga ? (
+              <p className="text-faint mt-10 max-w-2xl leading-relaxed">
+                Angka di atas adalah titik awal, bukan harga mati. Biaya akhir mengikuti jumlah
+                halaman dan fitur yang benar-benar Anda butuhkan, dan selalu kami kirim tertulis
+                sebelum apa pun dimulai.
+              </p>
+            ) : null}
           </>
         )}
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:px-10">
-        <div className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
-          <div className="lg:sticky lg:top-28 lg:self-start">
-            <div className="border-t border-border pt-6" data-reveal>
-              <Eyebrow>Proses</Eyebrow>
-              <h2 className="display mt-8 text-balance text-3xl sm:text-4xl">
-                Sama untuk setiap layanan
-              </h2>
-              <p className="mt-5 max-w-md text-pretty leading-relaxed text-muted-foreground">
-                Apa pun jenis pekerjaannya, urutan kerjanya sama dan transparan. Anda tahu persis
-                sedang berada di tahap mana dan apa yang akan diterima berikutnya.
-              </p>
-            </div>
-          </div>
-          <ProcessTimeline />
-        </div>
+      {/* Timeline lima tahap yang identik sebelumnya tampil di tiga halaman
+          sekaligus. Kini ia hidup di satu tempat saja — /about — dan halaman
+          ini cukup menunjuk ke sana supaya daftar layanan tetap fokus. */}
+      <section className={cn(SHELL, SECTION, "border-border border-t")}>
+        <SectionHeading
+          title="Urutan kerjanya selalu sama"
+          description="Apa pun jenis pekerjaannya, Anda selalu tahu sedang berada di tahap mana dan apa yang akan diterima berikutnya."
+        />
+        <p className="mt-5">
+          <ArrowLink href="/about">Lihat tahapan kerjanya</ArrowLink>
+        </p>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 pb-8 lg:px-10">
+      <section className={cn(SHELL, "pt-16 pb-4 sm:pt-24")}>
         <CtaPanel
           title="Belum yakin butuh layanan yang mana?"
           body="Ceritakan kondisi bisnis Anda. Kami bantu pilihkan cakupan yang paling masuk akal, termasuk bila jawabannya adalah mulai dari yang paling kecil."
-          ctaLabel="Konsultasi gratis"
         />
       </section>
     </>

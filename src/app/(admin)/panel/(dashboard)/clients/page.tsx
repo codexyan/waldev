@@ -16,7 +16,7 @@ export default async function ClientsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl">Klien</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="text-muted-foreground mt-1 text-sm">
           Logo klien. Klien ber-NDA tidak ditampilkan di halaman publik.
         </p>
       </div>

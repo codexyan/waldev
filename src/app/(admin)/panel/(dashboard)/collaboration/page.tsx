@@ -27,15 +27,15 @@ export default async function CollaborationAdminPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl">Permintaan Kerja Sama</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{rows.length} permintaan</p>
+        <p className="text-muted-foreground mt-1 text-sm">{rows.length} permintaan</p>
       </div>
 
       {rows.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-12 text-center">
-          <p className="text-sm text-muted-foreground">Belum ada permintaan kerja sama.</p>
+        <div className="border-border rounded-xl border border-dashed p-12 text-center">
+          <p className="text-muted-foreground text-sm">Belum ada permintaan kerja sama.</p>
         </div>
       ) : (
-        <div className="rounded-xl border border-border">
+        <div className="border-border rounded-xl border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -52,7 +52,7 @@ export default async function CollaborationAdminPage() {
                   <TableCell className="font-medium">
                     {row.name}
                     {row.company ? (
-                      <span className="block text-xs text-muted-foreground">{row.company}</span>
+                      <span className="text-muted-foreground block text-xs">{row.company}</span>
                     ) : null}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
@@ -73,23 +73,25 @@ export default async function CollaborationAdminPage() {
                         href={row.attachmentUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block text-xs text-primary hover:underline"
+                        className="text-primary block text-xs hover:underline"
                       >
                         Lampiran ↓
                       </a>
                     ) : null}
                     {row.description ? (
                       <details className="mt-1">
-                        <summary className="cursor-pointer text-xs font-medium text-primary">
+                        <summary className="text-primary cursor-pointer text-xs font-medium">
                           Lihat brief
                         </summary>
-                        <p className="mt-2 max-w-md whitespace-pre-line rounded-lg border border-border bg-muted/40 p-3 text-xs leading-relaxed text-foreground">
+                        <p className="border-border bg-muted/40 text-foreground mt-2 max-w-md rounded-lg border p-3 text-xs leading-relaxed whitespace-pre-line">
                           {row.description}
                         </p>
                       </details>
                     ) : null}
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{formatDate(row.createdAt)}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatDate(row.createdAt)}
+                  </TableCell>
                   <TableCell>
                     <LeadStatusSelect
                       id={row.id}

@@ -27,15 +27,15 @@ export default async function ContactMessagesPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl">Pesan Masuk</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{rows.length} pesan</p>
+        <p className="text-muted-foreground mt-1 text-sm">{rows.length} pesan</p>
       </div>
 
       {rows.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-12 text-center">
-          <p className="text-sm text-muted-foreground">Belum ada pesan.</p>
+        <div className="border-border rounded-xl border border-dashed p-12 text-center">
+          <p className="text-muted-foreground text-sm">Belum ada pesan.</p>
         </div>
       ) : (
-        <div className="rounded-xl border border-border">
+        <div className="border-border rounded-xl border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -50,13 +50,17 @@ export default async function ContactMessagesPage() {
                 <TableRow key={row.id}>
                   <TableCell className="font-medium">
                     {row.name}
-                    <span className="block text-xs text-muted-foreground">{row.email}</span>
+                    <span className="text-muted-foreground block text-xs">{row.email}</span>
                   </TableCell>
-                  <TableCell className="max-w-md text-muted-foreground">
-                    {row.subject ? <span className="block font-medium text-foreground">{row.subject}</span> : null}
+                  <TableCell className="text-muted-foreground max-w-md">
+                    {row.subject ? (
+                      <span className="text-foreground block font-medium">{row.subject}</span>
+                    ) : null}
                     <span className="line-clamp-2 text-sm">{row.message}</span>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{formatDate(row.createdAt)}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatDate(row.createdAt)}
+                  </TableCell>
                   <TableCell>
                     <LeadStatusSelect
                       id={row.id}

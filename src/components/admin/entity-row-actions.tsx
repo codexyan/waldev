@@ -34,7 +34,7 @@ export function EntityRowActions({
     <div className="flex items-center justify-end gap-1">
       <Link
         href={editHref}
-        className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        className="text-muted-foreground hover:bg-muted hover:text-foreground inline-flex h-8 w-8 items-center justify-center rounded-md transition-colors"
         aria-label="Edit"
       >
         <Pencil className="h-4 w-4" />
@@ -44,7 +44,7 @@ export function EntityRowActions({
         onClick={handleDelete}
         disabled={busy}
         aria-label="Hapus"
-        className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-40"
+        className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive inline-flex h-8 w-8 items-center justify-center rounded-md transition-colors disabled:opacity-40"
       >
         <Trash2 className="h-4 w-4" />
       </button>

@@ -1,64 +1,78 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { MessageCircle } from "lucide-react";
+import { ArrowLink } from "@/components/ui/arrow-link";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { WA_PESAN, waLink } from "@/lib/whatsapp";
+import { getSiteSettings } from "@/modules/settings/settings.dal";
 
 /**
- * Panel ajakan bertindak dengan warna terbalik: tinta pekat di mode terang,
- * kertas terang di mode gelap. Dipakai di beranda dan halaman detail.
+ * Panel ajakan penutup setiap halaman.
+ *
+ * Dulu berupa bidang tinta pekat dengan cahaya dan sorotan kursor. Kini kaki
+ * halaman yang memegang peran bidang gelap, jadi panel ini justru harus
+ * terang — dua blok hitam bertumpuk akan terbaca sebagai satu massa yang
+ * sama dan ajakannya ikut tenggelam.
+ *
+ * Komponen ini membaca Site Settings sendiri supaya setiap pemanggil tidak
+ * perlu meneruskan nomor WhatsApp. `getSiteSettings` dibungkus React `cache()`,
+ * jadi beberapa pemanggilan dalam satu render tetap satu pembacaan.
  */
-export function CtaPanel({
-  eyebrow = "Langkah berikutnya",
+export async function CtaPanel({
   title,
   body,
-  ctaLabel = "Mulai proyek",
   ctaHref = "/collaboration",
-  secondaryLabel = "Atau kirim pesan singkat",
-  secondaryHref = "/contact",
+  waMessage = WA_PESAN.umum,
 }: {
+  /** Dipertahankan demi pemanggil lama; tidak lagi dirender. */
   eyebrow?: string;
   title: string;
   body: string;
-  ctaLabel?: string;
+  /** Tujuan tombol cadangan bila nomor WhatsApp belum diisi di CMS. */
   ctaHref?: string;
-  secondaryLabel?: string;
-  secondaryHref?: string;
+  waMessage?: string;
 }) {
+  const settings = await getSiteSettings();
+  const whatsappHref = waLink(settings.contact_whatsapp, waMessage);
+
   return (
-    <div
-      className="bg-noise on-ink spotlight relative overflow-hidden rounded-xl bg-foreground px-7 py-16 text-background sm:px-14 sm:py-24"
-      data-reveal
-      data-spotlight
-    >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-24 -top-24 hidden sm:block"
-      >
-        <div className="animate-drift h-80 w-80 rounded-full bg-signal/25 blur-[110px]" />
+    <div className="border-border bg-muted rounded-xl border px-6 py-10 sm:px-10 sm:py-12">
+      <h2 className="display max-w-2xl text-2xl text-balance sm:text-[1.75rem]">{title}</h2>
+      <p className="text-muted-foreground mt-3 max-w-2xl leading-relaxed text-pretty">{body}</p>
+
+      <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
+        {whatsappHref ? (
+          <>
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto")}
+            >
+              <MessageCircle className="h-4 w-4" aria-hidden />
+              Chat WhatsApp
+            </a>
+            <span className="flex items-center gap-2">
+              <span className="text-faint">atau</span>
+              <ArrowLink href={ctaHref}>Isi kebutuhan terpandu</ArrowLink>
+            </span>
+          </>
+        ) : (
+          <>
+            <Link href={ctaHref} className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto")}>
+              Konsultasi gratis
+            </Link>
+            <span className="flex items-center gap-2">
+              <span className="text-faint">atau</span>
+              <ArrowLink href="/contact">Kirim pesan</ArrowLink>
+            </span>
+          </>
+        )}
       </div>
 
-      <div className="relative">
-        <span className="label-mono inline-flex items-center gap-2 text-background/60">
-          <span aria-hidden className="h-2 w-2 bg-signal" />
-          {eyebrow}
-        </span>
-        <h2 className="display mt-7 max-w-3xl text-balance text-3xl sm:text-5xl lg:text-6xl">
-          {title}
-        </h2>
-        <p className="mt-6 max-w-xl text-pretty leading-relaxed text-background/70 sm:text-lg">
-          {body}
-        </p>
-        <div className="mt-10 flex flex-wrap items-center gap-6">
-          <Link href={ctaHref} data-magnetic="0.18" className="inline-block">
-            <Button size="xl" variant="signal" className="group">
-              {ctaLabel}
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </Button>
-          </Link>
-          <Link href={secondaryHref} className="link-sweep text-sm font-medium text-background/80">
-            {secondaryLabel}
-          </Link>
-        </div>
-      </div>
+      <p className="text-faint mt-5 text-xs">
+        Gratis dan tanpa kewajiban lanjut. Penawaran tertulis kami kirim sebelum apa pun dimulai.
+      </p>
     </div>
   );
 }

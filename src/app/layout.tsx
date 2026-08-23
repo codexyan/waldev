@@ -1,29 +1,26 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { Archivo, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { SITE } from "@/lib/constants";
 
 // Font di-download saat build & disajikan self-hosted (tanpa request ke Google
 // saat runtime); next/font menyetel fallback metrics sehingga CLS tetap 0.
-const inter = Inter({
+//
+// Satu wajah huruf saja untuk teks maupun judul. Grotesk yang agak rapat ini
+// tetap tenang pada 14px dan cukup tegas pada judul 48px, sehingga tidak perlu
+// wajah display terpisah — sekaligus memangkas satu unduhan font.
+const archivo = Archivo({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-inter",
+  variable: "--font-archivo",
 });
 
-// Wajah display untuk judul besar: geometris, tegas, khas editorial.
-const spaceGrotesk = Space_Grotesk({
+// Monospace hanya untuk potongan perintah dan kode.
+const geistMono = Geist_Mono({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-display-face",
-});
-
-// Monospace untuk label mikro, indeks, dan angka.
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-mono-face",
+  variable: "--font-geist-mono",
 });
 
 export const metadata: Metadata = {
@@ -37,6 +34,9 @@ export const metadata: Metadata = {
   keywords: [
     "studio digital",
     "jasa pembuatan website",
+    // Pencarian lokal bernilai tinggi sejak identitas kota dipublikasikan.
+    "jasa pembuatan website Banjarmasin",
+    "web developer Banjarmasin",
     "sistem informasi",
     "web application",
     "dashboard internal",
@@ -65,7 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="id"
       suppressHydrationWarning
-      className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
+      className={`${archivo.variable} ${geistMono.variable}`}
     >
       <body className="min-h-dvh antialiased">
         <ThemeProvider

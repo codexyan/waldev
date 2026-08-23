@@ -18,7 +18,7 @@ export default async function RolesPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl">Peran dan Izin</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="text-muted-foreground mt-1 text-sm">
           Peran bawaan sistem dan hak akses masing-masing ({PERMISSIONS.length} permission).
         </p>
       </div>
@@ -28,7 +28,7 @@ export default async function RolesPage() {
           const perms = permissionsForRole(role);
           const isAll = ROLE_PERMISSIONS[role] === "*";
           return (
-            <div key={role} className="rounded-xl border border-border bg-card p-5">
+            <div key={role} className="border-border bg-card rounded-xl border p-5">
               <div className="flex items-center justify-between">
                 <h2 className="font-semibold capitalize">{role}</h2>
                 <Badge variant={isAll ? "default" : "secondary"}>
@@ -37,7 +37,7 @@ export default async function RolesPage() {
               </div>
               <ul className="mt-4 space-y-1">
                 {perms.map((p) => (
-                  <li key={p} className="text-xs text-muted-foreground">
+                  <li key={p} className="text-muted-foreground text-xs">
                     {p}
                   </li>
                 ))}

@@ -21,7 +21,6 @@ export interface ServiceFormInitial {
   slug: string;
   description: string;
   price: string;
-  ctaLabel: string;
   ctaUrl: string;
   status: ServiceStatus;
   order: string;
@@ -40,7 +39,6 @@ export function ServiceForm({ initial }: { initial: ServiceFormInitial }) {
   const [slugTouched, setSlugTouched] = useState(Boolean(initial.slug));
   const [description, setDescription] = useState(initial.description);
   const [price, setPrice] = useState(initial.price);
-  const [ctaLabel, setCtaLabel] = useState(initial.ctaLabel);
   const [ctaUrl, setCtaUrl] = useState(initial.ctaUrl);
   const [status, setStatus] = useState<ServiceStatus>(initial.status);
   const [order, setOrder] = useState(initial.order);
@@ -67,7 +65,6 @@ export function ServiceForm({ initial }: { initial: ServiceFormInitial }) {
       slug: slug || undefined,
       description: description || undefined,
       price: price || undefined,
-      ctaLabel: ctaLabel || undefined,
       ctaUrl: ctaUrl || undefined,
       status,
       order,
@@ -147,10 +144,14 @@ export function ServiceForm({ initial }: { initial: ServiceFormInitial }) {
       </div>
 
       <aside className="space-y-5">
-        <div className="space-y-4 rounded-xl border border-border bg-card p-5">
+        <div className="border-border bg-card space-y-4 rounded-xl border p-5">
           <div className="space-y-1.5">
             <Label htmlFor="status">Status</Label>
-            <Select id="status" value={status} onChange={(e) => setStatus(e.target.value as ServiceStatus)}>
+            <Select
+              id="status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value as ServiceStatus)}
+            >
               {SERVICE_STATUSES.map((s) => (
                 <option key={s} value={s}>
                   {statusLabel(s)}
@@ -162,14 +163,18 @@ export function ServiceForm({ initial }: { initial: ServiceFormInitial }) {
             <Button type="submit" className="flex-1" disabled={loading}>
               {loading ? "Menyimpan…" : isEdit ? "Simpan" : "Buat"}
             </Button>
-            <Button type="button" variant="outline" onClick={() => router.push(`${ADMIN_BASE}/services`)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.push(`${ADMIN_BASE}/services`)}
+            >
               Batal
             </Button>
           </div>
-          {error ? <p className="text-sm text-destructive">{error}</p> : null}
+          {error ? <p className="text-destructive text-sm">{error}</p> : null}
         </div>
 
-        <div className="space-y-4 rounded-xl border border-border bg-card p-5">
+        <div className="border-border bg-card space-y-4 rounded-xl border p-5">
           <div className="space-y-1.5">
             <Label htmlFor="slug">Slug</Label>
             <Input
@@ -184,19 +189,35 @@ export function ServiceForm({ initial }: { initial: ServiceFormInitial }) {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="price">Harga (opsional)</Label>
-            <Input id="price" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="mis. Mulai Rp5jt" />
+            <Input
+              id="price"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              placeholder="mis. Mulai Rp5jt"
+            />
           </div>
+          {/* Kolom "CTA label" dihapus dari formulir: label tombol kini seragam
+              di seluruh situs ("Chat WhatsApp" bila nomor terisi, selain itu
+              "Konsultasi gratis"), sehingga apa pun yang diketik di sini tidak
+              pernah tayang. Kolomnya sengaja dibiarkan di basis data agar nilai
+              lama tidak hilang. */}
           <div className="space-y-1.5">
-            <Label htmlFor="ctaLabel">CTA label</Label>
-            <Input id="ctaLabel" value={ctaLabel} onChange={(e) => setCtaLabel(e.target.value)} placeholder="Mulai Proyek" />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="ctaUrl">CTA URL</Label>
-            <Input id="ctaUrl" value={ctaUrl} onChange={(e) => setCtaUrl(e.target.value)} placeholder="/collaboration" />
+            <Label htmlFor="ctaUrl">Tujuan tombol (opsional)</Label>
+            <Input
+              id="ctaUrl"
+              value={ctaUrl}
+              onChange={(e) => setCtaUrl(e.target.value)}
+              placeholder="/collaboration"
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="order">Urutan</Label>
-            <Input id="order" type="number" value={order} onChange={(e) => setOrder(e.target.value)} />
+            <Input
+              id="order"
+              type="number"
+              value={order}
+              onChange={(e) => setOrder(e.target.value)}
+            />
           </div>
         </div>
         <SeoFields value={seo} onChange={setSeo} />

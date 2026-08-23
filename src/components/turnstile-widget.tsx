@@ -27,8 +27,14 @@ const SCRIPT_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js";
 export function TurnstileWidget({ onVerify }: { onVerify: (token: string) => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const callbackRef = useRef(onVerify);
-  callbackRef.current = onVerify;
   const rendered = useRef(false);
+
+  // Menulis ref saat render membuat nilainya tidak terdefinisi pada render
+  // bersamaan. Efek terpisah ini menjaga callback tetap terbaru tanpa
+  // menjalankan ulang pemasangan widget di bawahnya.
+  useEffect(() => {
+    callbackRef.current = onVerify;
+  }, [onVerify]);
 
   useEffect(() => {
     if (!SITE_KEY || !containerRef.current) return;

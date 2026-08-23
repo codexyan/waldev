@@ -1,44 +1,42 @@
-import { LineReveal } from "@/components/motion/line-reveal";
 import { Eyebrow } from "@/components/ui/section-heading";
+import { SHELL } from "@/components/ui/shell";
+import { cn } from "@/lib/utils";
 
 /**
- * Kepala halaman bergaya editorial: eyebrow monospace, judul display yang
- * naik dari balik topeng, lalu deskripsi singkat.
+ * Kepala halaman: label kecil, judul, lalu satu paragraf pengantar.
+ *
+ * Tidak ada latar bertekstur, cahaya, maupun judul yang naik dari balik
+ * topeng — hanya teks di atas kertas kosong, dipisahkan garis tipis dari isi
+ * halaman. Bentuknya sengaja sama persis dengan hero beranda supaya seluruh
+ * situs terbaca sebagai satu dokumen.
  */
 export function PageHeader({
   eyebrow,
   title,
   description,
-  marked,
   children,
 }: {
   eyebrow: string;
-  /** Satu baris atau beberapa baris judul. */
+  /** Beberapa baris digabung menjadi satu kalimat; pemenggalannya diserahkan ke browser. */
   title: string | string[];
   description?: string;
-  marked?: string;
   children?: React.ReactNode;
 }) {
-  const lines = Array.isArray(title) ? title : [title];
+  const heading = Array.isArray(title) ? title.join(" ") : title;
 
   return (
-    <header className="bg-noise relative overflow-hidden border-b border-border">
-      <div aria-hidden className="bg-grid absolute inset-0" />
-      <div className="relative mx-auto max-w-7xl px-6 pb-16 pt-14 sm:pt-20 lg:px-10">
-        <div className="animate-fade-up">
-          <Eyebrow>{eyebrow}</Eyebrow>
-        </div>
-        <h1 className="display mt-8 max-w-4xl text-[clamp(2.25rem,6.5vw,4.75rem)] leading-[0.98]">
-          <LineReveal lines={lines} marked={marked} />
+    <header className="border-border border-b">
+      <div className={cn(SHELL, "py-14 sm:py-20")}>
+        <Eyebrow>{eyebrow}</Eyebrow>
+        <h1 className="display mt-4 max-w-3xl text-[2rem] text-balance sm:text-4xl lg:text-5xl">
+          {heading}
         </h1>
         {description ? (
-          <p className="animate-fade-up mt-7 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground [animation-delay:420ms]">
+          <p className="text-muted-foreground mt-5 max-w-2xl leading-relaxed text-pretty">
             {description}
           </p>
         ) : null}
-        {children ? (
-          <div className="animate-fade-up mt-10 [animation-delay:520ms]">{children}</div>
-        ) : null}
+        {children ? <div className="mt-8">{children}</div> : null}
       </div>
     </header>
   );

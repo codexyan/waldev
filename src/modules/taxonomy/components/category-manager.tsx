@@ -75,7 +75,7 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
 
   return (
     <div className="grid gap-8 lg:grid-cols-[20rem_1fr]">
-      <form onSubmit={onSubmit} className="space-y-4 rounded-xl border border-border bg-card p-5">
+      <form onSubmit={onSubmit} className="border-border bg-card space-y-4 rounded-xl border p-5">
         <p className="text-sm font-medium">{editingId ? "Edit kategori" : "Kategori baru"}</p>
         <div className="space-y-1.5">
           <Label htmlFor="cat-name">Nama</Label>
@@ -83,7 +83,11 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="cat-type">Tipe</Label>
-          <Select id="cat-type" value={type} onChange={(e) => setType(e.target.value as CategoryType)}>
+          <Select
+            id="cat-type"
+            value={type}
+            onChange={(e) => setType(e.target.value as CategoryType)}
+          >
             {CATEGORY_TYPES.map((t) => (
               <option key={t} value={t}>
                 {t}
@@ -93,13 +97,22 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="cat-slug">Slug (opsional)</Label>
-          <Input id="cat-slug" value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="otomatis" />
+          <Input
+            id="cat-slug"
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
+            placeholder="otomatis"
+          />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="cat-desc">Deskripsi</Label>
-          <Textarea id="cat-desc" value={description} onChange={(e) => setDescription(e.target.value)} />
+          <Textarea
+            id="cat-desc"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
         </div>
-        {error ? <p className="text-sm text-destructive">{error}</p> : null}
+        {error ? <p className="text-destructive text-sm">{error}</p> : null}
         <div className="flex gap-2">
           <Button type="submit" disabled={loading} className="flex-1">
             {loading ? "Menyimpan…" : editingId ? "Simpan" : "Tambah"}
@@ -114,16 +127,16 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
 
       <div className="space-y-2">
         {categories.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Belum ada kategori.</p>
+          <p className="text-muted-foreground text-sm">Belum ada kategori.</p>
         ) : (
           categories.map((c) => (
             <div
               key={c.id}
-              className="flex items-center justify-between rounded-lg border border-border px-4 py-3"
+              className="border-border flex items-center justify-between rounded-lg border px-4 py-3"
             >
               <div>
                 <p className="text-sm font-medium">{c.name}</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   {c.type} · /{c.slug}
                 </p>
               </div>
@@ -132,7 +145,7 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
                   type="button"
                   onClick={() => startEdit(c)}
                   aria-label="Edit"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+                  className="text-muted-foreground hover:bg-muted hover:text-foreground inline-flex h-8 w-8 items-center justify-center rounded-md"
                 >
                   <Pencil className="h-4 w-4" />
                 </button>
@@ -140,7 +153,7 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
                   type="button"
                   onClick={() => onDelete(c.id)}
                   aria-label="Hapus"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                  className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive inline-flex h-8 w-8 items-center justify-center rounded-md"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>

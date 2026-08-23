@@ -12,7 +12,7 @@ export default async function SettingsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl">Pengaturan Situs</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="text-muted-foreground mt-1 text-sm">
           Identitas brand, kontak, dan sosial yang dipakai di seluruh situs.
         </p>
       </div>

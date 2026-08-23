@@ -22,7 +22,6 @@ export default async function EditServicePage({ params }: { params: Promise<{ id
           slug: service.slug,
           description: service.description ?? "",
           price: service.price ?? "",
-          ctaLabel: service.ctaLabel ?? "",
           ctaUrl: service.ctaUrl ?? "",
           status: service.status,
           order: String(service.order),

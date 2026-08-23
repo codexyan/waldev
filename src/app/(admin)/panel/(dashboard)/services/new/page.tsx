@@ -15,7 +15,6 @@ export default async function NewServicePage() {
           slug: "",
           description: "",
           price: "",
-          ctaLabel: "",
           ctaUrl: "",
           status: "active",
           order: "0",

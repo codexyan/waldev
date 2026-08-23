@@ -18,7 +18,7 @@ export default function TermsOfServicePage() {
       />
 
       <section className="mx-auto max-w-3xl px-6 py-16 sm:py-20">
-        <div className="prose max-w-none" data-reveal>
+        <div className="prose max-w-none">
           <p>
             Dengan menggunakan situs {SITE.name}, Anda menyetujui ketentuan di bawah ini. Harap
             dibaca dengan saksama sebelum melanjutkan.
@@ -35,7 +35,7 @@ export default function TermsOfServicePage() {
           <p>
             Seluruh konten dalam situs ini adalah milik {SITE.name} kecuali dinyatakan lain. Hak
             atas hasil pekerjaan proyek beralih kepada klien setelah pelunasan, sesuai ketentuan
-            pada kontrak masing masing.
+            pada kontrak masing-masing.
           </p>
 
           <h2>Tanggung jawab klien</h2>
@@ -47,7 +47,8 @@ export default function TermsOfServicePage() {
           <h2>Batasan tanggung jawab</h2>
           <p>
             Situs ini disediakan sebagaimana adanya. Kami tidak bertanggung jawab atas kerugian yang
-            timbul dari penggunaan informasi di situs ini di luar perjanjian kerja sama yang berlaku.
+            timbul dari penggunaan informasi di situs ini di luar perjanjian kerja sama yang
+            berlaku.
           </p>
 
           <h2>Perubahan ketentuan</h2>

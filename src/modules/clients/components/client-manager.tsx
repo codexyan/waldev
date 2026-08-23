@@ -97,7 +97,7 @@ export function ClientManager({
 
   return (
     <div className="grid gap-8 lg:grid-cols-[22rem_1fr]">
-      <form onSubmit={onSubmit} className="space-y-4 rounded-xl border border-border bg-card p-5">
+      <form onSubmit={onSubmit} className="border-border bg-card space-y-4 rounded-xl border p-5">
         <p className="text-sm font-medium">{editingId ? "Edit klien" : "Klien baru"}</p>
         <MediaPickerField label="Logo" value={logo} onChange={setLogo} />
         <div className="space-y-1.5">
@@ -121,17 +121,28 @@ export function ClientManager({
         </div>
         <div className="flex items-center gap-4">
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={isNda} onChange={(e) => setIsNda(e.target.checked)} className="h-4 w-4" />
+            <input
+              type="checkbox"
+              checked={isNda}
+              onChange={(e) => setIsNda(e.target.checked)}
+              className="h-4 w-4"
+            />
             NDA
           </label>
           <div className="flex items-center gap-2">
             <Label htmlFor="c-order" className="text-xs">
               Urutan
             </Label>
-            <Input id="c-order" type="number" value={order} onChange={(e) => setOrder(e.target.value)} className="h-8 w-20" />
+            <Input
+              id="c-order"
+              type="number"
+              value={order}
+              onChange={(e) => setOrder(e.target.value)}
+              className="h-8 w-20"
+            />
           </div>
         </div>
-        {error ? <p className="text-sm text-destructive">{error}</p> : null}
+        {error ? <p className="text-destructive text-sm">{error}</p> : null}
         <div className="flex gap-2">
           <Button type="submit" disabled={loading} className="flex-1">
             {loading ? "Menyimpan…" : editingId ? "Simpan" : "Tambah"}
@@ -146,17 +157,20 @@ export function ClientManager({
 
       <div className="space-y-2">
         {clients.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Belum ada klien.</p>
+          <p className="text-muted-foreground text-sm">Belum ada klien.</p>
         ) : (
           clients.map((c) => (
-            <div key={c.id} className="flex items-center justify-between rounded-lg border border-border px-4 py-3">
+            <div
+              key={c.id}
+              className="border-border flex items-center justify-between rounded-lg border px-4 py-3"
+            >
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded border border-border bg-muted">
+                <div className="border-border bg-muted flex h-10 w-10 items-center justify-center overflow-hidden rounded border">
                   {c.logo ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={c.logo.url} alt={c.name} className="h-full w-full object-contain" />
                   ) : (
-                    <span className="text-xs text-muted-foreground">·</span>
+                    <span className="text-muted-foreground text-xs">·</span>
                   )}
                 </div>
                 <div>
@@ -165,10 +179,20 @@ export function ClientManager({
                 </div>
               </div>
               <div className="flex gap-1">
-                <button type="button" onClick={() => startEdit(c)} aria-label="Edit" className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+                <button
+                  type="button"
+                  onClick={() => startEdit(c)}
+                  aria-label="Edit"
+                  className="text-muted-foreground hover:bg-muted hover:text-foreground inline-flex h-8 w-8 items-center justify-center rounded-md"
+                >
                   <Pencil className="h-4 w-4" />
                 </button>
-                <button type="button" onClick={() => onDelete(c.id)} aria-label="Hapus" className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive">
+                <button
+                  type="button"
+                  onClick={() => onDelete(c.id)}
+                  aria-label="Hapus"
+                  className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive inline-flex h-8 w-8 items-center justify-center rounded-md"
+                >
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>

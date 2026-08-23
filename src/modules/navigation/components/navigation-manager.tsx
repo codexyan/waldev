@@ -36,14 +36,26 @@ export function NavigationManager({
 
   return (
     <div className="grid gap-8 lg:grid-cols-2">
-      <div className="space-y-4 rounded-xl border border-border bg-card p-5">
-        <RepeatableFields label="Header menu" addLabel="Tambah item" fields={FIELDS} value={h} onChange={setH} />
+      <div className="border-border bg-card space-y-4 rounded-xl border p-5">
+        <RepeatableFields
+          label="Header menu"
+          addLabel="Tambah item"
+          fields={FIELDS}
+          value={h}
+          onChange={setH}
+        />
         <Button type="button" onClick={() => save("header", h)} disabled={busy === "header"}>
           {busy === "header" ? "Menyimpan…" : "Simpan Header"}
         </Button>
       </div>
-      <div className="space-y-4 rounded-xl border border-border bg-card p-5">
-        <RepeatableFields label="Footer menu" addLabel="Tambah item" fields={FIELDS} value={f} onChange={setF} />
+      <div className="border-border bg-card space-y-4 rounded-xl border p-5">
+        <RepeatableFields
+          label="Footer menu"
+          addLabel="Tambah item"
+          fields={FIELDS}
+          value={f}
+          onChange={setF}
+        />
         <Button type="button" onClick={() => save("footer", f)} disabled={busy === "footer"}>
           {busy === "footer" ? "Menyimpan…" : "Simpan Footer"}
         </Button>
