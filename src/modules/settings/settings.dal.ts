@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/server/db/client";
 import { settings } from "@/server/db/schema";
@@ -6,7 +7,12 @@ import { SITE_SETTINGS_DEFAULTS, type SettingsKey, type SiteSettings } from "./s
 const CACHE_KEY = "cache:site-settings";
 const CACHE_TTL = 300; // detik
 
-export async function getSiteSettings(): Promise<SiteSettings> {
+/**
+ * Dibungkus React `cache()` sehingga satu render hanya membaca sekali.
+ * Sebelumnya layout, halaman, dan panel CTA memanggilnya masing-masing; saat
+ * cache KV meleset, ketiganya menembak D1 bersamaan lalu saling menimpa.
+ */
+export const getSiteSettings = cache(async function getSiteSettings(): Promise<SiteSettings> {
   const { env } = getCloudflareContext();
 
   try {
@@ -32,7 +38,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     // abaikan kegagalan cache
   }
   return result;
-}
+});
 
 async function invalidateCache() {
   try {

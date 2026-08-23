@@ -1,17 +1,30 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
+import nextTypescript from "eslint-config-next/typescript";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({ baseDirectory: __dirname });
-
+/**
+ * Konfigurasi flat asli.
+ *
+ * Sebelumnya berkas ini memakai `FlatCompat` dari @eslint/eslintrc untuk
+ * membungkus konfigurasi gaya lama. Sejak eslint-config-next 16 konfigurasinya
+ * sudah flat, dan `package.json` miliknya tidak lagi mengekspos "./package.json"
+ * — jalur yang justru dibaca FlatCompat saat memvalidasi. Akibatnya `eslint .`
+ * mati total dengan "Converting circular structure to JSON", sehingga lint
+ * tidak pernah benar-benar jalan di proyek ini.
+ */
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-    ignores: [".next/**", ".open-next/**", "drizzle/**", "node_modules/**"],
+    ignores: [
+      ".next/**",
+      ".open-next/**",
+      ".wrangler/**",
+      "drizzle/**",
+      "node_modules/**",
+      // Dihasilkan ulang oleh `wrangler types`; menyunting isinya sia-sia.
+      "cloudflare-env.d.ts",
+    ],
   },
+  ...nextCoreWebVitals,
+  ...nextTypescript,
 ];
 
 export default eslintConfig;

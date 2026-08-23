@@ -54,5 +54,17 @@ pnpm wrangler secret put CRON_SECRET --config workers/cron-scheduler/wrangler.js
 Alternatif tanpa worker: jadwalkan cron eksternal (mis. cron-job.org) untuk `POST`
 ke URL tersebut dengan header `x-cron-secret`.
 
+## Data contoh untuk pengembangan lokal
+Beranda menampilkan harga layanan, testimoni, dan tombol WhatsApp hanya bila datanya
+ada di CMS. Supaya seluruh bagian terlihat saat dikembangkan:
+```bash
+node scripts/seed-dummy-lokal.mjs           # isi D1 lokal dengan data contoh
+node scripts/seed-dummy-lokal.mjs --bersih  # kembalikan ke keadaan kosong
+```
+Skrip ini selalu memakai flag `--local`, jadi tidak bisa menyentuh database produksi.
+**Nilainya fiktif** — nomor WhatsApp dan angka harga di dalamnya tidak boleh disalin ke
+Site Settings produksi. Isi nilai sebenarnya lewat `/panel/settings`, `/panel/services`,
+dan `/panel/testimonials` sebelum deploy.
+
 ## Struktur
 `src/app` (routing: `(public)` & `(admin)/panel`) · `src/modules` (domain per fitur) · `src/server` (db/auth/infra) · `src/components` (design system). Detail: [`docs/07-folder-standards.md`](./docs/07-folder-standards.md).

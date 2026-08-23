@@ -7,7 +7,7 @@ interface Env {
   CRON_SECRET: string;
 }
 
-export default {
+const handler = {
   async scheduled(
     _controller: unknown,
     env: Env,
@@ -21,3 +21,5 @@ export default {
     );
   },
 };
+
+export default handler;

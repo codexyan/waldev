@@ -206,9 +206,12 @@ export async function getArticleForEdit(id: string) {
     .innerJoin(tagsTable, eq(articleTags.tagId, tagsTable.id))
     .where(eq(articleTags.articleId, id));
 
-  let cover:
-    | { id: string; url: string; filename: string; kind: "image" | "pdf" | "document" }
-    | null = null;
+  let cover: {
+    id: string;
+    url: string;
+    filename: string;
+    kind: "image" | "pdf" | "document";
+  } | null = null;
   if (article.coverMediaId) {
     const m = await db
       .select({ id: media.id, url: media.url, filename: media.filename, kind: media.kind })

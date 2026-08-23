@@ -1,4 +1,4 @@
-import { and, asc, eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { slugify } from "@/lib/slug";
 import { getDb, type DB } from "@/server/db/client";
 import { clients, media } from "@/server/db/schema";
@@ -50,7 +50,10 @@ export async function createClient(data: ClientWriteData) {
 export async function updateClient(id: string, data: ClientWriteData) {
   const db = getDb();
   const slug = await ensureUniqueSlug(db, data.slug || data.name, id);
-  await db.update(clients).set({ ...coreValues(data), slug }).where(eq(clients.id, id));
+  await db
+    .update(clients)
+    .set({ ...coreValues(data), slug })
+    .where(eq(clients.id, id));
 }
 
 export async function deleteClient(id: string) {
