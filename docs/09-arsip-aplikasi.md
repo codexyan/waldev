@@ -72,7 +72,7 @@ Menu `Artikel` ditambahkan manual lewat Panel › Navigasi saat tulisannya diras
 ## 5. Halaman publik
 ### 5.1 Beranda
 Urutan bagian dari atas:
-1. **Hero.** Judul dari Pengaturan (`home_intro`; selama kosong dipakai `HOME_INTRO` di `src/lib/constants.ts`), kalimat pengantar `HOME_LEAD`, tombol *Lihat aplikasi* ke `#aplikasi`, dan tautan *Hubungi lewat email* (hanya bila email kontak diisi). Di bawahnya tangkapan layar utama dari aplikasi teratas di daftar yang punya sampul dan tidak berstatus *Tidak aktif*, dalam bingkai jendela, dengan keterangan "Aplikasi terbaru · {nama}". Bila tidak ada yang memenuhi, hero berhenti di tombol.
+1. **Hero.** Judul dari Pengaturan (`home_intro`; selama kosong dipakai `HOME_INTRO` di `src/lib/constants.ts`), kalimat pengantar `HOME_LEAD`, tombol *Lihat aplikasi* ke `#aplikasi`, dan tautan *Hubungi lewat email* (hanya bila email kontak diisi). Di bawahnya tangkapan layar utama dari aplikasi teratas di daftar yang punya sampul dan tidak berstatus *Tidak aktif*, ditampilkan sebagai kartu 3D *Rakit* (§16), dengan keterangan "Aplikasi terbaru · {nama}". Bila tidak ada yang memenuhi, hero berhenti di tombol.
 2. **Logo klien.** Satu baris logo dari modul Klien (§7.4) berlabel "Pernah bekerja sama dengan". Klien NDA tidak ikut, klien tanpa logo tampil sebagai nama, dan logo menaut ke situs web klien bila diisi. Bagian ini hilang bila kosong.
 3. **Daftar aplikasi** (`#aplikasi`). Satu baris per aplikasi yang tayang: **nama · satu kalimat · status · bulan-tahun catatan terakhir**. Urutan: catatan terakhir terbaru di atas; aplikasi berstatus *Tidak aktif* selalu di bawah. Bila belum ada aplikasi tayang: "Aplikasi pertama masih dalam pembuatan."
 4. **Tulisan terbaru.** 3 tulisan terbit terbaru dengan kartu yang sama seperti `/articles`, ditambah tautan *Semua tulisan*. Bagian ini hilang bila belum ada tulisan terbit.
@@ -276,3 +276,22 @@ Harga, WhatsApp, testimoni, formulir prospek/kontak, beranda berbentuk linimasa,
 
 ## 15. Riwayat revisi
 - **2026-09-12 malam · Beranda & klien.** Pemilik meminta beranda berisi hero, aplikasi, logo klien, dan tulisan. Pilihannya: hero dengan judul, ajakan, dan tangkapan layar; logo klien tepat di bawah hero; modul Klien dipulihkan; tulisan contoh yang sedang tayang dibiarkan. Diterapkan di §2, §4, §5.1, §6.4–6.6, §7.4, §8.3, §9, §11, dan §13.
+- **2026-09-13 · Hero 3D.** Pemilik meminta hero dikombinasikan dengan Three.js. Dari tiga konsep di halaman pratinjau (Rakit, Lembar, Tumpuk), pemilik memilih Rakit. Spesifikasi di §16; §5.1 diperbarui.
+
+## 16. Hero 3D *Rakit*
+Tangkapan layar aplikasi terbaru di hero ditampilkan sebagai kartu 3D yang dirakit di depan pengunjung, sebagai wujud tagline *Build Digital Products*. Bingkai jendela bertitik tiga pada hero sebelumnya dihapus.
+
+**Urutan gerak** (sekali saat halaman dibuka, sekitar dua detik):
+1. Garis rangka kartu tergambar dengan warna aksen (0–0,7 detik).
+2. Isi layar terisi dari atas ke bawah, ditandai garis pindai tipis (0,42–1,25 detik).
+3. Kartu miring, terangkat, dan bayangannya muncul, sementara garis rangka memudar ke warna garis biasa (1,05–1,9 detik).
+
+Setelah itu kartu diam dan kanvas berhenti menggambar. Kartu hanya ikut miring sampai sekitar 5° saat kursor bergerak di atasnya.
+
+**Status aplikasi:** aplikasi berstatus *Sedang dibangun* berhenti di langkah 2 dengan isi 46%, garis rangka tetap berwarna aksen, dan tanpa kemiringan. Aplikasi *Tidak aktif* tidak pernah dipajang di hero (§5.1).
+
+**Kapan Three.js dimuat:** hanya bila layar ≥ 768 px, kursornya presisi (`pointer: fine`), WebGL tersedia, dan pengunjung tidak meminta gerak dikurangi. Modulnya dimuat lewat dynamic import setelah halaman selesai dimuat. Di luar kondisi itu hero memakai gambar statis.
+
+**Gambar statis tetap ada.** `<img>` tangkapan layar tetap berada di HTML sebagai elemen pertama yang tampil dan sebagai cadangan tanpa JavaScript. Kanvas menggantikannya di wadah 16:10 yang sama setelah siap, jadi tata letak tidak bergeser.
+
+**Warna** diambil dari token tema (`--surface`, `--border`, `--primary`) dan diperbarui saat tema berganti. **Berkas:** `src/components/home/rakit-scene.ts` (adegan Three.js), `src/components/home/hero-rakit.tsx` (komponen klien), `src/components/home/hero.tsx`, beranda, dan dependensi `three`. Halaman konsep: artifact "Hero 3D WalDev".

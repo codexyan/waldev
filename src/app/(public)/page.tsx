@@ -44,7 +44,12 @@ export default async function HomePage() {
         email={settings.contact_email || null}
         showcase={
           showcase?.coverUrl
-            ? { name: showcase.name, slug: showcase.slug, coverUrl: showcase.coverUrl }
+            ? {
+                name: showcase.name,
+                slug: showcase.slug,
+                coverUrl: showcase.coverUrl,
+                status: showcase.status,
+              }
             : null
         }
       />
