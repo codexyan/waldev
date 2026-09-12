@@ -57,8 +57,9 @@ npx wrangler versions deploy <uuid-penuh>@100% -y  # tayangkan
 ```
 Jalankan setiap kali konten publik di panel atau kode halaman publik berubah. Cara kerja,
 pemeriksaan, dan batasannya ada di [`docs/10-rencana-tayang.md`](./docs/10-rencana-tayang.md)
-bagian 5. Selama Workers Builds masih menjalankan `npx wrangler deploy`, push ke `main` ikut
-menimpa halaman statis (docs/10 langkah 1).
+bagian 5. Build dari push ke `main` sengaja digagalkan: skrip `build` berhenti bila
+`WORKERS_CI=1` (dipasang Workers Builds), jadi Cloudflare tidak mengunggah versi tanpa
+halaman statis. Detail dan cara melepasnya ada di docs/10 langkah 1 dan 10.
 
 ### Kenapa `build` memakai `--webpack`
 Sejak Next.js 16, `next build` memakai Turbopack secara default. Bundel server yang

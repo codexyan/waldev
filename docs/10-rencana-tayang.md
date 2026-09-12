@@ -1,6 +1,6 @@
 # 10 · Rencana Tayang: Arsip Aplikasi ke Produksi
 
-**Status:** Berjalan. Situs baru tayang sejak 12 September 2026 pukul 15.49 WITA, dan pada hari yang sama halaman publiknya beralih ke berkas statis (versi `5cbe6ca8`). Tersisa memutus auto-deploy (langkah 1), pengisian konten (6), pemantauan (8), dan migrasi 0003 (9) · **Dibuat:** 2026-09-12
+**Status:** Berjalan. Situs baru tayang sejak 12 September 2026 pukul 15.49 WITA, dan pada hari yang sama halaman publiknya beralih ke berkas statis (versi `5cbe6ca8`). Build dari Workers Builds diblokir di kode (langkah 1). Tersisa pengisian konten (6), pemantauan (8), dan migrasi 0003 (9) · **Dibuat:** 2026-09-12
 **Terkait:** [09 · Perombakan](./09-arsip-aplikasi.md) §9 dan §11 (Tahap 5) · README bagian "Menerbitkan ke produksi"
 
 Aturan dasar: setiap langkah yang mengubah produksi hanya dijalankan setelah pemilik menyetujui langkah itu tepat sebelum dikerjakan.
@@ -9,9 +9,9 @@ Aturan dasar: setiap langkah yang mengubah produksi hanya dijalankan setelah pem
 | Hal | Kondisi (2026-09-12, setelah halaman statis tayang) |
 |---|---|
 | Worker produksi | Versi `5cbe6ca8-cb37-47d5-81ce-296890099623`: situs portofolio dengan halaman publik statis |
-| Kode di GitHub `main` | Tertinggal di `c68f370` (situs portofolio tanpa halaman statis). Commit sesudahnya masih lokal |
+| Kode di GitHub `main` | Sama dengan kode lokal. Berkas statisnya tidak disimpan di repo; dibuat saat `pnpm terbitkan` |
 | D1 produksi | Migrasi 0000, 0001, dan 0002 sudah diterapkan; 0003 tertunda |
-| Auto-deploy | Masih aktif: push ke `main` terpasang ke produksi sekitar 2,5 menit kemudian dan menimpa halaman statis |
+| Auto-deploy | Push ke `main` tetap memicu Workers Builds, tetapi skrip `build` berhenti karena `WORKERS_CI=1`, jadi tidak ada versi yang diunggah (langkah 1) |
 | Konten produksi | iaUndang tayang, SIM-KGB tersembunyi. Belum ada entri WalDev, profil pembuat, maupun kalimat pengantar |
 
 ### Insiden 12 September
@@ -31,17 +31,20 @@ Penyebabnya: catatan lama menyebut push ke `main` tidak memicu deploy, dan hal i
 - Teks publik ditulis ulang tanpa kata "saya", dengan pelaku yang disebut langsung.
 - Versi `5cbe6ca8` (halaman statis dan teks baru) di-deploy 100% atas persetujuan pemilik. Sesudahnya delapan URL publik membalas 200, 20 permintaan beruntun ke `/` dan `/apps/iaundang` tidak ada yang gagal, dan respons `/` tidak lagi membawa header Next.js.
 - Versi `b56c7b28` adalah situs yang sama tanpa halaman statis. Kembali ke sana berarti Error 1102 kembali, jadi pakai hanya bila semua versi statis rusak.
+- Pukul 20.55 WITA pemilik mengganti Deploy command menjadi `npx wrangler versions upload`, lalu `22352fc` di-push. Build tetap tayang: versi `b5bec1b0-05c9-4f2d-a8ac-b5471ca43282` diunggah pukul 20.56.49 WITA dan di-deploy 100% dua detik kemudian. Pemantau push mengembalikan `5cbe6ca8` pukul 20.57.30 WITA, jadi versi tanpa halaman statis melayani sekitar 39 detik. Pola unggah lalu deploy itu cocok dengan `opennextjs-cloudflare deploy`, yang kemungkinan terpasang di Build command.
+- Sebagai gantinya, skrip `build` diberi pengaman yang menghentikan build di Workers Builds (langkah 1).
 
 ## 2. Prinsip
 - **Menambah dulu, menghapus paling akhir.** 0001 dan 0002 hanya menambah tabel dan baris, jadi situs lama tidak terganggu dan rollback tetap mungkin. 0003 menghapus tabel lama dan dijalankan terakhir.
 - **Konten disiapkan sebelum pengunjung melihat situs baru.** Versi baru diunggah sebagai pratinjau tanpa trafik. Pratinjau memakai D1 dan R2 produksi yang sama, jadi pemilik bisa mengisi konten di sana sementara situs lama tetap melayani pengunjung.
 - **Kode di `main` harus selalu aman untuk skema produksi.** Karena itu 0001 dan 0002 diterapkan sebelum push berikutnya. Seandainya auto-deploy ternyata masih aktif, situs baru tayang dengan arsip kosong, bukan error.
 - **Yang tayang harus hasil `pnpm terbitkan`.** Build lain tidak memuat halaman statis.
+- **Setiap push dipantau.** Cek versi aktif selama sekitar lima menit dan siap mengembalikan versi statis.
 
 ## 3. Langkah
 | # | Langkah | Pelaksana | Dampak ke produksi | Bisa dibatalkan |
 |---|---|---|---|---|
-| 1 | Putus deploy otomatis Workers Builds | Pemilik | Pengaturan | Ya |
+| 1 | Blokir deploy dari Workers Builds | Claude | Build CI gagal | Ya |
 | 2 | Cadangkan D1 produksi | Claude | Tidak ada (hanya membaca) | – |
 | 3 | Terapkan 0001 + 0002 | Claude | Menambah tabel dan baris | Ya |
 | 4 | Siapkan kode untuk masa pratinjau, lalu push | Claude | Tidak ada bila auto-deploy mati | Ya |
@@ -50,14 +53,18 @@ Penyebabnya: catatan lama menyebut push ke `main` tidak memicu deploy, dan hal i
 | 7 | Pindahkan 100% trafik ke versi baru | Claude | Situs baru tayang | Ya, lewat rollback |
 | 8 | Pantau beberapa hari | Claude + pemilik | Tidak ada | – |
 | 9 | Terapkan 0003 | Claude | Menghapus tabel modul jasa | **Tidak** |
-| 10 | Auto-deploy tetap mati selama halaman publik dibuat lokal | Pemilik | Pengaturan | Ya |
+| 10 | Pengaman build CI tetap terpasang selama halaman publik dibuat lokal | Claude + pemilik | Tidak ada | Ya |
 
-### 1 · Putus deploy otomatis
-Pengaturan yang dimatikan pemilik pada 12 September tidak menghentikan deploy: push `c68f370` tetap terpasang. Dokumentasi Workers Builds tidak menyebut tombol untuk mematikan build otomatis. Yang bisa dipakai, di Dashboard Cloudflare › Workers & Pages › `waldev` › Settings › Build:
-- **Disarankan:** ganti **Deploy command** dari `npx wrangler deploy` menjadi `npx wrangler versions upload`. Push ke `main` tetap dibangun, tetapi hanya menjadi versi pratinjau tanpa trafik. Mudah dikembalikan.
-- **Alternatif:** putuskan repositori lewat **Git repository › Manage**.
+### 1 · Blokir deploy dari Workers Builds
+Dua cara lewat dashboard tidak menghentikan deploy: pengaturan yang dimatikan pemilik pada 12 September siang, lalu mengganti **Deploy command** menjadi `npx wrangler versions upload` pada malam harinya. Dokumentasi Workers Builds juga tidak menyebut tombol untuk mematikan build otomatis.
 
-Cara memastikan, setelah pemilik mengabari: push berikutnya diikuti `npx wrangler deployments status` selama sekitar lima menit. Versi yang menerima 100% harus tetap versi statis terakhir. Bila berubah, segera `npx wrangler versions deploy <uuid-versi-statis>@100% -y` dan kabari pemilik.
+Karena itu pengamannya dipasang di kode. Skrip `build` di `package.json` menjalankan `scripts/tolak-build-ci.mjs` lebih dulu. Workers Builds memasang variabel `WORKERS_CI=1` di setiap build, dan bila variabel itu ada, skrip berhenti dengan galat sebelum `next build` berjalan. OpenNext memanggil skrip `build` ini, jadi build di Cloudflare gagal sebelum ada versi yang diunggah, apa pun isi Build command dan Deploy command. Build lokal, `pnpm terbitkan`, dan `pnpm dev` tidak terpengaruh.
+
+Konsekuensinya, setiap push tercatat sebagai build gagal di dashboard Cloudflare.
+
+Cara memastikan setelah push: pantau `npx wrangler deployments status` dan `npx wrangler versions list` selama sekitar lima menit. Tidak boleh ada versi baru, dan versi yang menerima 100% tetap versi statis terakhir. Bila berubah, segera `npx wrangler versions deploy <uuid-versi-statis>@100% -y`.
+
+Cara yang lebih tuntas, dilakukan pemilik: cabut akses aplikasi GitHub Cloudflare Workers and Pages ke repo `codexyan/waldev` (GitHub › Settings › Applications).
 
 ### 2 · Cadangan
 Buat folder `../waldev-cadangan` di luar repo lebih dulu, supaya cadangan tidak ikut ter-commit.
@@ -126,12 +133,13 @@ npx wrangler d1 migrations apply waldev-db --remote
 ```
 Setelah ini versi 23 Agustus tidak bisa dipakai lagi karena tabelnya sudah dihapus.
 
-### 10 · Auto-deploy
-Build di Workers Builds tidak menjalankan `pnpm terbitkan`, jadi setiap deploy dari sana menayangkan situs tanpa halaman statis dan Error 1102 kembali. Auto-deploy baru boleh dinyalakan lagi bila pembuatan halaman statis dipindah ke build CI atau Worker naik ke paket berbayar.
+### 10 · Pengaman build CI
+Build di Workers Builds tidak menjalankan `pnpm terbitkan`, jadi setiap deploy dari sana menayangkan situs tanpa halaman statis dan Error 1102 kembali. Pengaman di langkah 1 baru boleh dilepas bila pembuatan halaman statis dipindah ke build CI atau Worker naik ke paket berbayar. Caranya: tambahkan variabel `IZINKAN_BUILD_CI=1` di Settings › Build › Build variables and secrets, atau hapus pemanggilan `scripts/tolak-build-ci.mjs` dari skrip `build`.
 
 ## 4. Jalan mundur
 | Setelah langkah | Cara mundur |
 |---|---|
+| 1 | Hapus pemanggilan `scripts/tolak-build-ci.mjs` dari skrip `build` |
 | 3 | Tidak perlu: situs lama tidak memakai tabel baru |
 | 4 | Revert commit bila bermasalah |
 | 7 | Deploy ulang versi statis sebelumnya: `npx wrangler versions deploy <uuid>@100% -y`. `b56c7b28` hanya bila semua versi statis rusak (Error 1102 kembali). Situs studio lama: `npx wrangler rollback 63013654-9100-459e-8885-19472b54c50b -y` |
@@ -158,4 +166,4 @@ Batasan:
 - Isian panel baru tampil di situs setelah ketiga perintah di atas.
 - Panel, login, dan API tetap dirender Worker, jadi masih bisa terkena Error 1102. Pada 12 September data yang disimpan tetap masuk; muat ulang dan periksa sebelum mengisi ulang.
 - Tautan internal situs publik memakai `StaticLink` (`<a>` biasa), bukan `next/link`, supaya navigasi tidak meminta data RSC ke Worker.
-- `pnpm deploy` dan deploy dari Workers Builds tidak menjalankan `terbitkan`, jadi hasilnya tanpa halaman statis.
+- `pnpm deploy` tidak menjalankan `terbitkan`, jadi hasilnya tanpa halaman statis. Build di Workers Builds sengaja digagalkan (langkah 1).

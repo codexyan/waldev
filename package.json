@@ -5,7 +5,7 @@
   "description": "WalDev — arsip aplikasi (situs publik + CMS) di Cloudflare",
   "scripts": {
     "dev": "next dev",
-    "build": "next build --webpack",
+    "build": "node scripts/tolak-build-ci.mjs && next build --webpack",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
