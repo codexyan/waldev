@@ -154,7 +154,7 @@ pnpm terbitkan                                     # build, lalu render halaman 
 npx wrangler versions upload                       # versi baru, 0% trafik
 npx wrangler versions deploy <uuid-penuh>@100% -y  # tayangkan setelah pratinjau dicek
 ```
-Tambahkan `--lewati-build` (`node scripts/terbitkan.mjs --lewati-build`) bila hanya konten yang berubah dan build terakhir masih sesuai kode.
+`--lewati-build` (`node scripts/terbitkan.mjs --lewati-build`) hanya untuk mengulang render yang gagal tepat setelah build. Setelah penerbitan berhasil, `.open-next/assets` berisi halaman statis yang dilayani lebih dulu oleh `wrangler dev`, jadi perubahan konten wajib lewat build penuh. Skrip menolak `--lewati-build` selama `index.html` hasil render lama masih ada.
 
 Cara kerja `scripts/terbitkan.mjs`:
 1. Build OpenNext.

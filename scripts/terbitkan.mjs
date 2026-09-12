@@ -2,13 +2,18 @@
  * Render halaman publik WalDev menjadi berkas statis di .open-next/assets.
  *
  *   node scripts/terbitkan.mjs                 # build OpenNext, lalu render
- *   node scripts/terbitkan.mjs --lewati-build  # pakai hasil build yang sudah ada
+ *   node scripts/terbitkan.mjs --lewati-build  # ulangi render yang gagal, tanpa build ulang
  *
  * Kenapa: Worker produksi ada di paket Workers Free yang membatasi CPU 10 ms per
  * permintaan, sedangkan satu halaman Next.js di situs ini butuh sekitar 250 ms. Permintaan
  * yang cocok dengan berkas di Workers Static Assets dilayani tanpa menjalankan Worker, jadi
  * halaman publik dirender di komputer ini (tanpa batas CPU) memakai data produksi, lalu
  * disimpan sebagai berkas statis. Panel dan API tetap dilayani Worker.
+ *
+ * `--lewati-build` hanya aman tepat setelah build yang render-nya gagal. Setelah penerbitan
+ * berhasil, halaman statis hasil render ada di .open-next/assets dan dilayani lebih dulu oleh
+ * wrangler dev, sehingga render tanpa build hanya menyalin halaman lama. Karena itu skrip
+ * menolak `--lewati-build` selama index.html lama masih ada; build baru membersihkannya.
  *
  * Skrip ini hanya MEMBACA D1 dan R2 produksi (lihat wrangler.terbit.jsonc) dan tidak
  * men-deploy apa pun. Hasilnya baru tayang setelah diunggah (`npx wrangler versions upload`)
@@ -131,9 +136,15 @@ async function render(staging) {
 }
 
 async function main() {
-  if (!process.argv.includes("--lewati-build")) jalankan("pnpm", ["run", "cf:build"]);
+  const lewatiBuild = process.argv.includes("--lewati-build");
+  if (!lewatiBuild) jalankan("pnpm", ["run", "cf:build"]);
   if (!existsSync(join(ASSETS, "BUILD_ID"))) {
     throw new Error("Hasil build OpenNext tidak ditemukan. Jalankan tanpa --lewati-build.");
+  }
+  if (lewatiBuild && existsSync(join(ASSETS, "index.html"))) {
+    throw new Error(
+      "Hasil render sebelumnya masih ada di .open-next/assets dan akan dilayani sebagai halaman lama. Jalankan tanpa --lewati-build.",
+    );
   }
 
   console.log("Menyalakan wrangler dev dengan D1 dan R2 produksi (hanya dibaca)…");
