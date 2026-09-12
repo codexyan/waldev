@@ -1,6 +1,6 @@
 # 10 · Rencana Tayang: Arsip Aplikasi ke Produksi
 
-**Status:** Draf, menunggu persetujuan pemilik · **Tanggal:** 2026-09-12
+**Status:** Berjalan. Situs baru tayang sejak 12 September 2026 pukul 15.49 WITA; tersisa pengisian konten (langkah 6), pemantauan (8), dan migrasi 0003 (9) · **Dibuat:** 2026-09-12
 **Terkait:** [09 · Perombakan](./09-arsip-aplikasi.md) §9 dan §11 (Tahap 5)
 
 Aturan dasar: setiap langkah yang mengubah produksi hanya dijalankan setelah pemilik menyetujui langkah itu tepat sebelum dikerjakan.
@@ -18,6 +18,13 @@ Aturan dasar: setiap langkah yang mengubah produksi hanya dijalankan setelah pem
 Commit Tahap 2–4 yang di-push ke `main` terpasang otomatis sebelum migrasi D1 diterapkan. Sejak sekitar 13.32 WITA panel produksi, dan sejak sekitar 13.52 WITA halaman publik (`/`, `/about`, `/apps/*`, `/sitemap.xml`), membalas 500 karena tabel `apps` belum ada. Situs dipulihkan sekitar 15.00 WITA dengan `wrangler rollback` ke versi 23 Agustus. Tidak ada data yang berubah atau hilang.
 
 Penyebabnya: catatan lama menyebut push ke `main` tidak memicu deploy, dan hal itu tidak dicek ulang sebelum push.
+
+### Perkembangan sesudahnya (12 September sore)
+- Pemilik mematikan auto-deploy di dashboard, tetapi push `c68f370` pukul 15.47 WITA tetap terpasang otomatis pukul 15.49 WITA (versi `b56c7b28-03b7-466c-80d1-aba00a580819`). Karena 0001 dan 0002 sudah diterapkan lebih dulu (langkah 3), situs tidak error: situs arsip aplikasi langsung tayang dengan arsip kosong.
+- Pemilik memutuskan situs baru tetap tayang. Langkah 5 (pratinjau) dan 7 (pindah trafik) tidak dipakai; konten diisi langsung di panel produksi.
+- Tiga artikel contoh lama diubah menjadi draf supaya tidak tampil di `/articles`.
+- Selama 0003 belum diterapkan, jalan mundur tetap `npx wrangler rollback 63013654-9100-459e-8885-19472b54c50b -y`.
+- Auto-deploy masih aktif, jadi push ke `main` berarti tayang.
 
 ## 2. Prinsip
 - **Menambah dulu, menghapus paling akhir.** 0001 dan 0002 hanya menambah tabel dan baris, jadi situs lama tidak terganggu dan rollback tetap mungkin. 0003 menghapus tabel lama dan dijalankan terakhir.
