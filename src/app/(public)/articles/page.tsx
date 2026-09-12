@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
-import { ArrowRight, BookOpen } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { ArrowLink } from "@/components/ui/arrow-link";
 import { SECTION, SHELL } from "@/components/ui/shell";
 import { StaticLink } from "@/components/ui/static-link";
 import { listPublishedArticles } from "@/modules/articles/article.dal";
+import {
+  ArticleCard,
+  ArticleCover,
+  ArticleMeta,
+  type ArticleCardItem,
+} from "@/modules/articles/components/article-card";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -15,21 +21,6 @@ export const metadata: Metadata = {
     "Tulisan seputar pembuatan aplikasi WalDev, misalnya alasan di balik sebuah keputusan teknis atau kendala yang muncul saat membangun.",
   alternates: { canonical: "/articles" },
 };
-
-function formatDate(value: Date | null): string {
-  if (!value) return "";
-  return new Intl.DateTimeFormat("id-ID", { dateStyle: "long" }).format(value);
-}
-
-interface ArticleItem {
-  title: string;
-  slug: string;
-  summary: string | null;
-  readingTime: number;
-  publishedAt: Date | null;
-  categoryName: string | null;
-  coverUrl: string | null;
-}
 
 export default async function ArticlesPage() {
   const { rows } = await listPublishedArticles({ limit: 12 });
@@ -67,53 +58,13 @@ export default async function ArticlesPage() {
   );
 }
 
-function Meta({ article, className }: { article: ArticleItem; className?: string }) {
-  return (
-    <span className={cn("text-faint flex flex-wrap items-center gap-2 text-xs", className)}>
-      {article.categoryName ? (
-        <>
-          <span>{article.categoryName}</span>
-          <span aria-hidden>·</span>
-        </>
-      ) : null}
-      <span>{article.readingTime} menit baca</span>
-      {article.publishedAt ? (
-        <>
-          <span aria-hidden>·</span>
-          <span>{formatDate(article.publishedAt)}</span>
-        </>
-      ) : null}
-    </span>
-  );
-}
-
-function Cover({ url, className }: { url: string | null; className?: string }) {
-  return (
-    <div
-      className={cn(
-        "border-border bg-surface group-hover:border-primary/40 overflow-hidden rounded-xl border transition-colors",
-        className,
-      )}
-    >
-      {url ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={url} alt="" className="aspect-[16/10] w-full object-cover object-top" />
-      ) : (
-        <div className="flex aspect-[16/10] w-full items-center justify-center">
-          <BookOpen className="text-faint h-8 w-8" aria-hidden />
-        </div>
-      )}
-    </div>
-  );
-}
-
-function FeaturedArticle({ article }: { article: ArticleItem }) {
+function FeaturedArticle({ article }: { article: ArticleCardItem }) {
   return (
     <StaticLink
       href={`/articles/${article.slug}`}
       className="group grid gap-8 lg:grid-cols-2 lg:items-center lg:gap-12"
     >
-      <Cover url={article.coverUrl} />
+      <ArticleCover url={article.coverUrl} />
       <div>
         <p className="label text-link">Tulisan terbaru</p>
         <h2 className="display mt-3 text-2xl text-balance sm:text-[1.75rem]">{article.title}</h2>
@@ -122,7 +73,7 @@ function FeaturedArticle({ article }: { article: ArticleItem }) {
             {article.summary}
           </p>
         ) : null}
-        <Meta article={article} className="mt-4" />
+        <ArticleMeta article={article} className="mt-4" />
         <span className="text-link mt-4 inline-flex items-center gap-1.5 font-medium">
           Baca selengkapnya
           <ArrowRight
@@ -131,26 +82,6 @@ function FeaturedArticle({ article }: { article: ArticleItem }) {
           />
         </span>
       </div>
-    </StaticLink>
-  );
-}
-
-function ArticleCard({ article }: { article: ArticleItem }) {
-  return (
-    <StaticLink href={`/articles/${article.slug}`} className="group flex flex-col">
-      <Cover url={article.coverUrl} className="mb-4" />
-      <Meta article={article} />
-      <h2 className="display-sm mt-2 text-base text-balance">{article.title}</h2>
-      {article.summary ? (
-        <p className="text-muted-foreground mt-2 line-clamp-3 leading-relaxed">{article.summary}</p>
-      ) : null}
-      <span className="text-link mt-3 inline-flex items-center gap-1.5 font-medium">
-        Baca tulisan
-        <ArrowRight
-          className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
-          aria-hidden
-        />
-      </span>
     </StaticLink>
   );
 }

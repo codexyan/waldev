@@ -13,6 +13,7 @@ export const PERMISSIONS = [
   "app.create",
   "app.update", // termasuk menulis catatan aplikasi
   "app.delete",
+  "client.manage", // logo klien di beranda
   "taxonomy.manage", // categories & tags
   "media.create",
   "media.delete",
@@ -41,6 +42,7 @@ export const ROLE_PERMISSIONS: Record<RoleName, Permission[] | "*"> = {
     "app.create",
     "app.update",
     "app.delete",
+    "client.manage",
     "taxonomy.manage",
     "media.create",
     "media.delete",

@@ -126,8 +126,8 @@ npx wrangler versions deploy <uuid-penuh>@100% -y
 
 Selama 0003 belum diterapkan, situs studio lama masih bisa dipulihkan dengan `npx wrangler rollback 63013654-9100-459e-8885-19472b54c50b -y`.
 
-### 9 · Migrasi 0003 (tidak bisa dibatalkan)
-Hanya setelah situs baru stabil beberapa hari, dan dengan persetujuan eksplisit pemilik saat itu. Pastikan `npx wrangler d1 migrations list waldev-db --remote` hanya menampilkan 0003, lalu:
+### 9 · Migrasi 0003 + 0004 (0003 tidak bisa dibatalkan)
+Hanya setelah situs baru stabil beberapa hari, dan dengan persetujuan eksplisit pemilik saat itu. 0003 direvisi pada 12 September malam, sebelum pernah diterapkan di produksi: tabel `clients`, izin `client.manage`, dan artikel contoh yang sedang tayang tidak lagi dihapus. 0004 membuat tabel `clients` dengan `IF NOT EXISTS`, jadi di produksi tidak mengubah apa pun (docs/09 §9.2). Pastikan `npx wrangler d1 migrations list waldev-db --remote` hanya menampilkan 0003 dan 0004, lalu:
 ```bash
 npx wrangler d1 migrations apply waldev-db --remote
 ```

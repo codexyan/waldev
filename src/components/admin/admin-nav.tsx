@@ -6,6 +6,7 @@ import {
   AppWindow,
   FileText,
   FolderTree,
+  Handshake,
   History,
   Image as ImageIcon,
   LayoutDashboard,
@@ -36,6 +37,7 @@ const GROUPS: { label: string | null; items: NavItem[] }[] = [
     items: [
       { href: "/apps", label: "Aplikasi", icon: AppWindow },
       { href: "/articles", label: "Tulisan", icon: FileText },
+      { href: "/clients", label: "Klien", icon: Handshake },
       { href: "/media", label: "Media", icon: ImageIcon },
       { href: "/categories", label: "Kategori", icon: FolderTree },
       { href: "/tags", label: "Tag", icon: Tag },

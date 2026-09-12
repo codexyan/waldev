@@ -14,8 +14,9 @@ export const SITE = {
  */
 export const HOME_INTRO = "Aplikasi web buatan WalDev.";
 
-/** Kalimat di bawah judul beranda: ajakan membuka halaman aplikasi. */
-export const HOME_LEAD = "Klik nama aplikasi untuk melihat fitur dan catatan pembuatannya.";
+/** Kalimat pengantar di hero beranda, di bawah judul. */
+export const HOME_LEAD =
+  "Setiap aplikasi punya halaman sendiri berisi penjelasan, fitur, dan catatan pembuatannya.";
 
 /**
  * Basis rute admin (rahasia, tidak tertaut di publik).

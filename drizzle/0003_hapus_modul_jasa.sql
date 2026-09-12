@@ -2,12 +2,17 @@
 -- Di produksi hanya boleh diterapkan setelah kode arsip aplikasi tayang dan terbukti jalan,
 -- dengan persetujuan eksplisit pemilik saat itu, dan setelah 0002_salin_karya diterapkan.
 --
--- 1) Bersihkan data yang tidak dipakai lagi (bagian 6.5 dan 13).
-DELETE FROM articles WHERE slug IN ('membangun-web-cepat-cloudflare', 'prinsip-desain-produk-digital', 'otomasi-bisnis-dengan-workflow');--> statement-breakpoint
+-- Direvisi 2026-09-12 malam, sebelum pernah diterapkan di produksi: tabel `clients` dan izin
+-- `client.manage` tidak lagi dihapus karena logo klien kembali tampil di beranda, dan artikel
+-- contoh yang sudah tayang lagi dipertahankan. Di D1 lokal versi lama sudah terlanjur jalan;
+-- 0004_pulihkan_klien membuat ulang tabel `clients` di sana.
+--
+-- 1) Bersihkan data yang tidak dipakai lagi (bagian 6.6 dan 13).
+DELETE FROM articles WHERE slug IN ('membangun-web-cepat-cloudflare', 'prinsip-desain-produk-digital', 'otomasi-bisnis-dengan-workflow') AND status <> 'published';--> statement-breakpoint
 DELETE FROM seo_meta WHERE entity_type IN ('portfolio', 'service', 'client') OR (entity_type = 'article' AND entity_id NOT IN (SELECT id FROM articles));--> statement-breakpoint
 DELETE FROM categories WHERE type <> 'article';--> statement-breakpoint
 DELETE FROM settings WHERE key = 'contact_whatsapp';--> statement-breakpoint
-DELETE FROM permissions WHERE key IN ('portfolio.create', 'portfolio.update', 'portfolio.delete', 'service.create', 'service.update', 'service.delete', 'testimonial.manage', 'client.manage', 'lead.read', 'lead.update');--> statement-breakpoint
+DELETE FROM permissions WHERE key IN ('portfolio.create', 'portfolio.update', 'portfolio.delete', 'service.create', 'service.update', 'service.delete', 'testimonial.manage', 'lead.read', 'lead.update');--> statement-breakpoint
 DELETE FROM roles WHERE name = 'sales' AND NOT EXISTS (SELECT 1 FROM user WHERE user.role_id = roles.id);--> statement-breakpoint
 -- 2) Hapus tabel modul jasa. Tabel anak dihapus sebelum induknya supaya aksi foreign key
 --    tidak pernah berjalan terhadap tabel yang masih dirujuk.
@@ -21,5 +26,4 @@ DROP TABLE `portfolios`;--> statement-breakpoint
 DROP TABLE `service_faqs`;--> statement-breakpoint
 DROP TABLE `service_features`;--> statement-breakpoint
 DROP TABLE `service_workflow_steps`;--> statement-breakpoint
-DROP TABLE `services`;--> statement-breakpoint
-DROP TABLE `clients`;
+DROP TABLE `services`;

@@ -452,7 +452,10 @@ export async function deleteAppNote(noteId: string) {
 
 /* -------------------------------- Public --------------------------------- */
 
-/** Daftar arsip di beranda: aktivitas terbaru di atas, aplikasi pensiun selalu di bawah. */
+/**
+ * Daftar aplikasi di beranda: aktivitas terbaru di atas, aplikasi pensiun selalu di bawah.
+ * `coverUrl` dipakai hero untuk memajang tangkapan layar aplikasi teratas.
+ */
 export async function listPublishedApps() {
   const db = getDb();
   const rows = await db
@@ -462,10 +465,12 @@ export async function listPublishedApps() {
       tagline: apps.tagline,
       status: apps.status,
       createdAt: apps.createdAt,
+      coverUrl: media.url,
       lastNoteAt,
       lastArticleAt,
     })
     .from(apps)
+    .leftJoin(media, eq(apps.coverMediaId, media.id))
     .where(eq(apps.isPublished, true));
 
   return rows.map(withLastActivity).sort((a, b) => {

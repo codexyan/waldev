@@ -177,6 +177,29 @@ export const technologies = sqliteTable("technologies", {
 });
 
 /* ================================================================== */
+/* CLIENTS                                                            */
+/* ================================================================== */
+
+/**
+ * Klien yang logonya tampil di beranda (docs/09 §6.5). Dipulihkan setelah Tahap 4
+ * dengan definisi yang sama persis dengan 0000, supaya tabel yang masih ada di
+ * produksi langsung cocok. `category_id` tidak dipakai kode lagi.
+ */
+export const clients = sqliteTable("clients", {
+  id: id(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+  logoMediaId: text("logo_media_id").references(() => media.id, { onDelete: "set null" }),
+  categoryId: text("category_id").references(() => categories.id, { onDelete: "set null" }),
+  websiteUrl: text("website_url"),
+  // Klien rahasia: tersimpan di panel, tidak pernah tampil di situs publik.
+  isNda: integer("is_nda", { mode: "boolean" }).notNull().default(false),
+  order: integer("order").notNull().default(0),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+});
+
+/* ================================================================== */
 /* APPS                                                               */
 /* ================================================================== */
 
