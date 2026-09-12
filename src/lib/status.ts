@@ -8,6 +8,10 @@ const LABELS: Record<string, string> = {
   draft: "Draf",
   scheduled: "Terjadwal",
   published: "Tayang",
+  // Aplikasi
+  building: "Sedang dibangun",
+  released: "Rilis",
+  retired: "Pensiun",
   // Karya
   ongoing: "Berjalan",
   completed: "Selesai",
@@ -37,12 +41,14 @@ export type StatusTone = "default" | "secondary" | "outline" | "signal" | "succe
 export function statusTone(value: string): StatusTone {
   switch (value) {
     case "published":
+    case "released":
     case "completed":
     case "active":
     case "deal":
     case "replied":
       return "success";
     case "scheduled":
+    case "building":
     case "ongoing":
     case "negotiation":
     case "proposal_sent":

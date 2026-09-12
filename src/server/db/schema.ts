@@ -177,6 +177,125 @@ export const technologies = sqliteTable("technologies", {
 });
 
 /* ================================================================== */
+/* APPS                                                               */
+/* ================================================================== */
+
+/**
+ * Arsip aplikasi (docs/09-arsip-aplikasi.md). Bagian wajib halaman aplikasi
+ * tersimpan di baris ini; bagian opsional (panduan, FAQ, catatan pembuatan,
+ * catatan rilis) dinyalakan per aplikasi lewat kolom show_*.
+ */
+export const apps = sqliteTable(
+  "apps",
+  {
+    id: id(),
+    name: text("name").notNull(),
+    slug: text("slug").notNull().unique(),
+    tagline: text("tagline"), // satu kalimat untuk baris daftar arsip
+    descriptionJson: text("description_json"), // Tiptap JSON (sumber kebenaran)
+    descriptionHtml: text("description_html"), // hasil render tersanitasi (cache)
+    status: text("status", { enum: ["building", "released", "retired"] })
+      .notNull()
+      .default("building"),
+    // false = draf, atau aplikasi yang berhenti sebelum sempat rilis.
+    isPublished: integer("is_published", { mode: "boolean" }).notNull().default(false),
+    appUrl: text("app_url"),
+    repoUrl: text("repo_url"),
+    videoUrl: text("video_url"), // hanya YouTube
+    coverMediaId: text("cover_media_id").references(() => media.id, { onDelete: "set null" }),
+    startedAt: integer("started_at", { mode: "timestamp" }),
+    releasedAt: integer("released_at", { mode: "timestamp" }),
+    retiredAt: integer("retired_at", { mode: "timestamp" }),
+    guideJson: text("guide_json"),
+    guideHtml: text("guide_html"),
+    showGuide: integer("show_guide", { mode: "boolean" }).notNull().default(false),
+    showFaq: integer("show_faq", { mode: "boolean" }).notNull().default(false),
+    showNotes: integer("show_notes", { mode: "boolean" }).notNull().default(true),
+    showReleases: integer("show_releases", { mode: "boolean" }).notNull().default(false),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("idx_apps_status").on(t.status), index("idx_apps_published").on(t.isPublished)],
+);
+
+export const appMedia = sqliteTable(
+  "app_media",
+  {
+    id: id(),
+    appId: text("app_id")
+      .notNull()
+      .references(() => apps.id, { onDelete: "cascade" }),
+    mediaId: text("media_id")
+      .notNull()
+      .references(() => media.id, { onDelete: "cascade" }),
+    caption: text("caption"),
+    order: integer("order").notNull().default(0),
+  },
+  (t) => [index("idx_app_media_app").on(t.appId)],
+);
+
+export const appFeatures = sqliteTable(
+  "app_features",
+  {
+    id: id(),
+    appId: text("app_id")
+      .notNull()
+      .references(() => apps.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    description: text("description"),
+    order: integer("order").notNull().default(0),
+  },
+  (t) => [index("idx_app_features_app").on(t.appId)],
+);
+
+export const appTechnologies = sqliteTable(
+  "app_technologies",
+  {
+    appId: text("app_id")
+      .notNull()
+      .references(() => apps.id, { onDelete: "cascade" }),
+    technologyId: text("technology_id")
+      .notNull()
+      .references(() => technologies.id, { onDelete: "cascade" }),
+  },
+  (t) => [primaryKey({ columns: [t.appId, t.technologyId] })],
+);
+
+export const appFaqs = sqliteTable(
+  "app_faqs",
+  {
+    id: id(),
+    appId: text("app_id")
+      .notNull()
+      .references(() => apps.id, { onDelete: "cascade" }),
+    question: text("question").notNull(),
+    answer: text("answer").notNull(),
+    order: integer("order").notNull().default(0),
+  },
+  (t) => [index("idx_app_faqs_app").on(t.appId)],
+);
+
+/** Catatan pendek per aplikasi. `version` terisi = catatan rilis. Tanpa draf. */
+export const appNotes = sqliteTable(
+  "app_notes",
+  {
+    id: id(),
+    appId: text("app_id")
+      .notNull()
+      .references(() => apps.id, { onDelete: "cascade" }),
+    body: text("body").notNull(),
+    version: text("version"),
+    // Terpisah dari created_at supaya catatan aplikasi lama bisa diberi tanggal mundur.
+    notedAt: integer("noted_at", { mode: "timestamp" })
+      .notNull()
+      .$defaultFn(() => new Date()),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("idx_app_notes_app_noted").on(t.appId, t.notedAt)],
+);
+
+/* ================================================================== */
 /* ARTICLES                                                           */
 /* ================================================================== */
 
@@ -192,6 +311,8 @@ export const articles = sqliteTable(
       .notNull()
       .references(() => user.id, { onDelete: "restrict" }),
     categoryId: text("category_id").references(() => categories.id, { onDelete: "set null" }),
+    // Aplikasi yang dibahas artikel ini; artikelnya tampil di Catatan pembuatan aplikasi itu.
+    appId: text("app_id").references(() => apps.id, { onDelete: "set null" }),
     contentJson: text("content_json"), // Tiptap JSON (sumber kebenaran)
     contentHtml: text("content_html"), // hasil render tersanitasi (cache)
     readingTime: integer("reading_time").notNull().default(0),
@@ -207,6 +328,7 @@ export const articles = sqliteTable(
     index("idx_articles_status").on(t.status),
     index("idx_articles_published_at").on(t.publishedAt),
     index("idx_articles_category").on(t.categoryId),
+    index("idx_articles_app").on(t.appId),
   ],
 );
 

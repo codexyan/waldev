@@ -8,6 +8,13 @@
       "when": 1783779717496,
       "tag": "0000_calm_bastion",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1789189111317,
+      "tag": "0001_arsip_aplikasi",
+      "breakpoints": true
     }
   ]
 }
