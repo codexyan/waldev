@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const CATEGORY_TYPES = ["article", "portfolio", "client"] as const;
+export const CATEGORY_TYPES = ["article"] as const;
 export type CategoryType = (typeof CATEGORY_TYPES)[number];
 
 export const categoryInputSchema = z.object({

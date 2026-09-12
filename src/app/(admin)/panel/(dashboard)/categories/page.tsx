@@ -13,7 +13,7 @@ export default async function CategoriesPage() {
       <div>
         <h1 className="text-3xl">Kategori</h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          Kategori untuk artikel, portfolio, dan klien.
+          Kategori untuk tulisan.
         </p>
       </div>
       <CategoryManager categories={categories} />

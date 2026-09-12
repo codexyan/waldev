@@ -34,7 +34,7 @@ const updatedAt = () =>
 
 export const roles = sqliteTable("roles", {
   id: id(),
-  name: text("name").notNull().unique(), // owner | editor | sales
+  name: text("name").notNull().unique(), // owner | editor
   description: text("description"),
   isSystem: integer("is_system", { mode: "boolean" }).notNull().default(false),
   createdAt: createdAt(),
@@ -135,7 +135,7 @@ export const categories = sqliteTable(
     id: id(),
     name: text("name").notNull(),
     slug: text("slug").notNull(),
-    type: text("type", { enum: ["article", "portfolio", "client"] }).notNull(),
+    type: text("type", { enum: ["article"] }).notNull(),
     description: text("description"),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
@@ -359,230 +359,6 @@ export const articleRelated = sqliteTable(
 );
 
 /* ================================================================== */
-/* PORTFOLIO                                                          */
-/* ================================================================== */
-
-export const clients = sqliteTable("clients", {
-  id: id(),
-  name: text("name").notNull(),
-  slug: text("slug").notNull().unique(),
-  logoMediaId: text("logo_media_id").references(() => media.id, { onDelete: "set null" }),
-  categoryId: text("category_id").references(() => categories.id, { onDelete: "set null" }),
-  websiteUrl: text("website_url"),
-  isNda: integer("is_nda", { mode: "boolean" }).notNull().default(false),
-  order: integer("order").notNull().default(0),
-  createdAt: createdAt(),
-  updatedAt: updatedAt(),
-});
-
-export const portfolios = sqliteTable(
-  "portfolios",
-  {
-    id: id(),
-    title: text("title").notNull(),
-    slug: text("slug").notNull().unique(),
-    summary: text("summary"),
-    challenge: text("challenge"),
-    solution: text("solution"),
-    timeline: text("timeline"),
-    status: text("status", { enum: ["ongoing", "completed", "archived"] })
-      .notNull()
-      .default("completed"),
-    demoUrl: text("demo_url"),
-    repoUrl: text("repo_url"),
-    thumbnailMediaId: text("thumbnail_media_id").references(() => media.id, {
-      onDelete: "set null",
-    }),
-    coverMediaId: text("cover_media_id").references(() => media.id, { onDelete: "set null" }),
-    clientId: text("client_id").references(() => clients.id, { onDelete: "set null" }),
-    isConfidential: integer("is_confidential", { mode: "boolean" }).notNull().default(false),
-    order: integer("order").notNull().default(0),
-    createdAt: createdAt(),
-    updatedAt: updatedAt(),
-  },
-  (t) => [index("idx_portfolios_status").on(t.status), index("idx_portfolios_client").on(t.clientId)],
-);
-
-export const portfolioMedia = sqliteTable(
-  "portfolio_media",
-  {
-    id: id(),
-    portfolioId: text("portfolio_id")
-      .notNull()
-      .references(() => portfolios.id, { onDelete: "cascade" }),
-    mediaId: text("media_id")
-      .notNull()
-      .references(() => media.id, { onDelete: "cascade" }),
-    caption: text("caption"),
-    order: integer("order").notNull().default(0),
-  },
-  (t) => [index("idx_portfolio_media_portfolio").on(t.portfolioId)],
-);
-
-export const portfolioFeatures = sqliteTable(
-  "portfolio_features",
-  {
-    id: id(),
-    portfolioId: text("portfolio_id")
-      .notNull()
-      .references(() => portfolios.id, { onDelete: "cascade" }),
-    title: text("title").notNull(),
-    description: text("description"),
-    order: integer("order").notNull().default(0),
-  },
-  (t) => [index("idx_portfolio_features_portfolio").on(t.portfolioId)],
-);
-
-export const portfolioTechnologies = sqliteTable(
-  "portfolio_technologies",
-  {
-    portfolioId: text("portfolio_id")
-      .notNull()
-      .references(() => portfolios.id, { onDelete: "cascade" }),
-    technologyId: text("technology_id")
-      .notNull()
-      .references(() => technologies.id, { onDelete: "cascade" }),
-  },
-  (t) => [primaryKey({ columns: [t.portfolioId, t.technologyId] })],
-);
-
-/* ================================================================== */
-/* SERVICES                                                           */
-/* ================================================================== */
-
-export const services = sqliteTable("services", {
-  id: id(),
-  name: text("name").notNull(),
-  slug: text("slug").notNull().unique(),
-  description: text("description"),
-  iconMediaId: text("icon_media_id").references(() => media.id, { onDelete: "set null" }),
-  price: text("price"), // opsional
-  ctaLabel: text("cta_label"),
-  ctaUrl: text("cta_url"),
-  status: text("status", { enum: ["active", "inactive"] }).notNull().default("active"),
-  order: integer("order").notNull().default(0),
-  createdAt: createdAt(),
-  updatedAt: updatedAt(),
-});
-
-export const serviceFeatures = sqliteTable(
-  "service_features",
-  {
-    id: id(),
-    serviceId: text("service_id")
-      .notNull()
-      .references(() => services.id, { onDelete: "cascade" }),
-    title: text("title").notNull(),
-    description: text("description"),
-    order: integer("order").notNull().default(0),
-  },
-  (t) => [index("idx_service_features_service").on(t.serviceId)],
-);
-
-export const serviceWorkflowSteps = sqliteTable(
-  "service_workflow_steps",
-  {
-    id: id(),
-    serviceId: text("service_id")
-      .notNull()
-      .references(() => services.id, { onDelete: "cascade" }),
-    stepNumber: integer("step_number").notNull(),
-    title: text("title").notNull(),
-    description: text("description"),
-  },
-  (t) => [index("idx_service_workflow_service").on(t.serviceId)],
-);
-
-export const serviceFaqs = sqliteTable(
-  "service_faqs",
-  {
-    id: id(),
-    serviceId: text("service_id")
-      .notNull()
-      .references(() => services.id, { onDelete: "cascade" }),
-    question: text("question").notNull(),
-    answer: text("answer").notNull(),
-    order: integer("order").notNull().default(0),
-  },
-  (t) => [index("idx_service_faqs_service").on(t.serviceId)],
-);
-
-/* ================================================================== */
-/* TESTIMONIALS                                                       */
-/* ================================================================== */
-
-export const testimonials = sqliteTable("testimonials", {
-  id: id(),
-  authorName: text("author_name").notNull(),
-  authorRole: text("author_role"),
-  company: text("company"),
-  photoMediaId: text("photo_media_id").references(() => media.id, { onDelete: "set null" }),
-  content: text("content").notNull(),
-  rating: integer("rating"),
-  status: text("status", { enum: ["draft", "published"] }).notNull().default("draft"),
-  clientId: text("client_id").references(() => clients.id, { onDelete: "set null" }),
-  order: integer("order").notNull().default(0),
-  createdAt: createdAt(),
-  updatedAt: updatedAt(),
-});
-
-/* ================================================================== */
-/* LEADS                                                              */
-/* ================================================================== */
-
-export const collaborationRequests = sqliteTable(
-  "collaboration_requests",
-  {
-    id: id(),
-    name: text("name").notNull(),
-    email: text("email").notNull(),
-    whatsapp: text("whatsapp"),
-    company: text("company"),
-    budget: text("budget"),
-    deadline: text("deadline"),
-    projectType: text("project_type"),
-    description: text("description").notNull(),
-    attachmentMediaId: text("attachment_media_id").references(() => media.id, {
-      onDelete: "set null",
-    }),
-    status: text("status", {
-      enum: [
-        "new",
-        "contacted",
-        "negotiation",
-        "proposal_sent",
-        "deal",
-        "completed",
-        "closed",
-      ],
-    })
-      .notNull()
-      .default("new"),
-    adminNotes: text("admin_notes"),
-    createdAt: createdAt(),
-    updatedAt: updatedAt(),
-  },
-  (t) => [
-    index("idx_collab_status").on(t.status),
-    index("idx_collab_created").on(t.createdAt),
-  ],
-);
-
-export const contactMessages = sqliteTable(
-  "contact_messages",
-  {
-    id: id(),
-    name: text("name").notNull(),
-    email: text("email").notNull(),
-    subject: text("subject"),
-    message: text("message").notNull(),
-    status: text("status", { enum: ["new", "read", "replied"] }).notNull().default("new"),
-    createdAt: createdAt(),
-  },
-  (t) => [index("idx_contact_status").on(t.status)],
-);
-
-/* ================================================================== */
 /* SITE: NAVIGATION, SETTINGS, SEO, AUDIT                             */
 /* ================================================================== */
 
@@ -619,7 +395,7 @@ export const seoMeta = sqliteTable(
   "seo_meta",
   {
     id: id(),
-    entityType: text("entity_type").notNull(), // article | portfolio | service | client | page
+    entityType: text("entity_type").notNull(), // article | app | page
     entityId: text("entity_id"), // null untuk halaman statis (pakai entityType sbg key)
     metaTitle: text("meta_title"),
     metaDescription: text("meta_description"),

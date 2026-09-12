@@ -6,14 +6,13 @@ import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import {
   createCategoryAction,
   deleteCategoryAction,
   updateCategoryAction,
 } from "@/modules/taxonomy/taxonomy.actions";
-import { CATEGORY_TYPES, type CategoryType } from "@/modules/taxonomy/taxonomy.schema";
+import type { CategoryType } from "@/modules/taxonomy/taxonomy.schema";
 
 interface Category {
   id: string;
@@ -23,11 +22,13 @@ interface Category {
   description: string | null;
 }
 
+/** Arsip aplikasi hanya memakai kategori untuk tulisan, jadi tipenya tidak perlu dipilih. */
+const TYPE: CategoryType = "article";
+
 export function CategoryManager({ categories }: { categories: Category[] }) {
   const router = useRouter();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [name, setName] = useState("");
-  const [type, setType] = useState<CategoryType>("article");
   const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +37,6 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
   function reset() {
     setEditingId(null);
     setName("");
-    setType("article");
     setSlug("");
     setDescription("");
   }
@@ -44,7 +44,6 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
   function startEdit(c: Category) {
     setEditingId(c.id);
     setName(c.name);
-    setType(c.type);
     setSlug(c.slug);
     setDescription(c.description ?? "");
   }
@@ -53,7 +52,12 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const payload = { name, type, slug: slug || undefined, description: description || undefined };
+    const payload = {
+      name,
+      type: TYPE,
+      slug: slug || undefined,
+      description: description || undefined,
+    };
     const res = editingId
       ? await updateCategoryAction(editingId, payload)
       : await createCategoryAction(payload);
@@ -80,20 +84,6 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
         <div className="space-y-1.5">
           <Label htmlFor="cat-name">Nama</Label>
           <Input id="cat-name" value={name} onChange={(e) => setName(e.target.value)} required />
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="cat-type">Tipe</Label>
-          <Select
-            id="cat-type"
-            value={type}
-            onChange={(e) => setType(e.target.value as CategoryType)}
-          >
-            {CATEGORY_TYPES.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </Select>
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="cat-slug">Slug (opsional)</Label>
@@ -136,9 +126,7 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
             >
               <div>
                 <p className="text-sm font-medium">{c.name}</p>
-                <p className="text-muted-foreground text-xs">
-                  {c.type} · /{c.slug}
-                </p>
+                <p className="text-muted-foreground text-xs">/{c.slug}</p>
               </div>
               <div className="flex gap-1">
                 <button

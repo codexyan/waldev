@@ -8,7 +8,7 @@ import { saveMenuAction } from "@/modules/navigation/navigation.actions";
 
 const FIELDS = [
   { key: "label", label: "Label" },
-  { key: "url", label: "URL (mis. /portfolio)" },
+  { key: "url", label: "URL (mis. /articles)" },
 ];
 
 export function NavigationManager({

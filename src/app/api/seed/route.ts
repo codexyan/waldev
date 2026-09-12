@@ -42,7 +42,7 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const db = getDb();
-  const roleNames: RoleName[] = ["owner", "editor", "sales"];
+  const roleNames: RoleName[] = ["owner", "editor"];
 
   // 1) permissions
   await db

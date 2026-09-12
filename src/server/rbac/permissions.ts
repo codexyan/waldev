@@ -13,20 +13,9 @@ export const PERMISSIONS = [
   "app.create",
   "app.update", // termasuk menulis catatan aplikasi
   "app.delete",
-  "portfolio.create",
-  "portfolio.update",
-  "portfolio.delete",
-  "service.create",
-  "service.update",
-  "service.delete",
   "taxonomy.manage", // categories & tags
   "media.create",
   "media.delete",
-  "testimonial.manage",
-  "client.manage",
-  // Leads
-  "lead.read",
-  "lead.update",
   // Site
   "settings.manage",
   "navigation.manage",
@@ -39,7 +28,7 @@ export const PERMISSIONS = [
 
 export type Permission = (typeof PERMISSIONS)[number];
 
-export type RoleName = "owner" | "editor" | "sales";
+export type RoleName = "owner" | "editor";
 
 /** "*" = seluruh permission (superuser). */
 export const ROLE_PERMISSIONS: Record<RoleName, Permission[] | "*"> = {
@@ -52,20 +41,11 @@ export const ROLE_PERMISSIONS: Record<RoleName, Permission[] | "*"> = {
     "app.create",
     "app.update",
     "app.delete",
-    "portfolio.create",
-    "portfolio.update",
-    "portfolio.delete",
-    "service.create",
-    "service.update",
-    "service.delete",
     "taxonomy.manage",
     "media.create",
     "media.delete",
-    "testimonial.manage",
-    "client.manage",
     "seo.manage",
   ],
-  sales: ["lead.read", "lead.update"],
 };
 
 export function permissionsForRole(role: RoleName): Permission[] {

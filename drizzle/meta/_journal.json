@@ -15,6 +15,20 @@
       "when": 1789189111317,
       "tag": "0001_arsip_aplikasi",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1789193041030,
+      "tag": "0002_salin_karya",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1789193226012,
+      "tag": "0003_hapus_modul_jasa",
+      "breakpoints": true
     }
   ]
 }

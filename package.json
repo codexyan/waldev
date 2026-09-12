@@ -2,7 +2,7 @@
   "name": "waldev",
   "version": "0.1.0",
   "private": true,
-  "description": "WalDev — Digital Studio Platform (public website + CMS) on Cloudflare",
+  "description": "WalDev — arsip aplikasi (situs publik + CMS) di Cloudflare",
   "scripts": {
     "dev": "next dev",
     "build": "next build --webpack",

@@ -1,14 +1,14 @@
-# WalDev — Digital Studio Platform
+# WalDev — Arsip Aplikasi
 
-> **Build Digital Products.** — Company website + Portfolio + Blog + CMS/Admin, dibangun di atas Cloudflare.
+> **Build Digital Products.** — Arsip aplikasi yang saya bangun dan rawat, lengkap dengan catatan pembuatannya, dikelola lewat panel CMS dan berjalan di Cloudflare.
 
-Public website & Admin CMS dalam satu aplikasi Next.js (Modular Monolith), di-deploy ke **Cloudflare Workers** via OpenNext.
+Situs publik dan panel admin dalam satu aplikasi Next.js (Modular Monolith), di-deploy ke **Cloudflare Workers** via OpenNext. Arah produk dan rencana kerjanya ada di [`docs/09-arsip-aplikasi.md`](./docs/09-arsip-aplikasi.md).
 
 ## Stack
-Next.js · React · TypeScript · Tailwind CSS v4 · Cloudflare Workers/D1/R2/KV · Drizzle ORM · Zod · Better Auth · pnpm.
+Next.js · React · TypeScript · Tailwind CSS v4 · Cloudflare Workers/D1/R2/KV · Drizzle ORM · Zod · Better Auth · Tiptap · pnpm.
 
-## Dokumentasi Perencanaan
-Lihat [`docs/`](./docs/README.md) — PRD, SRS, IA/User Flow, Database/ERD, API, Coding Standards, Roadmap.
+## Dokumentasi
+Lihat [`docs/`](./docs/README.md). Dokumen 01–08 mencatat arah lama (situs jasa studio); bila bertentangan, dokumen 09 yang berlaku.
 
 ## Prasyarat
 - Node ≥ 20, pnpm ≥ 9
@@ -37,6 +37,9 @@ pnpm db:generate            # buat migrasi SQL dari schema
 pnpm db:migrate:local       # terapkan ke D1 lokal
 pnpm db:migrate:remote      # terapkan ke D1 production
 ```
+Selalu baca SQL hasil `db:generate` sebelum diterapkan:
+- Untuk kolom baru ber-FK pada tabel yang sudah ada, drizzle-kit menulis `REFERENCES` tanpa `ON DELETE`. Tambahkan secara manual, lalu cek dengan `PRAGMA foreign_key_list(tabel)`.
+- Migrasi yang menghapus tabel baru boleh diterapkan ke produksi setelah kode yang tidak lagi membaca tabel itu tayang. Urutannya ada di docs/09 bagian 9.2.
 
 ## Build & Deploy (Cloudflare)
 ```bash
@@ -75,16 +78,18 @@ Alternatif tanpa worker: jadwalkan cron eksternal (mis. cron-job.org) untuk `POS
 ke URL tersebut dengan header `x-cron-secret`.
 
 ## Data contoh untuk pengembangan lokal
-Beranda menampilkan harga layanan, testimoni, dan tombol WhatsApp hanya bila datanya
-ada di CMS. Supaya seluruh bagian terlihat saat dikembangkan:
+Supaya beranda, halaman aplikasi, dan panel "Perlu kabar" tampil berisi saat dikembangkan:
 ```bash
-node scripts/seed-dummy-lokal.mjs           # isi D1 lokal dengan data contoh
-node scripts/seed-dummy-lokal.mjs --bersih  # kembalikan ke keadaan kosong
+node scripts/seed-dummy-lokal.mjs           # isi D1 lokal dengan contoh arsip aplikasi
+node scripts/seed-dummy-lokal.mjs --bersih  # hapus contoh
 ```
 Skrip ini selalu memakai flag `--local`, jadi tidak bisa menyentuh database produksi.
-**Nilainya fiktif** — nomor WhatsApp dan angka harga di dalamnya tidak boleh disalin ke
-Site Settings produksi. Isi nilai sebenarnya lewat `/panel/settings`, `/panel/services`,
-dan `/panel/testimonials` sebelum deploy.
+Isinya **fiktif** dan hanya memakai baris berawalan `contoh_`, sehingga `--bersih` tidak
+menghapus aplikasi yang Anda isi sendiri.
+
+## Gambar pratinjau tautan
+`public/og.png` dibuat oleh `node scripts/gen-og.mjs`. Jalankan ulang setiap kali judul
+beranda, tagline, atau alamat situs berubah.
 
 ## Struktur
 `src/app` (routing: `(public)` & `(admin)/panel`) · `src/modules` (domain per fitur) · `src/server` (db/auth/infra) · `src/components` (design system). Detail: [`docs/07-folder-standards.md`](./docs/07-folder-standards.md).

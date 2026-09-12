@@ -1,7 +1,7 @@
 /**
- * Terjemahan status yang dipakai di seluruh panel admin.
+ * Terjemahan status yang dipakai di panel admin dan situs publik.
  * Nilai mentahnya tetap bahasa Inggris di basis data; hanya tampilannya
- * yang diterjemahkan supaya panel konsisten dengan situs publiknya.
+ * yang diterjemahkan.
  */
 const LABELS: Record<string, string> = {
   // Tulisan
@@ -12,23 +12,6 @@ const LABELS: Record<string, string> = {
   building: "Sedang dibangun",
   released: "Rilis",
   retired: "Pensiun",
-  // Karya
-  ongoing: "Berjalan",
-  completed: "Selesai",
-  archived: "Arsip",
-  // Layanan
-  active: "Aktif",
-  inactive: "Nonaktif",
-  // Pesan masuk
-  new: "Baru",
-  read: "Dibaca",
-  replied: "Dibalas",
-  // Prospek
-  contacted: "Dihubungi",
-  negotiation: "Negosiasi",
-  proposal_sent: "Penawaran terkirim",
-  deal: "Deal",
-  closed: "Ditutup",
 };
 
 export function statusLabel(value: string): string {
@@ -42,20 +25,10 @@ export function statusTone(value: string): StatusTone {
   switch (value) {
     case "published":
     case "released":
-    case "completed":
-    case "active":
-    case "deal":
-    case "replied":
       return "success";
     case "scheduled":
     case "building":
-    case "ongoing":
-    case "negotiation":
-    case "proposal_sent":
-    case "contacted":
       return "warning";
-    case "new":
-      return "signal";
     default:
       return "secondary";
   }

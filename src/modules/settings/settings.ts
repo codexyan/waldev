@@ -11,9 +11,6 @@ export const SITE_SETTINGS_DEFAULTS = {
   owner_photo_media_id: "",
   owner_bio: "",
   contact_email: "",
-  /* Tidak lagi diisi dari panel. Masih dibaca tombol WhatsApp situs lama sampai
-     modul jasa dihapus di Tahap 4. */
-  contact_whatsapp: "",
   /* Identitas tempat & usia studio. Nilai default diisi karena ini fakta brand
      yang stabil — sama seperti brand_name dan tagline di atas — dan tetap bisa
      ditimpa lewat panel bila studio pindah atau ingin menuliskannya lain. */
