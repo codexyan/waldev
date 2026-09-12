@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ArrowRight, BookOpen } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { ArrowLink } from "@/components/ui/arrow-link";
 import { SECTION, SHELL } from "@/components/ui/shell";
+import { StaticLink } from "@/components/ui/static-link";
 import { listPublishedArticles } from "@/modules/articles/article.dal";
 import { cn } from "@/lib/utils";
 
@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Tulisan",
   description:
-    "Tulisan panjang tentang aplikasi yang saya bangun: keputusan yang diambil, kendala di tengah jalan, dan pelajarannya.",
+    "Tulisan seputar pembuatan aplikasi WalDev, misalnya alasan di balik sebuah keputusan teknis atau kendala yang muncul saat membangun.",
   alternates: { canonical: "/articles" },
 };
 
@@ -39,15 +39,15 @@ export default async function ArticlesPage() {
     <>
       <PageHeader
         eyebrow="Tulisan"
-        title="Tulisan tentang aplikasi yang saya bangun."
-        description="Cerita yang terlalu panjang untuk catatan singkat: keputusan yang diambil, kendala di tengah jalan, dan pelajaran sesudahnya."
+        title="Tulisan seputar pembuatan aplikasi."
+        description="Bahasan yang terlalu panjang untuk catatan singkat, misalnya alasan memilih sebuah pendekatan atau kendala yang muncul saat membangun."
       />
 
       {rows.length === 0 ? (
         <section className={cn(SHELL, SECTION)}>
-          <p className="text-muted-foreground">Belum ada tulisan yang dipublikasikan.</p>
+          <p className="text-muted-foreground">Belum ada tulisan.</p>
           <p className="mt-4">
-            <ArrowLink href="/">Lihat aplikasinya dulu</ArrowLink>
+            <ArrowLink href="/">Lihat daftar aplikasi</ArrowLink>
           </p>
         </section>
       ) : (
@@ -109,7 +109,7 @@ function Cover({ url, className }: { url: string | null; className?: string }) {
 
 function FeaturedArticle({ article }: { article: ArticleItem }) {
   return (
-    <Link
+    <StaticLink
       href={`/articles/${article.slug}`}
       className="group grid gap-8 lg:grid-cols-2 lg:items-center lg:gap-12"
     >
@@ -131,13 +131,13 @@ function FeaturedArticle({ article }: { article: ArticleItem }) {
           />
         </span>
       </div>
-    </Link>
+    </StaticLink>
   );
 }
 
 function ArticleCard({ article }: { article: ArticleItem }) {
   return (
-    <Link href={`/articles/${article.slug}`} className="group flex flex-col">
+    <StaticLink href={`/articles/${article.slug}`} className="group flex flex-col">
       <Cover url={article.coverUrl} className="mb-4" />
       <Meta article={article} />
       <h2 className="display-sm mt-2 text-base text-balance">{article.title}</h2>
@@ -151,6 +151,6 @@ function ArticleCard({ article }: { article: ArticleItem }) {
           aria-hidden
         />
       </span>
-    </Link>
+    </StaticLink>
   );
 }

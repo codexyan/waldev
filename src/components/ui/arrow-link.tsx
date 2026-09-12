@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { StaticLink } from "@/components/ui/static-link";
 import { cn } from "@/lib/utils";
 
 /**
@@ -59,8 +59,8 @@ export function ArrowLink({
   }
 
   return (
-    <Link href={href} className={classes}>
+    <StaticLink href={href} className={classes}>
       {inner}
-    </Link>
+    </StaticLink>
   );
 }

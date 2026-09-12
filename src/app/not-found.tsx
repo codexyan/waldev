@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import { StaticLink } from "@/components/ui/static-link";
 import { cn } from "@/lib/utils";
 
 export default function NotFound() {
@@ -9,12 +9,12 @@ export default function NotFound() {
       <p className="display mt-6 text-[clamp(4rem,18vw,10rem)] leading-none">404</p>
       <h1 className="display-sm mt-6 text-xl sm:text-2xl">Halaman ini tidak ditemukan</h1>
       <p className="text-muted-foreground mt-3 max-w-md leading-relaxed text-pretty">
-        Tautannya mungkin sudah berubah, atau aplikasinya tidak lagi ditampilkan di arsip.
+        Tautannya mungkin sudah berubah, atau halamannya sudah tidak tersedia.
       </p>
       <div className="mt-8">
-        <Link href="/" className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto")}>
+        <StaticLink href="/" className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto")}>
           Lihat semua aplikasi
-        </Link>
+        </StaticLink>
       </div>
     </main>
   );

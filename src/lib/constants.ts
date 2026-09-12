@@ -3,16 +3,19 @@ export const SITE = {
   name: "WalDev",
   tagline: "Build Digital Products",
   description:
-    "WalDev adalah arsip aplikasi yang saya bangun dan rawat, dari yang masih dibangun sampai yang sudah pensiun, lengkap dengan catatan pembuatannya.",
+    "Portofolio aplikasi web WalDev, lengkap dengan fitur dan catatan pembuatan tiap aplikasi.",
   // Nilai sebenarnya di-set lewat NEXT_PUBLIC_SITE_URL pada wrangler.jsonc.
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://waldev.mdcodeid.workers.dev",
 } as const;
 
 /**
- * Kalimat pembuka beranda selama Pengaturan › Kalimat pengantar beranda masih
- * kosong. Orang pertama, sama seperti seluruh situs publik.
+ * Judul beranda selama Pengaturan › Kalimat pengantar beranda masih kosong.
+ * Teks publik tidak memakai "saya"; pelakunya disebut langsung.
  */
-export const HOME_INTRO = "Arsip aplikasi yang saya bangun dan rawat.";
+export const HOME_INTRO = "Aplikasi web buatan WalDev.";
+
+/** Kalimat di bawah judul beranda: ajakan membuka halaman aplikasi. */
+export const HOME_LEAD = "Klik nama aplikasi untuk melihat fitur dan catatan pembuatannya.";
 
 /**
  * Basis rute admin (rahasia, tidak tertaut di publik).

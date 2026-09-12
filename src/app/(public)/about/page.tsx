@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Tentang",
-  description: `Tentang ${SITE.name} dan orang yang membangun aplikasi-aplikasinya.`,
+  description: `Siapa yang membangun ${SITE.name} dan cara menghubunginya.`,
   alternates: { canonical: "/about" },
 };
 
@@ -53,14 +53,14 @@ export default async function AboutPage() {
     bio.length > 0
       ? bio
       : [
-          `${brand} adalah tempat saya mengarsipkan aplikasi yang saya bangun: yang masih dibangun, yang sudah rilis, dan yang sudah pensiun. Setiap aplikasi punya halamannya sendiri, lengkap dengan catatan pembuatannya.`,
+          `${brand} membangun dan merawat aplikasi web. Semua aplikasinya tercatat di sini, termasuk yang masih dikerjakan dan yang sudah tidak aktif.`,
         ];
 
   const lokasi = [settings.location_city, settings.location_region].filter(Boolean).join(", ");
   const facts = [
     lokasi ? { label: "Berbasis di", value: lokasi } : null,
     settings.founded_year ? { label: `${brand} sejak`, value: settings.founded_year } : null,
-    { label: "Aplikasi di arsip", value: String(apps.length) },
+    { label: "Jumlah aplikasi", value: String(apps.length) },
   ].filter((fact) => fact !== null);
 
   const socials = [
@@ -91,9 +91,9 @@ export default async function AboutPage() {
         <div className={cn(SHELL, "py-14 sm:py-20")}>
           <div className="flex flex-col-reverse gap-10 sm:flex-row sm:items-start sm:justify-between">
             <div className="max-w-2xl">
-              <Eyebrow>Tentang</Eyebrow>
+              <Eyebrow>{name ? `Pembuat ${brand}` : "Tentang"}</Eyebrow>
               <h1 className="display mt-4 text-[2rem] text-balance sm:text-4xl lg:text-5xl">
-                {name ? `Halo, saya ${name}.` : `Tentang ${brand}`}
+                {name || brand}
               </h1>
               <div className="mt-6 space-y-4">
                 {story.map((paragraph, index) => (
@@ -138,11 +138,11 @@ export default async function AboutPage() {
           <>
             <Eyebrow>Kontak</Eyebrow>
             <h2 className="display mt-3 max-w-2xl text-2xl text-balance sm:text-[1.75rem]">
-              Ada pertanyaan soal salah satu aplikasi?
+              Ada pertanyaan tentang salah satu aplikasi?
             </h2>
             {settings.contact_email ? (
               <p className="text-muted-foreground mt-3 max-w-2xl leading-relaxed">
-                Cara paling cepat menghubungi saya adalah lewat email:{" "}
+                Kirim email ke{" "}
                 <a
                   href={`mailto:${settings.contact_email}`}
                   className="text-link hover:text-link-hover inline-flex items-center gap-1.5 font-medium break-all"

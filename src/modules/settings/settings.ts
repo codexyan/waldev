@@ -51,7 +51,7 @@ export const SETTINGS_GROUPS: SettingsGroup[] = [
       {
         key: "home_intro",
         label: "Kalimat pengantar beranda",
-        hint: "Satu kalimat di atas daftar arsip, misalnya “Arsip aplikasi yang dibangun dan dirawat WalDev.”",
+        hint: "Judul besar di atas daftar aplikasi, misalnya “Aplikasi web buatan WalDev.”",
       },
       { key: "footer_text", label: "Teks footer", multiline: true },
     ],

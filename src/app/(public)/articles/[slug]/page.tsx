@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { ArrowLink } from "@/components/ui/arrow-link";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { StaticLink } from "@/components/ui/static-link";
 import { SITE } from "@/lib/constants";
 import { getPublishedAppLink } from "@/modules/apps/app.dal";
 import { getPublishedArticleBySlug, getRelatedArticles } from "@/modules/articles/article.dal";
@@ -23,7 +23,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const article = await getPublishedArticleBySlug(slug);
-  if (!article) return { title: "Artikel tidak ditemukan" };
+  if (!article) return { title: "Tulisan tidak ditemukan" };
   const seo = await getSeoMeta("article", article.id);
   const title = seo.metaTitle || article.title;
   const description = seo.metaDescription || article.summary || undefined;
@@ -86,9 +86,9 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
           <span className="text-faint mt-10 flex flex-wrap items-center gap-2 text-xs">
             {app ? (
               <>
-                <Link href={`/apps/${app.slug}`} className="text-link hover:text-link-hover">
+                <StaticLink href={`/apps/${app.slug}`} className="text-link hover:text-link-hover">
                   {app.name}
-                </Link>
+                </StaticLink>
                 <span aria-hidden>·</span>
               </>
             ) : null}
@@ -183,7 +183,11 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
           />
           <div className="mt-8 grid gap-x-10 gap-y-8 sm:grid-cols-3">
             {related.map((item) => (
-              <Link key={item.slug} href={`/articles/${item.slug}`} className="group flex flex-col">
+              <StaticLink
+                key={item.slug}
+                href={`/articles/${item.slug}`}
+                className="group flex flex-col"
+              >
                 <span className="text-faint text-xs">{item.readingTime} menit baca</span>
                 <h3 className="display-sm mt-1.5 text-[0.9375rem] text-balance">{item.title}</h3>
                 <span className="text-link mt-3 inline-flex items-center gap-1.5 font-medium">
@@ -193,7 +197,7 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
                     aria-hidden
                   />
                 </span>
-              </Link>
+              </StaticLink>
             ))}
           </div>
         </section>

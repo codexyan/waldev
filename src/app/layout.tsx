@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   applicationName: SITE.name,
   keywords: [
     "WalDev",
-    "arsip aplikasi",
+    "portofolio aplikasi",
     "aplikasi web",
     "catatan pembuatan aplikasi",
     "web developer Banjarmasin",

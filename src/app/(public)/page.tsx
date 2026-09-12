@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { SHELL } from "@/components/ui/shell";
-import { HOME_INTRO } from "@/lib/constants";
+import { StaticLink } from "@/components/ui/static-link";
+import { HOME_INTRO, HOME_LEAD } from "@/lib/constants";
 import { formatMonthYear } from "@/lib/date";
 import { cn } from "@/lib/utils";
 import { listPublishedApps } from "@/modules/apps/app.dal";
@@ -15,8 +15,8 @@ export const metadata: Metadata = {
 };
 
 /**
- * Beranda = daftar arsip (docs/09 §5.1): satu kalimat pengantar, lalu satu baris
- * per aplikasi. Tanpa gambar dan tanpa tombol ajakan, supaya tetap terlihat utuh
+ * Beranda = daftar aplikasi (docs/09 §5.1): judul, satu kalimat pengantar, lalu satu
+ * baris per aplikasi. Tanpa gambar dan tanpa tombol ajakan, supaya tetap terlihat utuh
  * walau baru ada satu aplikasi.
  */
 export default async function HomePage() {
@@ -30,17 +30,20 @@ export default async function HomePage() {
           <h1 className="display max-w-3xl text-[2rem] text-balance sm:text-4xl lg:text-5xl">
             {intro}
           </h1>
+          <p className="text-muted-foreground mt-5 max-w-2xl leading-relaxed text-pretty">
+            {HOME_LEAD}
+          </p>
         </div>
       </header>
 
       <section className={cn(SHELL, "py-10 sm:py-14")} aria-label="Daftar aplikasi">
         {apps.length === 0 ? (
-          <p className="text-muted-foreground">Aplikasi pertama sedang disiapkan.</p>
+          <p className="text-muted-foreground">Aplikasi pertama masih dalam pembuatan.</p>
         ) : (
           <ul className="border-border border-t">
             {apps.map((app) => (
               <li key={app.slug} className="border-border border-b">
-                <Link
+                <StaticLink
                   href={`/apps/${app.slug}`}
                   className="group flex flex-col gap-2 py-5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-10"
                 >
@@ -59,13 +62,13 @@ export default async function HomePage() {
                     <span aria-hidden className="text-faint sm:hidden">
                       ·
                     </span>
-                    <span className="text-faint" title="Catatan terakhir">
+                    <span className="text-faint">
                       {app.lastActivityAt
-                        ? formatMonthYear(app.lastActivityAt)
+                        ? `Diperbarui ${formatMonthYear(app.lastActivityAt)}`
                         : "Belum ada catatan"}
                     </span>
                   </span>
-                </Link>
+                </StaticLink>
               </li>
             ))}
           </ul>

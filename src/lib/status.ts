@@ -10,8 +10,8 @@ const LABELS: Record<string, string> = {
   published: "Tayang",
   // Aplikasi
   building: "Sedang dibangun",
-  released: "Rilis",
-  retired: "Pensiun",
+  released: "Sudah rilis",
+  retired: "Tidak aktif",
 };
 
 export function statusLabel(value: string): string {

@@ -411,7 +411,7 @@ export function AppForm({ initial }: { initial: AppFormInitial }) {
               onChange={(e) => setAppUrl(e.target.value)}
               placeholder="https://"
             />
-            <Hint>Tombol Buka aplikasi disembunyikan otomatis saat status Pensiun.</Hint>
+            <Hint>Tombol Buka aplikasi disembunyikan otomatis saat status Tidak aktif.</Hint>
             <FieldError errors={fieldErrors.appUrl} />
           </div>
           <div className="space-y-1.5">

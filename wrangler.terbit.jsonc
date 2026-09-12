@@ -1,0 +1,42 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // HANYA untuk scripts/terbitkan.mjs. Menjalankan hasil build OpenNext secara lokal
+  // (`wrangler dev`, tanpa batas CPU) sambil membaca D1 dan R2 PRODUKSI lewat binding
+  // jarak jauh, untuk merender halaman publik menjadi berkas statis. Jangan dipakai deploy;
+  // deploy tetap memakai wrangler.jsonc.
+  "name": "waldev",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-06-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "vars": {
+    "NEXT_PUBLIC_SITE_URL": "https://waldev.mdcodeid.workers.dev"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "waldev-db",
+      "database_id": "f85ff378-0980-4c79-9e9c-6f3db3ea0089",
+      "migrations_dir": "drizzle",
+      "remote": true
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA_BUCKET",
+      "bucket_name": "waldev-media",
+      "remote": true
+    }
+  ],
+  // KV hanya dipakai sebagai cache pengaturan & menu. Sengaja lokal supaya proses render
+  // tidak menulis apa pun ke KV produksi; saat cache lokal kosong, datanya dibaca dari D1.
+  "kv_namespaces": [
+    {
+      "binding": "CACHE_KV",
+      "id": "3624b822eb5146fea6e854c0267f2c9e"
+    }
+  ]
+}

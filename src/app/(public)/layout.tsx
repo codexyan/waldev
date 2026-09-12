@@ -1,9 +1,9 @@
-import Link from "next/link";
 import type { ComponentType, SVGProps } from "react";
 import { ArrowUp, Mail } from "lucide-react";
 import { SiteHeader } from "@/components/layout/site-header";
 import { GithubIcon, InstagramIcon, LinkedinIcon } from "@/components/social-icons";
 import { SHELL } from "@/components/ui/shell";
+import { StaticLink } from "@/components/ui/static-link";
 import { cn } from "@/lib/utils";
 import { SITE } from "@/lib/constants";
 import { getMenuItems } from "@/modules/navigation/navigation.dal";
@@ -203,9 +203,9 @@ function FooterColumn({
       <ul className="mt-4 space-y-2.5">
         {items.map((item) => (
           <li key={item.url}>
-            <Link href={item.url} className="hover:text-ink-foreground transition-colors">
+            <StaticLink href={item.url} className="hover:text-ink-foreground transition-colors">
               {item.label}
-            </Link>
+            </StaticLink>
           </li>
         ))}
       </ul>

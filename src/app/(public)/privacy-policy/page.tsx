@@ -18,7 +18,7 @@ export default async function PrivacyPolicyPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Legal"
+        eyebrow="Privasi"
         title="Kebijakan Privasi"
         description="Singkatnya: situs ini tidak meminta dan tidak menyimpan data pribadi pengunjung."
       />
@@ -26,14 +26,14 @@ export default async function PrivacyPolicyPage() {
       <section className="mx-auto max-w-3xl px-6 py-16 sm:py-20">
         <div className="prose max-w-none">
           <p>
-            {brand} adalah arsip aplikasi yang saya bangun. Halaman ini menjelaskan data apa saja
-            yang terlibat saat Anda membuka situs ini.
+            {brand} adalah portofolio aplikasi web. Halaman ini menjelaskan data apa saja yang
+            terlibat saat Anda membuka situs ini.
           </p>
 
           <h2>Tidak ada formulir atau akun</h2>
           <p>
-            Situs ini tidak punya formulir, pendaftaran akun, maupun kolom komentar. Saya tidak
-            meminta nama, email, atau nomor telepon Anda.
+            Situs ini tidak punya formulir, pendaftaran akun, maupun kolom komentar. Anda tidak
+            perlu memberikan nama, email, atau nomor telepon.
           </p>
 
           <h2>Data teknis</h2>
@@ -57,7 +57,10 @@ export default async function PrivacyPolicyPage() {
           </p>
 
           <h2>Email</h2>
-          <p>Bila Anda mengirim email, alamat dan isi pesan Anda hanya saya pakai untuk membalas.</p>
+          <p>
+            Bila Anda mengirim email, {brand} hanya memakai alamat dan isi pesan Anda untuk
+            membalas.
+          </p>
 
           {settings.contact_email ? (
             <>

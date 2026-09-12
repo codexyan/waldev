@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { SHELL } from "@/components/ui/shell";
+import { StaticLink } from "@/components/ui/static-link";
 import { cn } from "@/lib/utils";
 
 export interface HeaderNavItem {
@@ -89,7 +89,7 @@ export function SiteHeader({ brand, nav }: { brand: string; nav: HeaderNavItem[]
     <header className="border-border bg-background/90 sticky top-0 z-50 border-b backdrop-blur">
       <div className={cn(SHELL, "flex h-14 items-center justify-between gap-6")}>
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex shrink-0 items-center gap-2" aria-label={brand}>
+          <StaticLink href="/" className="flex shrink-0 items-center gap-2" aria-label={brand}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/logo-mark.png"
@@ -99,11 +99,11 @@ export function SiteHeader({ brand, nav }: { brand: string; nav: HeaderNavItem[]
               className="h-6 w-auto dark:invert"
             />
             <span className="display-sm text-[0.9375rem]">{brand}</span>
-          </Link>
+          </StaticLink>
 
           <nav className="hidden items-center gap-6 md:flex" aria-label="Navigasi utama">
             {nav.map((item) => (
-              <Link
+              <StaticLink
                 key={item.url}
                 href={item.url}
                 aria-current={isActive(item.url) ? "page" : undefined}
@@ -115,7 +115,7 @@ export function SiteHeader({ brand, nav }: { brand: string; nav: HeaderNavItem[]
                 )}
               >
                 {item.label}
-              </Link>
+              </StaticLink>
             ))}
           </nav>
         </div>
@@ -149,7 +149,7 @@ export function SiteHeader({ brand, nav }: { brand: string; nav: HeaderNavItem[]
         >
           <nav className="flex flex-col px-6 pt-2 pb-10">
             {nav.map((item) => (
-              <Link
+              <StaticLink
                 key={item.url}
                 href={item.url}
                 aria-current={isActive(item.url) ? "page" : undefined}
@@ -159,7 +159,7 @@ export function SiteHeader({ brand, nav }: { brand: string; nav: HeaderNavItem[]
                 )}
               >
                 {item.label}
-              </Link>
+              </StaticLink>
             ))}
 
             {/* Pengalih tema hanya DISALIN ke sini, tidak dipindahkan: panel ini

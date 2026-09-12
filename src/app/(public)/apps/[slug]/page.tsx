@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { ExternalLink } from "lucide-react";
@@ -8,6 +7,7 @@ import { ArrowLink } from "@/components/ui/arrow-link";
 import { buttonVariants } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/section-heading";
 import { SHELL } from "@/components/ui/shell";
+import { StaticLink } from "@/components/ui/static-link";
 import { YoutubeFacade } from "@/components/youtube-facade";
 import { SITE } from "@/lib/constants";
 import { formatDay, formatMonthYear } from "@/lib/date";
@@ -83,8 +83,8 @@ export default async function AppPage({ params }: { params: Promise<{ slug: stri
 
   const meta: { label: string; value: string }[] = [];
   if (app.startedAt) meta.push({ label: "Mulai dibangun", value: formatMonthYear(app.startedAt) });
-  if (app.releasedAt) meta.push({ label: "Rilis", value: formatMonthYear(app.releasedAt) });
-  if (app.retiredAt) meta.push({ label: "Pensiun", value: formatMonthYear(app.retiredAt) });
+  if (app.releasedAt) meta.push({ label: "Dirilis", value: formatMonthYear(app.releasedAt) });
+  if (app.retiredAt) meta.push({ label: "Tidak aktif sejak", value: formatMonthYear(app.retiredAt) });
   meta.push({
     label: "Catatan terakhir",
     value: app.lastActivityAt ? formatDay(app.lastActivityAt) : "Belum ada",
@@ -131,9 +131,9 @@ export default async function AppPage({ params }: { params: Promise<{ slug: stri
 
           {retired ? (
             <p className="border-border bg-surface text-muted-foreground mt-8 max-w-2xl rounded-lg border px-4 py-3 leading-relaxed">
-              Aplikasi ini tidak aktif lagi
-              {app.retiredAt ? ` sejak ${formatMonthYear(app.retiredAt)}` : ""}. Halaman ini saya
-              simpan sebagai arsip.
+              Aplikasi ini sudah tidak aktif
+              {app.retiredAt ? ` sejak ${formatMonthYear(app.retiredAt)}` : ""}. Halaman ini tetap
+              ada sebagai dokumentasi.
             </p>
           ) : null}
 
@@ -152,7 +152,7 @@ export default async function AppPage({ params }: { params: Promise<{ slug: stri
               ) : null}
               {app.repoUrl ? (
                 <ArrowLink href={app.repoUrl} external>
-                  Kode sumber
+                  Lihat kode sumber
                 </ArrowLink>
               ) : null}
             </div>
@@ -242,7 +242,7 @@ export default async function AppPage({ params }: { params: Promise<{ slug: stri
         ) : null}
 
         {app.technologies.length > 0 ? (
-          <SectionBlock eyebrow="Teknologi">
+          <SectionBlock eyebrow="Dibangun dengan">
             <div className="flex flex-wrap gap-2.5">
               {app.technologies.map((tech) => (
                 <span
@@ -257,7 +257,7 @@ export default async function AppPage({ params }: { params: Promise<{ slug: stri
         ) : null}
 
         {showGuide ? (
-          <SectionBlock eyebrow="Panduan pemakaian">
+          <SectionBlock eyebrow="Cara pakai">
             <div
               className="prose max-w-3xl"
               dangerouslySetInnerHTML={{ __html: app.guideHtml ?? "" }}
@@ -311,7 +311,7 @@ export default async function AppPage({ params }: { params: Promise<{ slug: stri
                       {entry.body}
                     </p>
                   ) : (
-                    <Link href={`/articles/${entry.slug}`} className="group mt-1.5 block">
+                    <StaticLink href={`/articles/${entry.slug}`} className="group mt-1.5 block">
                       <span className="display-sm group-hover:text-link text-[0.9375rem] transition-colors">
                         {entry.title}
                       </span>
@@ -320,7 +320,7 @@ export default async function AppPage({ params }: { params: Promise<{ slug: stri
                           {entry.summary}
                         </span>
                       ) : null}
-                    </Link>
+                    </StaticLink>
                   )}
                 </li>
               ))}
