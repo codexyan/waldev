@@ -71,15 +71,31 @@ membuka URL pratinjaunya — kesalahannya tidak terlihat saat `next build` maupu
 `pnpm dev`, hanya setelah tayang.
 
 ### Membangun dari Windows
-OpenNext memang menyarankan WSL. Bila tetap dibangun langsung di Windows, esbuild
-bisa gagal dengan `Cannot read directory ... Access is denied` karena langkah
-penyalinan membuat symlink **berkas** yang menunjuk direktori di dalam
-`.open-next/.../node_modules/.pnpm/next@*/node_modules`. Jalan pintasnya: ganti
-symlink `react`, `react-dom`, dan `styled-jsx` pada store sumber dengan salinan
-direktori sungguhan. Selain itu pnpm 11 mengabaikan `pnpm.onlyBuiltDependencies` di
-`package.json` dan menghentikan `pnpm build` dengan `ERR_PNPM_IGNORED_BUILDS`;
-sementara ini bisa dilewati dengan `pnpm-workspace.yaml` berisi `allowBuilds` dan
-`.npmrc` berisi `verify-deps-before-run=false` (keduanya lokal, jangan di-commit).
+OpenNext memang menyarankan WSL. Bila tetap dibangun langsung di Windows, susunan
+`node_modules` bawaan pnpm yang penuh symlink membuat esbuild gagal dengan
+`Cannot read directory ... Access is denied`: langkah penyalinan membuat symlink
+**berkas** yang menunjuk direktori di dalam `.open-next/.../node_modules/.pnpm/next@*/node_modules`.
+Solusinya `node_modules` datar. Buat `pnpm-workspace.yaml` lokal (jangan di-commit):
+
+```yaml
+allowBuilds:
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+  workerd: true
+verifyDepsBeforeRun: false
+nodeLinker: hoisted
+confirmModulesPurge: false
+```
+
+lalu jalankan `pnpm install --frozen-lockfile` sekali.
+- `allowBuilds` dibutuhkan karena pnpm 11 mengabaikan `pnpm.onlyBuiltDependencies` di
+  `package.json` dan menghentikan build dengan `ERR_PNPM_IGNORED_BUILDS`.
+- `verifyDepsBeforeRun: false` karena pnpm 11 tidak lagi membaca `verify-deps-before-run`
+  dari `.npmrc`. Tanpa ini setiap `pnpm run` memasang ulang dependensi.
+- Pada 12 September 2026 `pnpm install` selesai menulis `node_modules` dalam ±30 detik
+  tetapi prosesnya tidak keluar. Setelah `node_modules/.modules.yaml` berisi
+  `"nodeLinker": "hoisted"`, proses itu aman dihentikan.
 
 ## Scheduled publish (cron)
 Artikel berstatus `scheduled` dipublikasikan oleh endpoint `/api/cron/publish-scheduled`

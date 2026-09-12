@@ -5,16 +5,20 @@
  *
  * Catatan:
  * - Gaya mengikuti situs (Plain): kertas putih, teks hitam, satu aksen biru.
- * - sharp bukan dependensi langsung, jadi modulnya dicari di dalam store pnpm.
+ * - sharp bukan dependensi langsung, jadi modulnya dicari di akar node_modules
+ *   (susunan datar, nodeLinker: hoisted) atau di dalam store pnpm.
  * - Wajah huruf memakai font sistem (Segoe UI). Gambar dibuat sekali lalu ikut
  *   di-commit, jadi hasilnya tidak bergantung pada mesin yang membangun.
  * - Judul disalin dari HOME_INTRO (src/lib/constants.ts). Setelah domain WalDev
  *   aktif, ganti ALAMAT lalu jalankan ulang.
  */
-import { globSync } from "node:fs";
+import { existsSync, globSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 
-const [sharpDir] = globSync("node_modules/.pnpm/sharp@*/node_modules/sharp");
+const sharpDir = existsSync("node_modules/sharp/lib/index.js")
+  ? "node_modules/sharp"
+  : globSync("node_modules/.pnpm/sharp@*/node_modules/sharp")[0];
+if (!sharpDir) throw new Error("Modul sharp tidak ditemukan. Jalankan pnpm install lebih dulu.");
 const { default: sharp } = await import(pathToFileURL(`${sharpDir}/lib/index.js`).href);
 
 const W = 1200;
