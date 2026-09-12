@@ -165,7 +165,7 @@ export default async function AdminOverviewPage() {
       label: "Kalimat pengantar beranda",
       done: Boolean(settings.home_intro),
       href: settingsHref,
-      hint: "Satu kalimat di atas daftar arsip",
+      hint: "Judul besar di atas daftar aplikasi",
     },
     {
       label: "Situs memakai domain sendiri",

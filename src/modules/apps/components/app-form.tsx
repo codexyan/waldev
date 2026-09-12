@@ -214,7 +214,7 @@ export function AppForm({ initial }: { initial: AppFormInitial }) {
       className="grid gap-6 lg:grid-cols-[1fr_20rem]"
     >
       <div className="space-y-6">
-        <Section title="Dasar" description="Nama dan satu kalimat inilah yang tampil di daftar arsip beranda.">
+        <Section title="Dasar" description="Nama dan satu kalimat ini tampil sebagai baris aplikasi di beranda.">
           <div className="space-y-1.5">
             <Label htmlFor="name">Nama aplikasi</Label>
             <Input id="name" value={name} onChange={(e) => onNameChange(e.target.value)} required />

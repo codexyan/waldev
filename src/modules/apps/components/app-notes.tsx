@@ -278,7 +278,7 @@ export function AppNotesList({ notes }: { notes: AppNoteItem[] }) {
   if (notes.length === 0) {
     return (
       <p className="text-muted-foreground text-sm">
-        Belum ada catatan. Catatan pertama membuat aplikasi ini terlihat hidup di arsip.
+        Belum ada catatan. Catatan terbaru tampil sebagai tanggal pembaruan aplikasi ini di beranda.
       </p>
     );
   }

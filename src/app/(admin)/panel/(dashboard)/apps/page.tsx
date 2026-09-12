@@ -29,7 +29,7 @@ export default async function AppsAdminPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl">Aplikasi</h1>
-          <p className="text-muted-foreground mt-1 text-sm">{total} aplikasi di arsip</p>
+          <p className="text-muted-foreground mt-1 text-sm">{total} aplikasi</p>
         </div>
         <Link href={`${ADMIN_BASE}/apps/new`}>
           <Button>
