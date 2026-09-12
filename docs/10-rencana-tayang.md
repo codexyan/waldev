@@ -1,15 +1,15 @@
 # 10 · Rencana Tayang: Arsip Aplikasi ke Produksi
 
-**Status:** Berjalan. Situs baru tayang sejak 12 September 2026 pukul 15.49 WITA. Pada hari yang sama halaman publiknya beralih ke berkas statis, lalu beranda direvisi (versi `3587a5e8`). Build dari Workers Builds diblokir di kode (langkah 1). Tersisa pengisian konten (6), pemantauan (8), dan migrasi 0003 + 0004 (9) · **Dibuat:** 2026-09-12
+**Status:** Berjalan. Situs baru tayang sejak 12 September 2026 pukul 15.49 WITA. Pada hari yang sama halaman publiknya beralih ke berkas statis, lalu beranda direvisi. Sejak 13 September dini hari hero beranda memakai kartu 3D *Rakit* (versi `0f2e8ecd`). Build dari Workers Builds diblokir di kode (langkah 1). Tersisa pengisian konten (6), pemantauan (8), dan migrasi 0003 + 0004 (9) · **Dibuat:** 2026-09-12
 **Terkait:** [09 · Perombakan](./09-arsip-aplikasi.md) §9 dan §11 (Tahap 5) · README bagian "Menerbitkan ke produksi"
 
 Aturan dasar: setiap langkah yang mengubah produksi hanya dijalankan setelah pemilik menyetujui langkah itu tepat sebelum dikerjakan.
 
 ## 1. Kondisi saat ini
-| Hal | Kondisi (2026-09-12 malam, setelah revisi beranda tayang) |
+| Hal | Kondisi (2026-09-13, setelah hero Rakit tayang) |
 |---|---|
-| Worker produksi | Versi `3587a5e8-7507-40e8-bca4-f7f2c9653b7e`: beranda baru (hero, logo klien, daftar aplikasi, tulisan terbaru), menu Klien di panel, halaman publik statis. Versi statis sebelumnya: `5cbe6ca8-cb37-47d5-81ce-296890099623` |
-| Kode di GitHub `main` | Tertinggal dari kode lokal (`0c4bc99`, `97f1a90`, `e206375`, dan commit dokumen ini belum di-push). Berkas statisnya tidak disimpan di repo; dibuat saat `pnpm terbitkan` |
+| Worker produksi | Versi `0f2e8ecd-b979-4cc7-9523-460b0da97bf7`: hero 3D *Rakit* (docs/09 §16), logo klien, daftar aplikasi, tulisan terbaru, menu Klien di panel, halaman publik statis. Versi statis sebelumnya: `3587a5e8-7507-40e8-bca4-f7f2c9653b7e` (hero tanpa 3D), lalu `5cbe6ca8-cb37-47d5-81ce-296890099623` |
+| Kode di GitHub `main` | Tertinggal dari kode lokal: commit `0c4bc99` sampai `4290066` dan commit dokumen ini belum di-push. Berkas statisnya tidak disimpan di repo; dibuat saat `pnpm terbitkan` |
 | D1 produksi | Migrasi 0000, 0001, dan 0002 sudah diterapkan; 0003 (direvisi) dan 0004 tertunda. Tabel `clients` masih ada dan kosong setelah 3 klien contoh dihapus |
 | Auto-deploy | Push ke `main` tetap memicu Workers Builds, tetapi skrip `build` berhenti karena `WORKERS_CI=1`, jadi tidak ada versi yang diunggah (langkah 1) |
 | Konten produksi | iaUndang tayang, SIM-KGB tersembunyi, 1 tulisan tayang, belum ada klien. Belum ada entri WalDev, profil pembuat, maupun kalimat pengantar |
@@ -106,7 +106,7 @@ Keluarannya URL `https://<8-hex>-waldev.mdcodeid.workers.dev`. Cek di URL itu:
 Bila `versions upload` gagal dengan "Authentication error [code: 10000]" atau "Unable to resolve Cloudflare's API hostname", ulangi saja. Pada 12 September keduanya hilang pada percobaan berikutnya.
 
 ### 6 · Isi konten (pemilik, di panel produksi)
-Draf teksnya ada di `../waldev-konten/draf-konten-tayang.md` (di luar repo). Setelah konten berubah, jalankan bagian 5.
+Draf teksnya ada di `../waldev-konten/draf-konten-tayang.md` (di luar repo). Setelah konten berubah, jalankan bagian 5. Buka panel di Chrome atau Edge biasa: pada 12 September simpanan dari panel browser di dalam aplikasi Claude desktop menampilkan "Tersimpan ✓", tetapi permintaannya tidak pernah sampai ke Worker produksi dan database tidak berubah.
 - [ ] Media: unggah foto profil dan tangkapan layar yang dibutuhkan.
 - [ ] Pengaturan › Profil pembuat: nama, foto, cerita singkat.
 - [ ] Pengaturan › Kalimat pengantar beranda (boleh dikosongkan).
