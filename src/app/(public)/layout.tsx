@@ -1,12 +1,11 @@
 import Link from "next/link";
 import type { ComponentType, SVGProps } from "react";
-import { ArrowUp, Mail, MessageCircle } from "lucide-react";
+import { ArrowUp, Mail } from "lucide-react";
 import { SiteHeader } from "@/components/layout/site-header";
 import { GithubIcon, InstagramIcon, LinkedinIcon } from "@/components/social-icons";
 import { SHELL } from "@/components/ui/shell";
 import { cn } from "@/lib/utils";
 import { SITE } from "@/lib/constants";
-import { WA_PESAN, waLink } from "@/lib/whatsapp";
 import { getMenuItems } from "@/modules/navigation/navigation.dal";
 import { getSiteSettings } from "@/modules/settings/settings.dal";
 
@@ -18,25 +17,17 @@ const SOCIAL_ICONS: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
 
 export const dynamic = "force-dynamic";
 
-/* Slot navigasi paling langka diberikan kepada pintu masuk konversi. "Jurnal"
-   turun ke footer: arsip tulisan tidak pernah menjadi alasan orang menghubungi
-   studio, sedangkan "Kontak" sebelumnya hanya ada di kaki halaman.
-   Catatan: keduanya hanya fallback — begitu admin menyusun menu lewat modul
-   Navigasi, tabel `navigation_items` yang menang. */
+/* Menu bawaan arsip aplikasi (docs/09 §4.1). Beranda sudah berupa daftar
+   aplikasi, jadi "Aplikasi" menunjuk ke sana. Menu Artikel sengaja tidak ada:
+   pemilik menambahkannya lewat Panel › Navigasi saat tulisannya dirasa cukup.
+   Keduanya hanya fallback — begitu menu disusun lewat modul Navigasi, tabel
+   `navigation_items` yang menang. */
 const DEFAULT_HEADER = [
-  { label: "Layanan", url: "/services" },
-  { label: "Karya", url: "/portfolio" },
+  { label: "Aplikasi", url: "/" },
   { label: "Tentang", url: "/about" },
-  { label: "Kontak", url: "/contact" },
 ];
 
-const DEFAULT_FOOTER = [
-  { label: "Jurnal", url: "/articles" },
-  { label: "Klien", url: "/clients" },
-  { label: "Testimoni", url: "/testimonials" },
-  { label: "Kebijakan Privasi", url: "/privacy-policy" },
-  { label: "Ketentuan Layanan", url: "/terms-of-service" },
-];
+const DEFAULT_FOOTER = [{ label: "Kebijakan Privasi", url: "/privacy-policy" }];
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const [settings, headerItems, footerItems] = await Promise.all([
@@ -45,30 +36,29 @@ export default async function PublicLayout({ children }: { children: React.React
     getMenuItems("footer"),
   ]);
 
-  const brand = settings.brand_name || "WalDev";
+  const brand = settings.brand_name || SITE.name;
   const nav = headerItems.length > 0 ? headerItems : DEFAULT_HEADER;
   const footerNav = footerItems.length > 0 ? footerItems : DEFAULT_FOOTER;
   const socials = [
-    { label: "Instagram", url: settings.social_instagram },
-    { label: "LinkedIn", url: settings.social_linkedin },
     { label: "GitHub", url: settings.social_github },
+    { label: "LinkedIn", url: settings.social_linkedin },
+    { label: "Instagram", url: settings.social_instagram },
   ].filter((social) => social.url);
 
-  const whatsappHref = waLink(settings.contact_whatsapp, WA_PESAN.umum);
   const lokasi = [settings.location_city, settings.location_region].filter(Boolean).join(", ");
 
-  /* Data terstruktur organisasi. Alamat sengaja hanya sampai tingkat kota dan
-     provinsi — alamat jalan tidak diketahui, dan schema.org tidak mewajibkannya.
-     Berguna untuk pencarian lokal seperti "jasa pembuatan website Banjarmasin". */
+  /* Data terstruktur organisasi, dengan pembuatnya sebagai founder bila profil
+     pembuat sudah diisi. Alamat sengaja hanya sampai tingkat kota dan provinsi. */
   const organisasiJsonLd = {
     "@context": "https://schema.org",
-    "@type": "ProfessionalService",
+    "@type": "Organization",
     name: brand,
     description: settings.description,
     url: SITE.url,
+    logo: new URL("/logo-mark.png", SITE.url).toString(),
     ...(settings.founded_year ? { foundingDate: settings.founded_year } : {}),
+    ...(settings.owner_name ? { founder: { "@type": "Person", name: settings.owner_name } } : {}),
     ...(settings.contact_email ? { email: settings.contact_email } : {}),
-    ...(settings.contact_whatsapp ? { telephone: settings.contact_whatsapp } : {}),
     ...(settings.location_city
       ? {
           address: {
@@ -91,7 +81,7 @@ export default async function PublicLayout({ children }: { children: React.React
         Lompat ke konten
       </a>
 
-      <SiteHeader brand={brand} nav={nav} whatsappHref={whatsappHref} />
+      <SiteHeader brand={brand} nav={nav} />
 
       <main id="konten" className="flex-1">
         {children}
@@ -99,8 +89,7 @@ export default async function PublicLayout({ children }: { children: React.React
 
       {/* Kaki halaman sebagai bidang tinta pekat — satu-satunya blok gelap di
           seluruh situs, sekaligus penanda bahwa halaman sudah habis. Isinya
-          murni navigasi dan kontak; ajakan bertindak cukup sekali di penutup
-          tiap halaman. */}
+          murni navigasi dan kontak. */}
       <footer className="bg-ink text-ink-muted mt-20">
         <div className={cn(SHELL, "py-14")}>
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
@@ -123,8 +112,6 @@ export default async function PublicLayout({ children }: { children: React.React
               <p className="mt-4 max-w-xs leading-relaxed">
                 {settings.footer_text || settings.description}
               </p>
-              {/* Tempat dan usia studio: dua hal pertama yang dicari pengunjung
-                  yang ragu apakah ini usaha nyata. Hadir di setiap halaman. */}
               {lokasi || settings.founded_year ? (
                 <p className="mt-4 text-xs">
                   {[lokasi, settings.founded_year ? `sejak ${settings.founded_year}` : ""]
@@ -160,40 +147,22 @@ export default async function PublicLayout({ children }: { children: React.React
             <FooterColumn title="Jelajahi" items={nav} />
             <FooterColumn title="Informasi" items={footerNav} />
 
-            <div>
-              <p className="label text-ink-foreground/60">Kontak</p>
-              <ul className="mt-4 space-y-2.5">
-                {whatsappHref ? (
-                  <li>
-                    <a
-                      href={whatsappHref}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-ink-foreground inline-flex items-center gap-2 transition-colors"
-                    >
-                      <MessageCircle className="h-3.5 w-3.5" aria-hidden />
-                      {settings.contact_whatsapp}
-                    </a>
-                  </li>
-                ) : null}
-                {settings.contact_email ? (
+            {settings.contact_email ? (
+              <div>
+                <p className="label text-ink-foreground/60">Kontak</p>
+                <ul className="mt-4 space-y-2.5">
                   <li>
                     <a
                       href={`mailto:${settings.contact_email}`}
-                      className="hover:text-ink-foreground inline-flex items-center gap-2 transition-colors"
+                      className="hover:text-ink-foreground inline-flex items-center gap-2 break-all transition-colors"
                     >
-                      <Mail className="h-3.5 w-3.5" aria-hidden />
+                      <Mail className="h-3.5 w-3.5 shrink-0" aria-hidden />
                       {settings.contact_email}
                     </a>
                   </li>
-                ) : null}
-                <li>
-                  <Link href="/contact" className="hover:text-ink-foreground transition-colors">
-                    Kirim pesan
-                  </Link>
-                </li>
-              </ul>
-            </div>
+                </ul>
+              </div>
+            ) : null}
           </div>
 
           <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs sm:flex-row sm:items-center sm:justify-between">
@@ -213,7 +182,9 @@ export default async function PublicLayout({ children }: { children: React.React
 
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organisasiJsonLd) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(organisasiJsonLd).replace(/</g, "\\u003c"),
+        }}
       />
     </div>
   );

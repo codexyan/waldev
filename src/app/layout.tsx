@@ -32,16 +32,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   applicationName: SITE.name,
   keywords: [
-    "studio digital",
-    "jasa pembuatan website",
-    // Pencarian lokal bernilai tinggi sejak identitas kota dipublikasikan.
-    "jasa pembuatan website Banjarmasin",
-    "web developer Banjarmasin",
-    "sistem informasi",
-    "web application",
-    "dashboard internal",
-    "otomasi bisnis",
     "WalDev",
+    "arsip aplikasi",
+    "aplikasi web",
+    "catatan pembuatan aplikasi",
+    "web developer Banjarmasin",
   ],
   openGraph: {
     type: "website",

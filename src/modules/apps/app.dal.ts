@@ -617,3 +617,14 @@ export async function getAllPublishedAppSlugs() {
   const rows = await db.select({ slug: apps.slug }).from(apps).where(eq(apps.isPublished, true));
   return rows.map((r) => r.slug);
 }
+
+/** Nama dan slug aplikasi yang tayang; dipakai halaman artikel untuk menautkan balik. */
+export async function getPublishedAppLink(appId: string) {
+  const db = getDb();
+  const rows = await db
+    .select({ name: apps.name, slug: apps.slug })
+    .from(apps)
+    .where(and(eq(apps.id, appId), eq(apps.isPublished, true)))
+    .limit(1);
+  return rows[0] ?? null;
+}

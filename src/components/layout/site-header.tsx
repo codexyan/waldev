@@ -3,9 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, MessageCircle, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
-import { buttonVariants } from "@/components/ui/button";
 import { SHELL } from "@/components/ui/shell";
 import { cn } from "@/lib/utils";
 
@@ -15,32 +14,25 @@ export interface HeaderNavItem {
 }
 
 /**
- * Kepala situs: merek, navigasi teks, pengalih tema, satu tombol aksi.
+ * Kepala situs: merek, navigasi teks, dan pengalih tema. Tidak ada tombol
+ * ajakan: situs ini arsip, bukan halaman penjualan.
  *
- * Latarnya tidak lagi berubah mengikuti gulir — header selalu tampil sebagai
- * bidang kertas dengan satu garis tipis di bawahnya. Selain menghapus satu
- * pendengar scroll, ini juga menghilangkan momen saat tautan putih melayang
- * di atas isi halaman yang ikut putih.
+ * Latarnya tidak berubah mengikuti gulir — header selalu tampil sebagai bidang
+ * kertas dengan satu garis tipis di bawahnya.
  */
-export function SiteHeader({
-  brand,
-  nav,
-  whatsappHref,
-}: {
-  brand: string;
-  nav: HeaderNavItem[];
-  whatsappHref: string | null;
-}) {
+export function SiteHeader({ brand, nav }: { brand: string; nav: HeaderNavItem[] }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
-  const isActive = (url: string) => (url === "/" ? pathname === "/" : pathname.startsWith(url));
+  /* Beranda adalah daftar aplikasi, jadi halaman aplikasi ikut menandai tautan beranda. */
+  const isActive = (url: string) =>
+    url === "/" ? pathname === "/" || pathname.startsWith("/apps/") : pathname.startsWith(url);
 
   /* Tutup menu setiap kali pindah halaman. Disesuaikan saat render, bukan lewat
      useEffect: memanggil setState di dalam efek memicu render berantai, dan
-     menuya sempat terlihat sekejap di halaman baru sebelum tertutup. */
+     menunya sempat terlihat sekejap di halaman baru sebelum tertutup. */
   const [pathSaatIni, setPathSaatIni] = useState(pathname);
   if (pathSaatIni !== pathname) {
     setPathSaatIni(pathname);
@@ -131,24 +123,6 @@ export function SiteHeader({
         <div className="flex items-center gap-2">
           <ThemeToggle className="hidden sm:inline-flex" />
 
-          {whatsappHref ? (
-            <a
-              href={whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(buttonVariants({ size: "sm" }), "gap-1.5")}
-            >
-              <MessageCircle className="h-3.5 w-3.5" aria-hidden />
-              <span className="hidden sm:inline">Chat WhatsApp</span>
-              <span className="sm:hidden">Chat</span>
-            </a>
-          ) : (
-            <Link href="/collaboration" className={cn(buttonVariants({ size: "sm" }), "gap-1.5")}>
-              Konsultasi
-              <ArrowRight className="h-3.5 w-3.5" aria-hidden />
-            </Link>
-          )}
-
           <button
             ref={triggerRef}
             type="button"
@@ -187,13 +161,6 @@ export function SiteHeader({
                 {item.label}
               </Link>
             ))}
-
-            <Link
-              href="/collaboration"
-              className={cn(buttonVariants({ size: "lg" }), "mt-6 w-full")}
-            >
-              Konsultasi gratis
-            </Link>
 
             {/* Pengalih tema hanya DISALIN ke sini, tidak dipindahkan: panel ini
                 `md:hidden`, jadi memindahkannya akan menghapus pengalih tema

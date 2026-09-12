@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, BookOpen } from "lucide-react";
-import { CtaPanel } from "@/components/cta-panel";
 import { PageHeader } from "@/components/page-header";
+import { ArrowLink } from "@/components/ui/arrow-link";
 import { SECTION, SHELL } from "@/components/ui/shell";
 import { listPublishedArticles } from "@/modules/articles/article.dal";
 import { cn } from "@/lib/utils";
@@ -10,9 +10,9 @@ import { cn } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Jurnal",
+  title: "Tulisan",
   description:
-    "Catatan teknis, prinsip desain, dan wawasan pengembangan produk digital dari tim WalDev.",
+    "Tulisan panjang tentang aplikasi yang saya bangun: keputusan yang diambil, kendala di tengah jalan, dan pelajarannya.",
   alternates: { canonical: "/articles" },
 };
 
@@ -38,14 +38,17 @@ export default async function ArticlesPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Jurnal"
-        title="Kami menulis apa yang kami kerjakan."
-        description="Catatan teknis, prinsip desain, dan pelajaran dari proyek nyata. Ditulis untuk dibaca pemilik bisnis maupun sesama pengembang."
+        eyebrow="Tulisan"
+        title="Tulisan tentang aplikasi yang saya bangun."
+        description="Cerita yang terlalu panjang untuk catatan singkat: keputusan yang diambil, kendala di tengah jalan, dan pelajaran sesudahnya."
       />
 
       {rows.length === 0 ? (
         <section className={cn(SHELL, SECTION)}>
           <p className="text-muted-foreground">Belum ada tulisan yang dipublikasikan.</p>
+          <p className="mt-4">
+            <ArrowLink href="/">Lihat aplikasinya dulu</ArrowLink>
+          </p>
         </section>
       ) : (
         <section className={cn(SHELL, SECTION)}>
@@ -60,16 +63,6 @@ export default async function ArticlesPage() {
           ) : null}
         </section>
       )}
-
-      {/* Pita ajakan yang dulu ada di kaki setiap halaman sudah dihapus, jadi
-          halaman indeks jurnal perlu penutupnya sendiri agar tidak berakhir
-          buntu tanpa satu pun jalan menghubungi. */}
-      <section className={cn(SHELL, "pt-16 pb-4 sm:pt-24")}>
-        <CtaPanel
-          title="Punya pertanyaan yang belum terjawab di sini?"
-          body="Kami senang menjawab langsung, termasuk bila ujungnya Anda memutuskan belum perlu membangun apa pun sekarang."
-        />
-      </section>
     </>
   );
 }

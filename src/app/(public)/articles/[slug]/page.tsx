@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
-import { CtaPanel } from "@/components/cta-panel";
-import { WA_PESAN } from "@/lib/whatsapp";
 import { ArrowLink } from "@/components/ui/arrow-link";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { SITE } from "@/lib/constants";
+import { getPublishedAppLink } from "@/modules/apps/app.dal";
 import { getPublishedArticleBySlug, getRelatedArticles } from "@/modules/articles/article.dal";
 import { getSeoMeta } from "@/modules/seo/seo.dal";
 
@@ -46,7 +46,11 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
   const article = await getPublishedArticleBySlug(slug);
   if (!article) notFound();
 
-  const related = await getRelatedArticles(article.id, 3);
+  const [related, app] = await Promise.all([
+    getRelatedArticles(article.id, 3),
+    // Hanya aplikasi yang tayang yang ditautkan; draf tetap tersembunyi.
+    article.appId ? getPublishedAppLink(article.appId) : Promise.resolve(null),
+  ]);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -55,13 +59,22 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
     description: article.summary ?? undefined,
     datePublished: article.publishedAt?.toISOString(),
     author: article.authorName ? { "@type": "Person", name: article.authorName } : undefined,
+    ...(app
+      ? {
+          about: {
+            "@type": "SoftwareApplication",
+            name: app.name,
+            url: new URL(`/apps/${app.slug}`, SITE.url).toString(),
+          },
+        }
+      : {}),
   };
 
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
 
       <header className="border-border border-b">
@@ -71,9 +84,17 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
           </ArrowLink>
 
           <span className="text-faint mt-10 flex flex-wrap items-center gap-2 text-xs">
+            {app ? (
+              <>
+                <Link href={`/apps/${app.slug}`} className="text-link hover:text-link-hover">
+                  {app.name}
+                </Link>
+                <span aria-hidden>·</span>
+              </>
+            ) : null}
             {article.categoryName ? (
               <>
-                <span className="text-link">{article.categoryName}</span>
+                <span className={app ? undefined : "text-link"}>{article.categoryName}</span>
                 <span aria-hidden>·</span>
               </>
             ) : null}
@@ -102,10 +123,7 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
               >
                 {article.authorName.charAt(0)}
               </span>
-              <span>
-                <span className="text-heading block font-medium">{article.authorName}</span>
-                <span className="text-faint block text-xs">Tim WalDev</span>
-              </span>
+              <span className="text-heading font-medium">{article.authorName}</span>
             </div>
           ) : null}
         </div>
@@ -140,13 +158,27 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
             ))}
           </div>
         ) : null}
+
+        {/* Pengganti panel ajakan lama: tulisan yang membahas satu aplikasi
+            mengantar pembaca kembali ke aplikasinya. */}
+        {app ? (
+          <div className="border-border bg-surface mt-14 rounded-xl border px-6 py-5">
+            <p className="text-muted-foreground leading-relaxed">
+              Tulisan ini bagian dari catatan pembuatan{" "}
+              <span className="text-heading font-medium">{app.name}</span>.
+            </p>
+            <p className="mt-3">
+              <ArrowLink href={`/apps/${app.slug}`}>Lihat aplikasinya</ArrowLink>
+            </p>
+          </div>
+        ) : null}
       </article>
 
       {related.length > 0 ? (
         <section className="mx-auto max-w-5xl px-6 pb-16">
           <SectionHeading
             eyebrow="Lanjutkan membaca"
-            title="Tulisan terkait"
+            title="Tulisan lainnya"
             className="border-border border-t pt-12"
           />
           <div className="mt-8 grid gap-x-10 gap-y-8 sm:grid-cols-3">
@@ -166,15 +198,6 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
           </div>
         </section>
       ) : null}
-
-      <section className="mx-auto max-w-5xl px-6 pt-16 pb-4 sm:pt-24">
-        <CtaPanel
-          eyebrow="Butuh bantuan?"
-          title="Ingin menerapkannya di produk Anda?"
-          body="Kami bantu terjemahkan tulisan seperti ini menjadi pekerjaan nyata, mulai dari pemeriksaan singkat sampai pengerjaan penuh."
-          waMessage={WA_PESAN.artikel(article.title)}
-        />
-      </section>
     </>
   );
 }

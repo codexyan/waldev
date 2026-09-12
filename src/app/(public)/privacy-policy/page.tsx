@@ -1,60 +1,73 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
 import { SITE } from "@/lib/constants";
+import { getSiteSettings } from "@/modules/settings/settings.dal";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Kebijakan Privasi",
-  description: `Kebijakan privasi ${SITE.name}: data apa yang kami kumpulkan, untuk apa dipakai, dan bagaimana kami menjaganya.`,
+  description: `Kebijakan privasi ${SITE.name}: situs ini tidak meminta data pribadi pengunjung.`,
   alternates: { canonical: "/privacy-policy" },
 };
 
-export default function PrivacyPolicyPage() {
+export default async function PrivacyPolicyPage() {
+  const settings = await getSiteSettings();
+  const brand = settings.brand_name || SITE.name;
+
   return (
     <>
       <PageHeader
         eyebrow="Legal"
         title="Kebijakan Privasi"
-        description="Ditulis singkat dan jelas, tanpa kalimat berbelit. Kami hanya menyimpan data yang benar-benar diperlukan untuk melayani Anda."
+        description="Singkatnya: situs ini tidak meminta dan tidak menyimpan data pribadi pengunjung."
       />
 
       <section className="mx-auto max-w-3xl px-6 py-16 sm:py-20">
         <div className="prose max-w-none">
           <p>
-            {SITE.name} menghormati privasi Anda. Halaman ini menjelaskan data apa yang kami
-            kumpulkan, bagaimana data itu digunakan, dan langkah yang kami ambil untuk menjaganya.
+            {brand} adalah arsip aplikasi yang saya bangun. Halaman ini menjelaskan data apa saja
+            yang terlibat saat Anda membuka situs ini.
           </p>
 
-          <h2>Data yang kami kumpulkan</h2>
+          <h2>Tidak ada formulir atau akun</h2>
           <p>
-            Kami hanya mengumpulkan data yang Anda kirimkan secara sukarela melalui formulir kontak
-            dan formulir kerja sama, yaitu nama, alamat email, nomor WhatsApp, serta deskripsi
-            kebutuhan proyek beserta lampiran yang Anda sertakan.
+            Situs ini tidak punya formulir, pendaftaran akun, maupun kolom komentar. Saya tidak
+            meminta nama, email, atau nomor telepon Anda.
           </p>
 
-          <h2>Penggunaan data</h2>
+          <h2>Data teknis</h2>
           <p>
-            Data digunakan semata mata untuk menindaklanjuti permintaan Anda dan berkomunikasi
-            seputar layanan kami. Kami tidak menjual, menyewakan, atau menukarkan data Anda kepada
-            pihak ketiga mana pun.
+            Situs ini berjalan di Cloudflare. Seperti layanan hosting pada umumnya, Cloudflare dapat
+            mencatat data teknis setiap permintaan, misalnya alamat IP dan jenis browser, untuk
+            keamanan dan menjaga situs tetap berjalan.
           </p>
 
-          <h2>Penyimpanan dan keamanan</h2>
+          <h2>Cookie dan penyimpanan di browser</h2>
           <p>
-            Data disimpan pada infrastruktur Cloudflare dengan akses terbatas hanya untuk tim yang
-            berkepentingan. Kami menerapkan langkah keamanan yang wajar untuk melindungi data dari
-            akses yang tidak sah.
+            Halaman publik tidak memasang cookie pelacak. Pilihan tampilan terang atau gelap
+            disimpan di browser Anda sendiri dan tidak dikirim ke mana pun.
           </p>
 
-          <h2>Hak Anda</h2>
+          <h2>Video YouTube</h2>
           <p>
-            Anda berhak meminta salinan, koreksi, atau penghapusan data yang pernah Anda kirimkan
-            kepada kami. Permintaan tersebut akan kami tindaklanjuti dalam waktu yang wajar.
+            Beberapa halaman aplikasi menyertakan video YouTube. Sebelum diklik, hanya gambar
+            pratinjaunya yang dimuat dari server YouTube. Pemutarnya baru dimuat setelah Anda
+            mengklik video, dan sejak saat itu berlaku kebijakan privasi YouTube.
           </p>
 
-          <h2>Kontak</h2>
-          <p>
-            Untuk pertanyaan seputar kebijakan ini, silakan hubungi kami melalui halaman Kontak.
-          </p>
+          <h2>Email</h2>
+          <p>Bila Anda mengirim email, alamat dan isi pesan Anda hanya saya pakai untuk membalas.</p>
+
+          {settings.contact_email ? (
+            <>
+              <h2>Kontak</h2>
+              <p>
+                Pertanyaan soal kebijakan ini bisa dikirim ke{" "}
+                <a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a>.
+              </p>
+            </>
+          ) : null}
         </div>
       </section>
     </>

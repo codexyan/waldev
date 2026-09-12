@@ -12,6 +12,15 @@ export function toDateInput(value: Date | null | undefined): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: SITE_TIMEZONE }).format(value);
 }
 
+/** "Sep 2026" */
+export function formatMonthYear(value: Date): string {
+  return new Intl.DateTimeFormat("id-ID", {
+    month: "short",
+    year: "numeric",
+    timeZone: SITE_TIMEZONE,
+  }).format(value);
+}
+
 /** "12 Sep 2026" */
 export function formatDay(value: Date): string {
   return new Intl.DateTimeFormat("id-ID", {

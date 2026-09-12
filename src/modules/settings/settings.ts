@@ -1,8 +1,9 @@
+import { SITE } from "@/lib/constants";
+
 export const SITE_SETTINGS_DEFAULTS = {
-  brand_name: "WalDev",
-  tagline: "Studio Digital Indonesia",
-  description:
-    "WalDev merancang dan membangun website, sistem informasi, dan dashboard internal untuk bisnis di Indonesia, dikerjakan dari Banjarmasin. Dari perencanaan sampai peluncuran, oleh satu tim yang sama.",
+  brand_name: SITE.name,
+  tagline: SITE.tagline,
+  description: SITE.description,
   /* Satu kalimat di atas daftar arsip beranda (docs/09 §5.1). */
   home_intro: "",
   /* Profil pembuat untuk halaman Tentang (docs/09 §5.3). Foto disimpan sebagai id media. */

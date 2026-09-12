@@ -1,12 +1,18 @@
 /** Konfigurasi brand & situs (nilai default; sebagian dapat ditimpa lewat Site Settings/CMS). */
 export const SITE = {
   name: "WalDev",
-  tagline: "Studio Digital Indonesia",
+  tagline: "Build Digital Products",
   description:
-    "WalDev merancang dan membangun website, sistem informasi, dan dashboard internal untuk bisnis di Indonesia, dikerjakan dari Banjarmasin. Dari perencanaan sampai peluncuran, oleh satu tim yang sama.",
+    "WalDev adalah arsip aplikasi yang saya bangun dan rawat, dari yang masih dibangun sampai yang sudah pensiun, lengkap dengan catatan pembuatannya.",
   // Nilai sebenarnya di-set lewat NEXT_PUBLIC_SITE_URL pada wrangler.jsonc.
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://waldev.mdcodeid.workers.dev",
 } as const;
+
+/**
+ * Kalimat pembuka beranda selama Pengaturan › Kalimat pengantar beranda masih
+ * kosong. Orang pertama, sama seperti seluruh situs publik.
+ */
+export const HOME_INTRO = "Arsip aplikasi yang saya bangun dan rawat.";
 
 /**
  * Kalimat pembuka di beranda. Satu kalimat utuh, pemenggalan barisnya

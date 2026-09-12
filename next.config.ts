@@ -19,6 +19,25 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
+  /* Halaman situs jasa lama (docs/09 §4.1), dialihkan permanen supaya tautan yang
+     sudah beredar tidak berakhir di 404. Karya lama yang dipindah ke arsip
+     memakai slug yang sama. */
+  async redirects() {
+    const keBeranda = [
+      "/portfolio",
+      "/services",
+      "/services/:slug",
+      "/clients",
+      "/testimonials",
+      "/terms-of-service",
+    ];
+    return [
+      { source: "/portfolio/:slug", destination: "/apps/:slug", permanent: true },
+      { source: "/contact", destination: "/about", permanent: true },
+      { source: "/collaboration", destination: "/about", permanent: true },
+      ...keBeranda.map((source) => ({ source, destination: "/", permanent: true })),
+    ];
+  },
 };
 
 export default nextConfig;

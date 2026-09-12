@@ -280,6 +280,7 @@ export async function getPublishedArticleBySlug(slug: string) {
       slug: articles.slug,
       summary: articles.summary,
       contentHtml: articles.contentHtml,
+      appId: articles.appId,
       readingTime: articles.readingTime,
       publishedAt: articles.publishedAt,
       categoryName: categories.name,
