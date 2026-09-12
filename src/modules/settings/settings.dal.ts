@@ -1,10 +1,16 @@
 import { cache } from "react";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { eq } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import { settings } from "@/server/db/schema";
 import { SITE_SETTINGS_DEFAULTS, type SettingsKey, type SiteSettings } from "./settings";
 
-const CACHE_KEY = "cache:site-settings";
+/* Kunci ber-versi. Situs studio lama memakai `cache:site-settings` dengan nilai
+   bawaan yang berbeda, dan selama masa pratinjau kedua versi berjalan di atas KV
+   yang sama (docs/10 langkah 4). Dengan kunci yang sama, keduanya saling menimpa
+   cache: situs lama bisa menampilkan tagline baru, dan versi ini bisa menerima
+   objek tanpa kunci profil pembuat. */
+const CACHE_KEY = "cache:site-settings:v2";
 const CACHE_TTL = 300; // detik
 
 /**
@@ -17,7 +23,10 @@ export const getSiteSettings = cache(async function getSiteSettings(): Promise<S
 
   try {
     const cached = await env.CACHE_KV.get(CACHE_KEY);
-    if (cached) return JSON.parse(cached) as SiteSettings;
+    // Digabung dengan nilai bawaan supaya kunci yang baru ditambahkan tidak pernah undefined.
+    if (cached) {
+      return { ...SITE_SETTINGS_DEFAULTS, ...(JSON.parse(cached) as Partial<SiteSettings>) };
+    }
   } catch {
     // lanjut ke DB bila KV gagal
   }
@@ -49,13 +58,23 @@ async function invalidateCache() {
   }
 }
 
+/**
+ * Nilai yang sama dengan bawaan kode tidak disimpan; barisnya dihapus. Tanpa ini,
+ * sekali formulir Pengaturan disimpan, semua nilai bawaan saat itu (termasuk
+ * tagline dan deskripsi) membeku di database, tidak lagi mengikuti kode, dan ikut
+ * terbaca oleh versi situs lain yang memakai D1 yang sama.
+ */
 export async function saveSiteSettings(values: Partial<Record<SettingsKey, string>>) {
   const db = getDb();
-  for (const [key, value] of Object.entries(values)) {
-    await db
-      .insert(settings)
-      .values({ key, value, group: "site" })
-      .onConflictDoUpdate({ target: settings.key, set: { value } });
+  for (const [key, value] of Object.entries(values) as [SettingsKey, string][]) {
+    if (value === SITE_SETTINGS_DEFAULTS[key]) {
+      await db.delete(settings).where(eq(settings.key, key));
+    } else {
+      await db
+        .insert(settings)
+        .values({ key, value, group: "site" })
+        .onConflictDoUpdate({ target: settings.key, set: { value } });
+    }
   }
   await invalidateCache();
 }

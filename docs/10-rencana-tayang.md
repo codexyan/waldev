@@ -63,7 +63,8 @@ Periksa sesudahnya:
 ### 4 · Kode untuk masa pratinjau
 Selama langkah 5–6, versi lama dan versi baru berjalan bersamaan di atas D1 dan KV yang sama. Dua hal perlu disiapkan lebih dulu:
 - **Login di URL pratinjau.** Tambahkan pola `https://*-waldev.mdcodeid.workers.dev` ke `trustedOrigins` di `src/server/auth/config.ts`. Better Auth 1.6 mendukung pola wildcard. Tanpa ini, login di pratinjau ditolak pemeriksaan CSRF.
-- **Cache pengaturan terpisah.** Kedua versi menyimpan pengaturan di kunci KV `cache:site-settings`, padahal nilai bawaannya berbeda: tagline dan deskripsi berubah, dan versi lama tidak mengenal kunci profil pembuat. Tanpa pemisahan, situs lama bisa sempat menampilkan tagline baru, dan halaman Tentang di pratinjau bisa error karena `owner_name` tidak ada. Versi baru memakai kunci sendiri (misalnya `cache:site-settings:v2`) dan selalu menggabungkan isi cache dengan nilai bawaan.
+- **Cache pengaturan terpisah.** Kedua versi menyimpan pengaturan di kunci KV `cache:site-settings`, padahal nilai bawaannya berbeda: tagline dan deskripsi berubah, dan versi lama tidak mengenal kunci profil pembuat. Tanpa pemisahan, situs lama bisa sempat menampilkan tagline baru, dan halaman Tentang di pratinjau bisa error karena `owner_name` tidak ada. Versi baru memakai kunci sendiri (`cache:site-settings:v2`) dan selalu menggabungkan isi cache dengan nilai bawaan.
+- **Nilai bawaan tidak dibekukan.** Menyimpan formulir Pengaturan dulu menulis semua isian ke database, termasuk tagline dan deskripsi bawaan versi baru, sehingga situs lama ikut menampilkannya. Sekarang nilai yang sama dengan bawaan kode tidak disimpan, dan barisnya dihapus.
 
 Lalu typecheck, lint, build, commit, dan push. Lima menit setelah push, `npx wrangler deployments list` tidak boleh memuat deployment baru. Bila ternyata ada, langsung rollback dan kabari pemilik.
 

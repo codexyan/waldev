@@ -44,6 +44,9 @@ export function getAuth() {
       "https://wolue.cloud",
       "https://www.wolue.cloud",
       "https://waldev.mdcodeid.workers.dev",
+      // URL pratinjau `wrangler versions upload` (<id>-waldev.mdcodeid.workers.dev), supaya
+      // panel versi baru bisa dipakai sebelum trafik dipindahkan (docs/10 langkah 4).
+      "https://*-waldev.mdcodeid.workers.dev",
     ],
   });
 }
