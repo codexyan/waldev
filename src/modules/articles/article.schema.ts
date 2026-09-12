@@ -12,6 +12,7 @@ export const articleInputSchema = z
     coverMediaId: z.string().trim().optional(),
     contentJson: z.any(),
     categoryId: z.string().trim().optional(),
+    appId: z.string().trim().optional(),
     tags: z.array(z.string().trim().min(1).max(50)).max(20).default([]),
     status: z.enum(ARTICLE_STATUSES).default("draft"),
     scheduledAt: z.string().trim().optional().nullable(),

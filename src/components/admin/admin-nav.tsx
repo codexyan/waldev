@@ -3,18 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Building2,
+  AppWindow,
   FileText,
-  FolderKanban,
   FolderTree,
-  Handshake,
   History,
   Image as ImageIcon,
-  Inbox,
-  Layers,
   LayoutDashboard,
   ListTree,
-  MessageSquareQuote,
   Settings,
   ShieldCheck,
   Tag,
@@ -39,21 +34,11 @@ const GROUPS: { label: string | null; items: NavItem[] }[] = [
   {
     label: "Konten",
     items: [
+      { href: "/apps", label: "Aplikasi", icon: AppWindow },
       { href: "/articles", label: "Tulisan", icon: FileText },
-      { href: "/portfolio", label: "Karya", icon: FolderKanban },
-      { href: "/services", label: "Layanan", icon: Layers },
       { href: "/media", label: "Media", icon: ImageIcon },
       { href: "/categories", label: "Kategori", icon: FolderTree },
       { href: "/tags", label: "Tag", icon: Tag },
-    ],
-  },
-  {
-    label: "Relasi",
-    items: [
-      { href: "/clients", label: "Klien", icon: Building2 },
-      { href: "/testimonials", label: "Testimoni", icon: MessageSquareQuote },
-      { href: "/collaboration", label: "Prospek", icon: Handshake },
-      { href: "/contact-messages", label: "Pesan", icon: Inbox },
     ],
   },
   {
@@ -68,18 +53,17 @@ const GROUPS: { label: string | null; items: NavItem[] }[] = [
   },
 ];
 
-/** Jumlah antrean per menu, ditampilkan sebagai lencana kecil. */
+/** Jumlah yang perlu ditindaklanjuti per menu, ditampilkan sebagai lencana kecil. */
 export interface NavCounts {
-  collaboration?: number;
-  contacts?: number;
+  /** Aplikasi berstatus Sedang dibangun yang lama tanpa catatan. */
+  appsNeedingUpdate?: number;
 }
 
 export function AdminNav({ counts, onNavigate }: { counts?: NavCounts; onNavigate?: () => void }) {
   const pathname = usePathname();
 
   const badgeFor = (href: string) => {
-    if (href === "/collaboration") return counts?.collaboration || 0;
-    if (href === "/contact-messages") return counts?.contacts || 0;
+    if (href === "/apps") return counts?.appsNeedingUpdate || 0;
     return 0;
   };
 

@@ -54,3 +54,15 @@ export async function deleteMedia(id: string): Promise<string | null> {
   await db.delete(media).where(eq(media.id, id));
   return row.r2Key;
 }
+
+/** Media dalam bentuk yang dipakai MediaPickerField; null bila id kosong atau sudah dihapus. */
+export async function getMediaPick(id: string | null | undefined) {
+  if (!id) return null;
+  const db = getDb();
+  const rows = await db
+    .select({ id: media.id, url: media.url, filename: media.filename, kind: media.kind })
+    .from(media)
+    .where(eq(media.id, id))
+    .limit(1);
+  return rows[0] ?? null;
+}

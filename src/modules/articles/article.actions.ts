@@ -27,6 +27,7 @@ function toWriteData(input: ArticleInput): dal.ArticleWriteData {
     coverMediaId: input.coverMediaId || null,
     contentJson: input.contentJson,
     categoryId: input.categoryId || null,
+    appId: input.appId || null,
     tags: input.tags ?? [],
     status: input.status,
     scheduledAt: input.scheduledAt ?? null,

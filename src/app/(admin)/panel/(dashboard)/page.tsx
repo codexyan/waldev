@@ -1,45 +1,34 @@
 import Link from "next/link";
 import {
+  AppWindow,
   ArrowRight,
+  Boxes,
   Check,
   ExternalLink,
   FileText,
-  FolderKanban,
-  Handshake,
-  Inbox,
+  NotebookPen,
   Plus,
   X,
   type LucideIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ADMIN_BASE } from "@/lib/constants";
+import { ADMIN_BASE, SITE } from "@/lib/constants";
+import { timeAgo } from "@/lib/date";
 import { statusLabel, statusTone } from "@/lib/status";
-import { listArticlesAdmin } from "@/modules/articles/article.dal";
-import { listCollaborations, listContacts } from "@/modules/leads/lead.dal";
-import { listPortfoliosAdmin } from "@/modules/portfolio/portfolio.dal";
-import { getSiteSettings } from "@/modules/settings/settings.dal";
-import { listPublishedTestimonials } from "@/modules/testimonials/testimonial.dal";
-import { requireSession } from "@/server/auth/session";
 import { cn } from "@/lib/utils";
+import {
+  NEEDS_UPDATE_AFTER_DAYS,
+  listAppsAdmin,
+  listAppsForSelect,
+  listAppsNeedingUpdate,
+} from "@/modules/apps/app.dal";
+import { NoteComposer } from "@/modules/apps/components/app-notes";
+import { listArticlesAdmin } from "@/modules/articles/article.dal";
+import { getSiteSettings } from "@/modules/settings/settings.dal";
+import { requireSession } from "@/server/auth/session";
 
 export const dynamic = "force-dynamic";
-
-/** Jarak waktu singkat dalam bahasa Indonesia, misalnya "3 hari lalu". */
-function timeAgo(value: Date | null): string {
-  if (!value) return "belum pernah";
-  const seconds = Math.max(0, Math.floor((Date.now() - value.getTime()) / 1000));
-  if (seconds < 60) return "baru saja";
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes} menit lalu`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours} jam lalu`;
-  const days = Math.floor(hours / 24);
-  if (days < 30) return `${days} hari lalu`;
-  const months = Math.floor(days / 30);
-  if (months < 12) return `${months} bulan lalu`;
-  return `${Math.floor(months / 12)} tahun lalu`;
-}
 
 function Panel({
   title,
@@ -79,89 +68,109 @@ function EmptyState({ children }: { children: React.ReactNode }) {
   );
 }
 
+interface ChecklistItem {
+  label: string;
+  done: boolean;
+  hint: string;
+  href?: string;
+}
+
+function ChecklistRow({ item }: { item: ChecklistItem }) {
+  const content = (
+    <>
+      <span
+        className={cn(
+          "mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border",
+          item.done
+            ? "bg-foreground text-background border-transparent"
+            : "border-border text-muted-foreground",
+        )}
+      >
+        {item.done ? <Check className="h-3.5 w-3.5" aria-hidden /> : <X className="h-3.5 w-3.5" aria-hidden />}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span
+          className={cn(
+            "block text-sm",
+            item.done ? "text-muted-foreground line-through" : "font-medium",
+          )}
+        >
+          {item.label}
+        </span>
+        {!item.done ? (
+          <span className="text-muted-foreground mt-0.5 block text-xs">{item.hint}</span>
+        ) : null}
+      </span>
+    </>
+  );
+
+  const className = "flex items-start gap-4 px-5 py-3.5";
+  return item.href ? (
+    <Link href={item.href} className={cn(className, "hover:bg-muted/60 transition-colors")}>
+      {content}
+    </Link>
+  ) : (
+    <div className={className}>{content}</div>
+  );
+}
+
 export default async function AdminOverviewPage() {
   await requireSession();
 
-  const [
-    articles,
-    portfolios,
-    publishedArticles,
-    collaborations,
-    contacts,
-    settings,
-    testimonials,
-  ] = await Promise.all([
+  const [apps, appOptions, needingUpdate, articles, settings] = await Promise.all([
+    listAppsAdmin({ limit: 100 }),
+    listAppsForSelect(),
+    listAppsNeedingUpdate(),
     listArticlesAdmin({ limit: 5 }),
-    listPortfoliosAdmin({ limit: 5 }),
-    listArticlesAdmin({ limit: 1, status: "published" }),
-    listCollaborations(),
-    listContacts(),
     getSiteSettings(),
-    listPublishedTestimonials(),
   ]);
 
-  const newLeads = collaborations.filter((row) => row.status === "new");
-  const newContacts = contacts.filter((row) => row.status === "new");
+  const building = apps.rows.filter((app) => app.status === "building").length;
 
   const stats: { label: string; value: number; href: string; icon: LucideIcon; alert?: boolean }[] =
     [
+      { label: "Aplikasi", value: apps.total, href: `${ADMIN_BASE}/apps`, icon: AppWindow },
+      { label: "Sedang dibangun", value: building, href: `${ADMIN_BASE}/apps`, icon: Boxes },
+      {
+        label: "Perlu kabar",
+        value: needingUpdate.length,
+        href: `${ADMIN_BASE}/apps`,
+        icon: NotebookPen,
+        alert: needingUpdate.length > 0,
+      },
       { label: "Tulisan", value: articles.total, href: `${ADMIN_BASE}/articles`, icon: FileText },
-      {
-        label: "Karya",
-        value: portfolios.total,
-        href: `${ADMIN_BASE}/portfolio`,
-        icon: FolderKanban,
-      },
-      {
-        label: "Prospek baru",
-        value: newLeads.length,
-        href: `${ADMIN_BASE}/collaboration`,
-        icon: Handshake,
-        alert: newLeads.length > 0,
-      },
-      {
-        label: "Pesan baru",
-        value: newContacts.length,
-        href: `${ADMIN_BASE}/contact-messages`,
-        icon: Inbox,
-        alert: newContacts.length > 0,
-      },
     ];
 
-  const hasSocial = Boolean(
-    settings.social_instagram || settings.social_linkedin || settings.social_github,
-  );
-
-  const checklist: { label: string; done: boolean; href: string; hint: string }[] = [
+  const settingsHref = `${ADMIN_BASE}/settings`;
+  const checklist: ChecklistItem[] = [
     {
       label: "Email kontak terisi",
       done: Boolean(settings.contact_email),
-      href: `${ADMIN_BASE}/settings`,
-      hint: "Ditampilkan di footer dan halaman kontak",
-    },
-    {
-      label: "Nomor WhatsApp terisi",
-      done: Boolean(settings.contact_whatsapp),
-      href: `${ADMIN_BASE}/settings`,
-      hint: "Jalur tercepat bagi calon klien",
+      href: settingsHref,
+      hint: "Jalur utama pengunjung untuk menghubungi Anda",
     },
     {
       label: "Tautan media sosial",
-      done: hasSocial,
-      href: `${ADMIN_BASE}/settings`,
-      hint: "Tombol sosial di footer baru muncul bila diisi",
+      done: Boolean(settings.social_instagram || settings.social_linkedin || settings.social_github),
+      href: settingsHref,
+      hint: "Ikon sosial baru muncul bila diisi",
     },
     {
-      label: "Ada testimoni tayang",
-      done: testimonials.length > 0,
-      href: `${ADMIN_BASE}/testimonials`,
-      hint: "Seksi testimoni di beranda tersembunyi bila kosong",
+      label: "Profil pembuat lengkap",
+      done: Boolean(settings.owner_name && settings.owner_photo_media_id && settings.owner_bio),
+      href: settingsHref,
+      hint: "Nama, foto, dan cerita singkat untuk halaman Tentang",
     },
     {
-      label: "Ada tulisan tayang",
-      done: publishedArticles.total > 0,
-      href: `${ADMIN_BASE}/articles`,
-      hint: "Menjaga situs terlihat aktif di mesin pencari",
+      label: "Kalimat pengantar beranda",
+      done: Boolean(settings.home_intro),
+      href: settingsHref,
+      hint: "Satu kalimat di atas daftar arsip",
+    },
+    {
+      label: "Situs memakai domain sendiri",
+      done: !SITE.url.includes("workers.dev"),
+      hint: "Masih di workers.dev. Ganti NEXT_PUBLIC_SITE_URL setelah domain WalDev aktif.",
     },
   ];
 
@@ -175,20 +184,20 @@ export default async function AdminOverviewPage() {
           <p className="label text-muted-foreground">Panel Admin</p>
           <h1 className="mt-3 text-3xl">Ringkasan</h1>
           <p className="text-muted-foreground mt-2 text-sm">
-            Pantau isi situs dan permintaan yang masuk dari satu tempat.
+            Kabar aplikasi dan kelengkapan situs dalam satu tempat.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <Link href={`${ADMIN_BASE}/apps/new`}>
+            <Button variant="outline" size="sm">
+              <Plus className="h-3.5 w-3.5" />
+              Aplikasi
+            </Button>
+          </Link>
           <Link href={`${ADMIN_BASE}/articles/new`}>
             <Button variant="outline" size="sm">
               <Plus className="h-3.5 w-3.5" />
               Tulisan
-            </Button>
-          </Link>
-          <Link href={`${ADMIN_BASE}/portfolio/new`}>
-            <Button variant="outline" size="sm">
-              <Plus className="h-3.5 w-3.5" />
-              Karya
             </Button>
           </Link>
           <a href="/" target="_blank" rel="noopener noreferrer">
@@ -230,60 +239,75 @@ export default async function AdminOverviewPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Antrean yang perlu ditindaklanjuti */}
-        <Panel
-          title="Perlu perhatian"
-          action={{ label: "Semua prospek", href: `${ADMIN_BASE}/collaboration` }}
-        >
-          {newLeads.length === 0 && newContacts.length === 0 ? (
-            <EmptyState>Tidak ada permintaan baru. Semua sudah ditangani.</EmptyState>
+        {/* Menulis kabar dari halaman pertama panel, tanpa membuka aplikasinya dulu. */}
+        <Panel title="Tulis catatan">
+          {appOptions.length === 0 ? (
+            <EmptyState>
+              Belum ada aplikasi.{" "}
+              <Link href={`${ADMIN_BASE}/apps/new`} className="text-foreground ml-1 underline">
+                Buat yang pertama
+              </Link>
+            </EmptyState>
+          ) : (
+            <div className="p-5">
+              <NoteComposer apps={appOptions} />
+            </div>
+          )}
+        </Panel>
+
+        <Panel title={`Perlu kabar · lebih dari ${NEEDS_UPDATE_AFTER_DAYS} hari`}>
+          {needingUpdate.length === 0 ? (
+            <EmptyState>
+              Semua aplikasi yang sedang dibangun punya catatan dalam {NEEDS_UPDATE_AFTER_DAYS} hari
+              terakhir.
+            </EmptyState>
           ) : (
             <ul className="divide-border divide-y">
-              {newLeads.slice(0, 4).map((lead) => (
-                <li key={lead.id}>
+              {needingUpdate.map((app) => (
+                <li key={app.id}>
                   <Link
-                    href={`${ADMIN_BASE}/collaboration`}
-                    className="hover:bg-muted/60 flex items-start gap-4 px-5 py-4 transition-colors"
+                    href={`${ADMIN_BASE}/apps/${app.id}/edit`}
+                    className="hover:bg-muted/60 flex items-center gap-4 px-5 py-3.5 transition-colors"
                   >
-                    <span className="bg-primary text-primary-foreground mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg">
-                      <Handshake className="h-4 w-4" aria-hidden />
-                    </span>
                     <span className="min-w-0 flex-1">
-                      <span className="flex flex-wrap items-center gap-2">
-                        <span className="truncate text-sm font-medium">{lead.name}</span>
-                        <Badge variant="signal">Prospek</Badge>
-                      </span>
-                      <span className="text-muted-foreground mt-1 block truncate text-xs">
-                        {[lead.projectType, lead.budget].filter(Boolean).join(" · ") || lead.email}
+                      <span className="block truncate text-sm font-medium">{app.name}</span>
+                      <span className="label text-muted-foreground mt-1 block">
+                        {app.lastActivityAt
+                          ? `Catatan terakhir ${timeAgo(app.lastActivityAt)}`
+                          : `Belum ada catatan sejak dibuat ${timeAgo(app.createdAt)}`}
                       </span>
                     </span>
-                    <span className="label text-muted-foreground shrink-0">
-                      {timeAgo(lead.createdAt)}
-                    </span>
+                    <ArrowRight className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden />
                   </Link>
                 </li>
               ))}
-              {newContacts.slice(0, 4).map((message) => (
-                <li key={message.id}>
+            </ul>
+          )}
+        </Panel>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Panel
+          title="Aplikasi terakhir diperbarui"
+          action={{ label: "Semua aplikasi", href: `${ADMIN_BASE}/apps` }}
+        >
+          {apps.rows.length === 0 ? (
+            <EmptyState>Belum ada aplikasi.</EmptyState>
+          ) : (
+            <ul className="divide-border divide-y">
+              {apps.rows.slice(0, 5).map((app) => (
+                <li key={app.id}>
                   <Link
-                    href={`${ADMIN_BASE}/contact-messages`}
-                    className="hover:bg-muted/60 flex items-start gap-4 px-5 py-4 transition-colors"
+                    href={`${ADMIN_BASE}/apps/${app.id}/edit`}
+                    className="hover:bg-muted/60 flex items-center gap-4 px-5 py-3.5 transition-colors"
                   >
-                    <span className="border-border mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border">
-                      <Inbox className="h-4 w-4" aria-hidden />
-                    </span>
                     <span className="min-w-0 flex-1">
-                      <span className="flex flex-wrap items-center gap-2">
-                        <span className="truncate text-sm font-medium">{message.name}</span>
-                        <Badge variant="outline">Pesan</Badge>
-                      </span>
-                      <span className="text-muted-foreground mt-1 block truncate text-xs">
-                        {message.subject || message.email}
+                      <span className="block truncate text-sm font-medium">{app.name}</span>
+                      <span className="label text-muted-foreground mt-1 block">
+                        {app.isPublished ? "Tayang" : "Tersembunyi"} · {timeAgo(app.updatedAt)}
                       </span>
                     </span>
-                    <span className="label text-muted-foreground shrink-0">
-                      {timeAgo(message.createdAt)}
-                    </span>
+                    <Badge variant={statusTone(app.status)}>{statusLabel(app.status)}</Badge>
                   </Link>
                 </li>
               ))}
@@ -291,52 +315,6 @@ export default async function AdminOverviewPage() {
           )}
         </Panel>
 
-        {/* Kelengkapan isi situs */}
-        <Panel title={`Kelengkapan situs · ${checklist.length - pending} dari ${checklist.length}`}>
-          <ul className="divide-border divide-y">
-            {checklist.map((item) => (
-              <li key={item.label}>
-                <Link
-                  href={item.href}
-                  className="hover:bg-muted/60 flex items-start gap-4 px-5 py-3.5 transition-colors"
-                >
-                  <span
-                    className={cn(
-                      "mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border",
-                      item.done
-                        ? "bg-foreground text-background border-transparent"
-                        : "border-border text-muted-foreground",
-                    )}
-                  >
-                    {item.done ? (
-                      <Check className="h-3.5 w-3.5" aria-hidden />
-                    ) : (
-                      <X className="h-3.5 w-3.5" aria-hidden />
-                    )}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span
-                      className={cn(
-                        "block text-sm",
-                        item.done ? "text-muted-foreground line-through" : "font-medium",
-                      )}
-                    >
-                      {item.label}
-                    </span>
-                    {!item.done ? (
-                      <span className="text-muted-foreground mt-0.5 block text-xs">
-                        {item.hint}
-                      </span>
-                    ) : null}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Panel>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-2">
         <Panel
           title="Tulisan terakhir diperbarui"
           action={{ label: "Semua tulisan", href: `${ADMIN_BASE}/articles` }}
@@ -366,35 +344,17 @@ export default async function AdminOverviewPage() {
             </ul>
           )}
         </Panel>
+      </div>
 
-        <Panel
-          title="Karya terakhir diperbarui"
-          action={{ label: "Semua karya", href: `${ADMIN_BASE}/portfolio` }}
-        >
-          {portfolios.rows.length === 0 ? (
-            <EmptyState>Belum ada karya.</EmptyState>
-          ) : (
-            <ul className="divide-border divide-y">
-              {portfolios.rows.map((project) => (
-                <li key={project.id}>
-                  <Link
-                    href={`${ADMIN_BASE}/portfolio/${project.id}/edit`}
-                    className="hover:bg-muted/60 flex items-center gap-4 px-5 py-3.5 transition-colors"
-                  >
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-medium">{project.title}</span>
-                      <span className="label text-muted-foreground mt-1 block">
-                        {project.clientName ?? "Proyek internal"} · {timeAgo(project.updatedAt)}
-                      </span>
-                    </span>
-                    <Badge variant={statusTone(project.status)}>
-                      {statusLabel(project.status)}
-                    </Badge>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Panel title={`Kelengkapan situs · ${checklist.length - pending} dari ${checklist.length}`}>
+          <ul className="divide-border divide-y">
+            {checklist.map((item) => (
+              <li key={item.label}>
+                <ChecklistRow item={item} />
+              </li>
+            ))}
+          </ul>
         </Panel>
       </div>
     </div>

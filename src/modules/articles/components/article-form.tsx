@@ -21,6 +21,7 @@ export interface ArticleFormInitial {
   slug: string;
   summary: string;
   categoryId: string;
+  appId: string;
   tags: string;
   status: ArticleStatus;
   scheduledAt: string;
@@ -43,9 +44,11 @@ function FieldError({ errors }: { errors?: string[] }) {
 export function ArticleForm({
   initial,
   categories,
+  apps,
 }: {
   initial: ArticleFormInitial;
   categories: { id: string; name: string }[];
+  apps: { id: string; name: string }[];
 }) {
   const router = useRouter();
   const isEdit = Boolean(initial.id);
@@ -55,6 +58,7 @@ export function ArticleForm({
   const [slugTouched, setSlugTouched] = useState(Boolean(initial.slug));
   const [summary, setSummary] = useState(initial.summary);
   const [categoryId, setCategoryId] = useState(initial.categoryId);
+  const [appId, setAppId] = useState(initial.appId);
   const [tags, setTags] = useState(initial.tags);
   const [status, setStatus] = useState<ArticleStatus>(initial.status);
   const [scheduledAt, setScheduledAt] = useState(initial.scheduledAt);
@@ -84,6 +88,7 @@ export function ArticleForm({
       coverMediaId: cover?.id,
       contentJson: content,
       categoryId: categoryId || undefined,
+      appId: appId || undefined,
       tags: tags
         .split(",")
         .map((t) => t.trim())
@@ -199,6 +204,21 @@ export function ArticleForm({
               placeholder="otomatis-dari-judul"
             />
             <FieldError errors={fieldErrors.slug} />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="app">Aplikasi terkait</Label>
+            <Select id="app" value={appId} onChange={(e) => setAppId(e.target.value)}>
+              <option value="">Tidak terkait aplikasi</option>
+              {apps.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
+            </Select>
+            <p className="text-muted-foreground text-xs">
+              Artikel yang tayang ikut muncul di Catatan pembuatan aplikasi ini.
+            </p>
           </div>
 
           <div className="space-y-1.5">

@@ -19,6 +19,7 @@ export interface ArticleWriteData {
   coverMediaId?: string | null;
   contentJson: unknown;
   categoryId?: string | null;
+  appId?: string | null;
   tags: string[];
   status: ArticleStatus;
   scheduledAt?: string | null;
@@ -93,6 +94,7 @@ export async function createArticle(data: ArticleWriteData, authorId: string) {
       summary: data.summary?.trim() || null,
       coverMediaId: data.coverMediaId || null,
       categoryId: data.categoryId || null,
+      appId: data.appId || null,
       authorId,
       contentJson: JSON.stringify(data.contentJson ?? { type: "doc", content: [] }),
       contentHtml: renderTiptapToHtml(data.contentJson),
@@ -123,6 +125,7 @@ export async function updateArticle(id: string, data: ArticleWriteData) {
       summary: data.summary?.trim() || null,
       coverMediaId: data.coverMediaId || null,
       categoryId: data.categoryId || null,
+      appId: data.appId || null,
       contentJson: JSON.stringify(data.contentJson ?? { type: "doc", content: [] }),
       contentHtml: renderTiptapToHtml(data.contentJson),
       readingTime: calcReadingTime(data.contentJson),

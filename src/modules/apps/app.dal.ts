@@ -1,4 +1,5 @@
 import { and, asc, count, desc, eq, inArray, like, sql } from "drizzle-orm";
+import { toDateInput } from "@/lib/date";
 import { slugify } from "@/lib/slug";
 import { EMPTY_DOC, renderTiptapToHtml } from "@/lib/tiptap";
 import { getDb, type DB } from "@/server/db/client";
@@ -103,13 +104,14 @@ function resolveMilestones(
   data: AppWriteData,
   existing?: { releasedAt: Date | null; retiredAt: Date | null },
 ) {
-  const now = new Date();
+  // Hari ini menurut zona waktu situs, disimpan pukul 12.00 UTC seperti isian tanggal lain.
+  const today = toDay(toDateInput(new Date()));
   return {
     releasedAt:
       toDay(data.releasedAt) ??
-      (data.status === "building" ? null : (existing?.releasedAt ?? now)),
+      (data.status === "building" ? null : (existing?.releasedAt ?? today)),
     retiredAt:
-      toDay(data.retiredAt) ?? (data.status === "retired" ? (existing?.retiredAt ?? now) : null),
+      toDay(data.retiredAt) ?? (data.status === "retired" ? (existing?.retiredAt ?? today) : null),
   };
 }
 
@@ -363,8 +365,11 @@ export async function listAppsForSelect() {
   return db.select({ id: apps.id, name: apps.name }).from(apps).orderBy(asc(apps.name));
 }
 
+/** Batas hari tanpa catatan sebelum aplikasi yang sedang dibangun masuk panel "Perlu kabar". */
+export const NEEDS_UPDATE_AFTER_DAYS = 30;
+
 /** Aplikasi berstatus Sedang dibangun yang tidak punya catatan lebih dari `days` hari. */
-export async function listAppsNeedingUpdate(days = 30) {
+export async function listAppsNeedingUpdate(days = NEEDS_UPDATE_AFTER_DAYS) {
   const db = getDb();
   const rows = await db
     .select({

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { listAppsForSelect } from "@/modules/apps/app.dal";
 import { getArticleForEdit, listArticleCategories } from "@/modules/articles/article.dal";
 import { ArticleForm } from "@/modules/articles/components/article-form";
 import { getSeoMeta } from "@/modules/seo/seo.dal";
@@ -15,9 +16,10 @@ function toDatetimeLocal(value: Date | null): string {
 export default async function EditArticlePage({ params }: { params: Promise<{ id: string }> }) {
   await requirePagePermission("article.update");
   const { id } = await params;
-  const [article, categories, seo] = await Promise.all([
+  const [article, categories, apps, seo] = await Promise.all([
     getArticleForEdit(id),
     listArticleCategories(),
+    listAppsForSelect(),
     getSeoMeta("article", id),
   ]);
   if (!article) notFound();
@@ -41,6 +43,7 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
           slug: article.slug,
           summary: article.summary ?? "",
           categoryId: article.categoryId ?? "",
+          appId: article.appId ?? "",
           tags: article.tags.join(", "),
           status: article.status,
           scheduledAt: toDatetimeLocal(article.scheduledAt),
@@ -49,6 +52,7 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
           seo,
         }}
         categories={categories}
+        apps={apps}
       />
     </div>
   );
