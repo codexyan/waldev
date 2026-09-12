@@ -11,6 +11,7 @@ Dokumentasi hidup untuk **WalDev — Digital Studio Platform** (*Build Digital P
 6. [06 · API Design](./06-api.md)
 7. [07 · Struktur Folder & Coding Standards](./07-folder-standards.md)
 8. [08 · Roadmap](./08-roadmap.md)
+9. [09 · Perombakan: WalDev sebagai Arsip Aplikasi](./09-arsip-aplikasi.md) — **draf**; bila disetujui, menggantikan arah situs jasa di dokumen 01–08
 
 ## Keputusan Arsitektur Terkunci
 | Area | Keputusan |
