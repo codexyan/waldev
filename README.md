@@ -44,8 +44,21 @@ Selalu baca SQL hasil `db:generate` sebelum diterapkan:
 ## Build & Deploy (Cloudflare)
 ```bash
 pnpm preview   # build OpenNext + jalankan di runtime Workers lokal
-pnpm deploy    # build + deploy ke Cloudflare Workers
 ```
+
+### Menerbitkan ke produksi
+Produksi berjalan di paket Workers Free (CPU 10 ms per permintaan), jadi halaman publik
+disajikan sebagai berkas statis. **Jangan pakai `pnpm deploy`**: hasilnya tanpa halaman
+statis, dan halaman publik membalas Error 1102.
+```bash
+pnpm terbitkan                                     # build + render halaman publik dengan data produksi
+npx wrangler versions upload                       # versi baru, 0% trafik; buka URL pratinjaunya
+npx wrangler versions deploy <uuid-penuh>@100% -y  # tayangkan
+```
+Jalankan setiap kali konten publik di panel atau kode halaman publik berubah. Cara kerja,
+pemeriksaan, dan batasannya ada di [`docs/10-rencana-tayang.md`](./docs/10-rencana-tayang.md)
+bagian 5. Selama Workers Builds masih menjalankan `npx wrangler deploy`, push ke `main` ikut
+menimpa halaman statis (docs/10 langkah 1).
 
 ### Kenapa `build` memakai `--webpack`
 Sejak Next.js 16, `next build` memakai Turbopack secara default. Bundel server yang
