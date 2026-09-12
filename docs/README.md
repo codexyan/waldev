@@ -12,6 +12,7 @@ Dokumentasi hidup untuk **WalDev — Arsip Aplikasi** (*Build Digital Products.*
 7. [07 · Struktur Folder & Coding Standards](./07-folder-standards.md)
 8. [08 · Roadmap](./08-roadmap.md) — riwayat
 9. [09 · Perombakan: WalDev sebagai Arsip Aplikasi](./09-arsip-aplikasi.md) — **berlaku sejak 2026-09-12**
+10. [10 · Rencana Tayang: Arsip Aplikasi ke Produksi](./10-rencana-tayang.md) — **draf**; urutan langkah Tahap 5 dan catatan insiden auto-deploy 12 September
 
 ## Keputusan Arsitektur Terkunci
 | Area | Keputusan |

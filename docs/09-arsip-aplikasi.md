@@ -209,20 +209,9 @@ Isian dikelompokkan: Identitas situs (termasuk *Kalimat pengantar beranda*) · *
 | `0002_salin_karya.sql` | Salin iaUndang & SIM-KGB ke `apps` (id sama dengan karya lama), berstatus Rilis dan **tersembunyi**, beserta fitur, teknologi, galeri, SEO, dan penjelasan dari teks tantangan & solusi | Ya (hanya menambah) |
 | `0003_hapus_modul_jasa.sql` | Hapus 3 artikel contoh, izin & peran lama, pengaturan WhatsApp; lalu drop 12 tabel §6.4 | **Tidak** |
 
-Urutannya penting: kode lama yang masih tayang akan error 500 bila tabelnya dihapus lebih dulu. `wrangler d1 migrations apply` selalu menerapkan **semua** migrasi yang tertunda sekaligus, jadi 0001 dan 0002 diterapkan manual lebih dulu:
+Urutannya penting: kode lama akan error 500 bila tabelnya dihapus lebih dulu, dan kode baru error 500 bila tabel `apps` belum ada. `wrangler d1 migrations apply` selalu menerapkan **semua** migrasi yang tertunda sekaligus, jadi 0001 dan 0002 diterapkan manual.
 
-1. **Cadangan:** `npx wrangler d1 export waldev-db --remote --output <berkas>.sql`. Berkas cadangan tidak di-commit.
-2. **Tambah + salin, tanpa 0003:**
-   ```bash
-   npx wrangler d1 execute waldev-db --remote --file drizzle/0001_arsip_aplikasi.sql
-   npx wrangler d1 execute waldev-db --remote --file drizzle/0002_salin_karya.sql
-   npx wrangler d1 execute waldev-db --remote --command "INSERT INTO d1_migrations (name) VALUES ('0001_arsip_aplikasi.sql'), ('0002_salin_karya.sql')"
-   ```
-   Kode lama tidak terganggu karena keduanya hanya menambah.
-3. **Deploy kode baru:** `pnpm cf:build` → `npx wrangler versions upload` → uji URL pratinjau (pratinjau memakai D1 produksi yang sama) → `npx wrangler versions deploy <uuid-penuh>@100% -y`.
-4. **Migrasi B:** setelah produksi terbukti jalan dan dengan persetujuan eksplisit pemilik saat itu, `npx wrangler d1 migrations apply waldev-db --remote` (hanya 0003 yang tersisa).
-
-Seluruh urutan ini sudah dijalankan penuh di D1 lokal pada Tahap 4 dan hasilnya diperiksa.
+Urutan lengkap penerapan di produksi, termasuk pelajaran dari insiden auto-deploy 12 September, ada di **[10 · Rencana Tayang](./10-rencana-tayang.md)**. Seluruh urutan migrasi sudah dijalankan penuh di D1 lokal pada Tahap 4 dan hasilnya diperiksa.
 
 ## 10. Domain
 - Pemilik membeli domain bernama WalDev; ketersediaan dan harganya dicek pemilik sendiri.
@@ -233,7 +222,7 @@ Seluruh urutan ini sudah dijalankan penuh di D1 lokal pada Tahap 4 dan hasilnya 
 | Fase | Isi | Selesai bila | Status |
 |---|---|---|---|
 | 1 · Fondasi data | Skema + migrasi 0001, modul `src/modules/apps` (Zod, DAL, actions), RBAC `app.*` | typecheck lolos, migrasi lokal jalan | Selesai |
-| 2 · Panel | Aplikasi (daftar, form, catatan cepat), Tulisan + aplikasi terkait, Pengaturan profil, Ringkasan, menu admin | Satu aplikasi lengkap bisa diisi dari panel | Selesai (pengisian formulir di browser belum diuji) |
+| 2 · Panel | Aplikasi (daftar, form, catatan cepat), Tulisan + aplikasi terkait, Pengaturan profil, Ringkasan, menu admin | Satu aplikasi lengkap bisa diisi dari panel | Selesai (diuji di browser 12 Sep) |
 | 3 · Situs publik | Beranda, `/apps/[slug]`, Tentang, artikel, layout & menu, sitemap, pengalihan, JSON-LD | Semua rute §4.1 membalas 200 | Selesai |
 | 4 · Pembersihan | Hapus kode §8.1, migrasi 0002 & 0003 di lokal, perbarui seed/skrip/README/docs | typecheck + lint + build bersih | Selesai |
 | 5 · Tayang | Isi entri WalDev + catatan pertama, periksa iaUndang & SIM-KGB, deploy lewat §9.2, Lighthouse ≥ 95, domain bila siap | Produksi tayang tanpa sisa modul jasa | Belum |
