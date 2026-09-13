@@ -6,11 +6,11 @@
 Aturan dasar: setiap langkah yang mengubah produksi hanya dijalankan setelah pemilik menyetujui langkah itu tepat sebelum dikerjakan.
 
 ## 1. Kondisi saat ini
-| Hal | Kondisi (2026-09-13, setelah hero Rakit tayang) |
+| Hal | Kondisi (2026-09-13 pagi, setelah kartu aplikasi berlogo tayang) |
 |---|---|
-| Worker produksi | Versi `0f2e8ecd-b979-4cc7-9523-460b0da97bf7`: hero 3D *Rakit* (docs/09 §16), logo klien, daftar aplikasi, tulisan terbaru, menu Klien di panel, halaman publik statis. Versi statis sebelumnya: `3587a5e8-7507-40e8-bca4-f7f2c9653b7e` (hero tanpa 3D), lalu `5cbe6ca8-cb37-47d5-81ce-296890099623` |
-| Kode di GitHub `main` | Tertinggal dari kode lokal: commit `0c4bc99` sampai `4290066` dan commit dokumen ini belum di-push. Berkas statisnya tidak disimpan di repo; dibuat saat `pnpm terbitkan` |
-| D1 produksi | Migrasi 0000, 0001, dan 0002 sudah diterapkan; 0003 (direvisi) dan 0004 tertunda. Tabel `clients` masih ada dan kosong setelah 3 klien contoh dihapus |
+| Worker produksi | Versi `d1ba9430-a9f6-4601-926e-f64b5f33b893`: hero 3D *Rakit* yang juga tampil saat gerak dikurangi (docs/09 §16), kartu aplikasi berlogo (§5.1), logo klien, tulisan terbaru, menu Klien di panel, halaman publik statis, `keep_names` mati. Versi statis sebelumnya: `144f0042-39c3-4c93-ae3d-44afcc7bcb5a` (gambar kartu lebar terpotong), lalu `0f2e8ecd-b979-4cc7-9523-460b0da97bf7` (hero 3D tidak pernah dimuat di laptop pemilik) |
+| Kode di GitHub `main` | Push terakhir `b322eb9` (13 September dini hari). Commit sesudahnya (`c77e404`, `37c2a09`, dan commit dokumen ini) belum di-push. Berkas statisnya tidak disimpan di repo; dibuat saat `pnpm terbitkan` |
+| D1 produksi | Migrasi 0000, 0001, 0002, dan 0005 (kolom `apps.logo_media_id`) sudah diterapkan; 0003 (direvisi) dan 0004 tertunda. 0005 diterapkan manual lewat `d1 execute --file` dan dicatat di `d1_migrations`. Bookmark Time Travel sebelum 0005: `000007e7-00000000-000050e5-45d29e800fde44cb7af328270012bb1b`. Tabel `clients` masih ada dan kosong |
 | Auto-deploy | Push ke `main` tetap memicu Workers Builds, tetapi skrip `build` berhenti karena `WORKERS_CI=1`, jadi tidak ada versi yang diunggah (langkah 1) |
 | Konten produksi | iaUndang tayang, SIM-KGB tersembunyi, 1 tulisan tayang, belum ada klien. Belum ada entri WalDev, profil pembuat, maupun kalimat pengantar |
 
