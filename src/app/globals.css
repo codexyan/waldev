@@ -250,6 +250,18 @@
     color: hsl(var(--link));
   }
 
+  /* ===================== Bingkai Cetak biru =====================
+     Motif garis dari lantai hero beranda dipakai lagi di bingkai tangkapan layar halaman
+     proyek, supaya halaman detail terasa satu keluarga dengan beranda. Garisnya sangat
+     tipis supaya tidak bersaing dengan gambar. */
+  .frame-cetak-biru {
+    background-image:
+      linear-gradient(hsl(var(--link) / 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--link) / 0.07) 1px, transparent 1px);
+    background-size: 22px 22px;
+    background-position: -1px -1px;
+  }
+
   /* ===================== Kanvas hero Rakit =====================
      Lantai cetak biru dan bayangan kartu memudar di tepi kiri, kanan, dan bawah kanvas,
      supaya garisnya tidak terpotong lurus oleh tepi panggung. Kartu tidak tersentuh:

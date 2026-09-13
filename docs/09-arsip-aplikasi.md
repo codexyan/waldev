@@ -106,6 +106,8 @@ Teks memakai sudut pandang "kami" dan "Anda" tanpa kata "saya", dan tidak ada an
 - Catatan pembuatan (catatan pendek + artikel terkait, urut waktu)
 - Catatan rilis (catatan yang punya nomor versi)
 
+**Susunan *Kepala terbelah* (2026-09-13).** Di layar lebar kepala halaman dua kolom. Kiri: tautan kembali, logo atau monogram, status, nama, satu kalimat, tombol *Kunjungi situs* dan *Lihat kode sumber*. Kanan: tangkapan layar utama dalam bingkai bermotif Cetak biru. Tanpa tangkapan layar, kepala kembali satu kolom. Di bawahnya ringkasan fakta (status, mulai dibangun, dirilis, tidak aktif sejak, teknologi, situs, catatan terakhir), masing-masing hanya tampil bila datanya ada. Lalu penjelasan dalam kolom baca, bagian dengan judul di kiri dan isi di kanan (fitur utama bernomor, cara pakai, FAQ, catatan rilis, catatan pembuatan), galeri, *Proyek lain* (hingga tiga, hanya bila ada proyek lain yang tayang), dan ajakan kontak *Punya proyek serupa?* bila email kontak diisi.
+
 **Proyek berstatus *Tidak aktif*:** tombol *Kunjungi situs* disembunyikan otomatis, lalu tampil keterangan "Proyek ini sudah tidak aktif sejak {bulan tahun}. Halaman ini tetap ada sebagai dokumentasi." Tangkapan layar dan video jadi bukti utama, karena tautannya sudah mati.
 
 SEO: JSON-LD `SoftwareApplication`; gambar OG = tangkapan layar utama.
@@ -232,6 +234,11 @@ Satu halaman berizin `client.manage`: formulir (logo lewat media picker, nama, s
 - **Menu:** `src/app/(public)/layout.tsx` (*Portofolio* ke `/apps`) dan `src/components/layout/site-header.tsx` (tautan ikut aktif di halaman di bawahnya).
 - **Panel:** petunjuk judul hero di Pengaturan dan Ringkasan. Label panel lain tetap *Aplikasi*.
 
+### 8.6 Desain ulang halaman proyek (2026-09-13 sore)
+- **Ditulis ulang:** `src/app/(public)/apps/[slug]/page.tsx` (susunan *Kepala terbelah*, ringkasan fakta, bagian dua kolom, proyek lain).
+- **Baru:** `src/components/contact-cta.tsx`, ajakan kontak bersama untuk beranda dan halaman proyek; kelas `.frame-cetak-biru` di `src/app/globals.css`.
+- **Diubah:** beranda memakai `ContactCta`.
+
 ## 9. Data produksi & migrasi
 ### 9.1 Kondisi D1 produksi (dibaca 2026-09-12)
 | Tabel | Baris | Catatan |
@@ -307,6 +314,7 @@ Setiap fase ditutup dengan `pnpm typecheck`, `pnpm lint`, `pnpm build` (webpack,
 - Beranda ditutup ajakan kontak lewat email. Angka klien, testimoni, sertifikasi, liputan media, formulir konsultasi, dan WhatsApp dari situs acuan tidak ditiru.
 - Token teks pudar tema terang digelapkan dari `#aaaaaa` (2,3:1) ke `#737373` (4,7:1) supaya lolos WCAG AA di seluruh situs.
 - Ringkasan tulisan contoh "Mengapa Kecepatan Website Menentukan Bisnis Anda" tetap tayang walau memuat klaim riset tanpa sumber; pemilik menerimanya sebagai pengecualian gate antislop.
+- Halaman proyek memakai susunan *Kepala terbelah* (§5.2), dipilih dari tiga usulan: Kepala terbelah, Ringkasan di samping, dan Satu kolom dirapikan.
 
 **Masih terbuka:**
 - Tanggal rilis sebenarnya iaUndang dan SIM-KGB. Penjelasan hasil salinannya masih bersuara "kami" dari situs jasa lama.
@@ -321,6 +329,7 @@ Harga, WhatsApp, testimoni, formulir prospek/kontak, beranda berbentuk linimasa,
 - **2026-09-13 · Hero 3D.** Pemilik meminta hero dikombinasikan dengan Three.js. Dari tiga konsep di halaman pratinjau (Rakit, Lembar, Tumpuk), pemilik memilih Rakit. Spesifikasi di §16; §5.1 diperbarui.
 - **2026-09-13 siang · Hero, logo, dan kartu.** Pemilik meminta transisi 3D yang lebih halus, latar hero yang lebih menarik, gambar hero yang bisa diganti dari panel, susunan kartu untuk banyak aplikasi, logo kerja sama dengan animasi di bawah hero, dan judul yang tidak ke-akuan. Pilihannya dari halaman konsep "Hero dan Kartu WalDev": latar Cetak biru, judul bertema solusi, logo Muncul dengan logo asli saja, dan kartu Unggulan + grid. Diterapkan di §2, §4, §5.1, §6.2, §7, §8.4, §9.1, §11, §13, dan §16.
 - **2026-09-13 sore · Nada software house.** Pemilik meminta teks hero terkesan seperti software house, dengan pengunjung yang melihat portofolio dan mengunjungi proyek yang masih tayang, bukan mencoba aplikasi. Setelah memilih judul "Solusi digital dari WalDev.", pemilik memberi acuan gaya vodjo.com/id dan gosocial.co.id, lalu memilih: judul "Software house untuk solusi digital Anda.", sudut pandang kami dan Anda, menu dan bagian *Portofolio* dengan item *proyek* (panel tetap *aplikasi*), ajakan kontak di akhir beranda, dan aturan antislop selama pengerjaan. Diterapkan di §1, §2, §4.1, §5.1 sampai §5.3, §8.5, §11, dan §13.
+- **2026-09-13 sore · Halaman proyek.** Pemilik meminta desain ulang halaman detail iaUndang. Masalah yang ditemukan: layar pertama timpang, baris meta berisi sel kosong, kolom kanan kosong sepanjang halaman, fitur tanpa hierarki, teknologi di paling bawah, dan halaman berhenti tanpa langkah lanjut. Dari tiga usulan, pemilik memilih *Kepala terbelah*. Diterapkan di §5.2, §8.6, dan §13.
 
 ## 16. Hero 3D *Rakit* dengan latar Cetak biru
 Gambar hero ditampilkan sebagai kartu 3D yang terangkat dari lantai bergaris biru, seperti meja kerja tempat aplikasi dirakit. Wujud dari tagline *Build Digital Products*.
