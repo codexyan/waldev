@@ -250,6 +250,50 @@
     color: hsl(var(--link));
   }
 
+  /* ===================== Kanvas hero Rakit =====================
+     Lantai cetak biru dan bayangan kartu memudar di tepi kiri, kanan, dan bawah kanvas,
+     supaya garisnya tidak terpotong lurus oleh tepi panggung. Kartu tidak tersentuh:
+     saat datar kartu mengisi 18 sampai 82% lebar dan 21 sampai 79% tinggi kanvas. */
+  .rakit-canvas {
+    -webkit-mask-image:
+      linear-gradient(to right, transparent, #000 10%, #000 90%, transparent),
+      linear-gradient(to bottom, #000 84%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(to right, transparent, #000 10%, #000 90%, transparent),
+      linear-gradient(to bottom, #000 84%, transparent);
+    mask-composite: intersect;
+  }
+
+  /* ===================== Logo klien muncul bertahap =====================
+     ClientLogos memasang `data-reveal="waiting"` saat deretan belum terlihat, lalu
+     `shown` saat masuk layar, sehingga logo muncul satu per satu dari buram ke tajam. */
+  .client-logo {
+    transition:
+      opacity 0.7s ease,
+      filter 0.7s ease,
+      transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+  .client-logos[data-reveal="waiting"] .client-logo {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(14px) scale(0.96);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .client-logo {
+      transition: none;
+    }
+  }
+
+  /* ===================== Saringan halaman Semua aplikasi =====================
+     AppStatusFilter hanya mengganti `data-filter`; kartu yang tidak cocok disembunyikan. */
+  .app-directory[data-filter="building"] [data-status]:not([data-status="building"]),
+  .app-directory[data-filter="released"] [data-status]:not([data-status="released"]),
+  .app-directory[data-filter="retired"] [data-status]:not([data-status="retired"]) {
+    display: none;
+  }
+
   /* ===================== Akordeon FAQ =====================
      Tetap memakai <details> asli agar dapat diakses dan bekerja tanpa
      JavaScript. Pada browser yang mendukung ::details-content, tinggi

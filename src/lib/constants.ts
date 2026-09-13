@@ -9,14 +9,14 @@ export const SITE = {
 } as const;
 
 /**
- * Judul beranda selama Pengaturan › Kalimat pengantar beranda masih kosong.
- * Teks publik tidak memakai "saya"; pelakunya disebut langsung.
+ * Judul hero beranda selama Pengaturan › Hero beranda › Judul hero masih kosong.
+ * Berpusat pada manfaat untuk pengunjung dan tidak menyebut siapa pembuatnya.
  */
-export const HOME_INTRO = "Aplikasi web buatan WalDev.";
+export const HOME_INTRO = "Solusi digital untuk kebutuhan sehari-hari.";
 
 /** Kalimat pengantar di hero beranda, di bawah judul. */
 export const HOME_LEAD =
-  "Setiap aplikasi punya halaman sendiri berisi penjelasan, fitur, dan catatan pembuatannya.";
+  "Setiap aplikasi dibuat untuk menyelesaikan satu kebutuhan, lengkap dengan penjelasan, fitur, dan cara memakainya.";
 
 /**
  * Basis rute admin (rahasia, tidak tertaut di publik).

@@ -162,10 +162,10 @@ export default async function AdminOverviewPage() {
       hint: "Nama, foto, dan cerita singkat untuk halaman Tentang",
     },
     {
-      label: "Kalimat pengantar beranda",
+      label: "Judul hero beranda",
       done: Boolean(settings.home_intro),
       href: settingsHref,
-      hint: "Judul besar di atas daftar aplikasi",
+      hint: "Kosong berarti judul bawaan: Solusi digital untuk kebutuhan sehari-hari",
     },
     {
       label: "Situs memakai domain sendiri",

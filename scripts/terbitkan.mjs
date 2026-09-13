@@ -15,6 +15,10 @@
  * wrangler dev, sehingga render tanpa build hanya menyalin halaman lama. Karena itu skrip
  * menolak `--lewati-build` selama index.html lama masih ada; build baru membersihkannya.
  *
+ * Sebelum build, skrip menjalankan `pnpm typecheck` sendiri, lalu membangun dengan
+ * WALDEV_BUILD_HEMAT=1 (lihat next.config.ts): pengecekan tipe bawaan `next build` dilewati
+ * karena sudah dijalankan, dan worker dikurangi supaya puncak memorinya lebih rendah.
+ *
  * Skrip ini hanya MEMBACA D1 dan R2 produksi (lihat wrangler.terbit.jsonc) dan tidak
  * men-deploy apa pun. Hasilnya baru tayang setelah diunggah (`npx wrangler versions upload`)
  * dan versinya dipasang.
@@ -32,7 +36,7 @@ const LOKAL = `http://127.0.0.1:${PORT}`;
 const WINDOWS = process.platform === "win32";
 
 /** Halaman yang selalu ada. Halaman aplikasi dan tulisan diambil dari sitemap. */
-const HALAMAN_TETAP = ["/", "/about", "/articles", "/privacy-policy"];
+const HALAMAN_TETAP = ["/", "/apps", "/about", "/articles", "/privacy-policy"];
 
 /** Sama dengan securityHeaders di next.config.ts, karena berkas statis tidak melewati Next. */
 const HEADER_KEAMANAN = `/*
@@ -44,8 +48,12 @@ const HEADER_KEAMANAN = `/*
   Permissions-Policy: camera=(), microphone=(), geolocation=(), browsing-topics=()
 `;
 
-function jalankan(perintah, argumen) {
-  const hasil = spawnSync(perintah, argumen, { stdio: "inherit", shell: WINDOWS });
+function jalankan(perintah, argumen, envTambahan = {}) {
+  const hasil = spawnSync(perintah, argumen, {
+    stdio: "inherit",
+    shell: WINDOWS,
+    env: { ...process.env, ...envTambahan },
+  });
   if (hasil.status !== 0) {
     throw new Error(`${perintah} ${argumen.join(" ")} gagal (kode ${hasil.status}).`);
   }
@@ -137,7 +145,10 @@ async function render(staging) {
 
 async function main() {
   const lewatiBuild = process.argv.includes("--lewati-build");
-  if (!lewatiBuild) jalankan("pnpm", ["run", "cf:build"]);
+  if (!lewatiBuild) {
+    jalankan("pnpm", ["run", "typecheck"]);
+    jalankan("pnpm", ["run", "cf:build"], { WALDEV_BUILD_HEMAT: "1" });
+  }
   if (!existsSync(join(ASSETS, "BUILD_ID"))) {
     throw new Error("Hasil build OpenNext tidak ditemukan. Jalankan tanpa --lewati-build.");
   }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ClientLogos } from "@/components/home/client-logos";
-import { Hero } from "@/components/home/hero";
+import { Hero, type HeroShowcase } from "@/components/home/hero";
+import { ArrowLink } from "@/components/ui/arrow-link";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { SECTION, SHELL } from "@/components/ui/shell";
 import { HOME_INTRO, HOME_LEAD } from "@/lib/constants";
@@ -10,6 +11,7 @@ import { AppCard } from "@/modules/apps/components/app-card";
 import { listPublishedArticles } from "@/modules/articles/article.dal";
 import { ArticleCard } from "@/modules/articles/components/article-card";
 import { listPublishedClients } from "@/modules/clients/client.dal";
+import { getMediaPick } from "@/modules/media/media.dal";
 import { getSiteSettings } from "@/modules/settings/settings.dal";
 
 export const dynamic = "force-dynamic";
@@ -18,12 +20,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-/* Jumlah kolom mengikuti jumlah kartu, supaya kartu terakhir jarang berdiri
-   sendirian di satu baris. Satu aplikasi memakai kartu lebar (AppCard `wide`). */
-function appGridCols(count: number): string {
-  if (count <= 1) return "";
-  if (count === 2 || count === 4) return "sm:grid-cols-2";
-  return "sm:grid-cols-2 lg:grid-cols-3";
+/** Kartu di beranda: satu kartu unggulan dan paling banyak enam kartu grid (docs/09 §5.1). */
+const HOME_APP_LIMIT = 7;
+
+/* Jumlah kolom mengikuti jumlah kartu grid, supaya kartu terakhir jarang berdiri
+   sendirian di satu baris. */
+function gridCols(count: number): string {
+  return count === 2 || count === 4 ? "sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3";
 }
 
 /**
@@ -32,15 +35,37 @@ function appGridCols(count: number): string {
  * baru ada satu aplikasi.
  */
 export default async function HomePage() {
-  const [settings, apps, clients, { rows: articles }] = await Promise.all([
-    getSiteSettings(),
+  const settings = await getSiteSettings();
+  const [apps, clients, { rows: articles }, heroMedia] = await Promise.all([
     listPublishedApps(),
     listPublishedClients(),
     listPublishedArticles({ limit: 3 }),
+    getMediaPick(settings.hero_media_id),
   ]);
 
-  // Aplikasi yang sudah tidak aktif tidak dipajang di hero.
-  const showcase = apps.find((app) => app.coverUrl && app.status !== "retired");
+  // Aplikasi di hero: pilihan di Pengaturan, atau aplikasi teratas yang bergambar dan masih aktif.
+  const chosenApp = settings.hero_app_slug
+    ? apps.find((app) => app.slug === settings.hero_app_slug)
+    : undefined;
+  const heroApp = chosenApp ?? apps.find((app) => app.coverUrl && app.status !== "retired");
+  const customImage = heroMedia?.kind === "image" ? heroMedia.url : null;
+  const heroImage = customImage ?? heroApp?.coverUrl ?? null;
+  const showcase: HeroShowcase | null = heroImage
+    ? {
+        imageUrl: heroImage,
+        alt: heroApp
+          ? `${customImage ? "Gambar" : "Tangkapan layar"} ${heroApp.name}`
+          : "Gambar hero",
+        label: heroApp ? (chosenApp ? "Aplikasi unggulan" : "Aplikasi terbaru") : null,
+        name: heroApp?.name ?? null,
+        href: heroApp ? `/apps/${heroApp.slug}` : null,
+        building: heroApp?.status === "building",
+      }
+    : null;
+
+  const [featured, ...others] = apps;
+  const gridApps = others.slice(0, HOME_APP_LIMIT - 1);
+  const [onlyGridApp] = gridApps;
 
   return (
     <>
@@ -48,16 +73,7 @@ export default async function HomePage() {
         title={settings.home_intro || HOME_INTRO}
         lead={HOME_LEAD}
         email={settings.contact_email || null}
-        showcase={
-          showcase?.coverUrl
-            ? {
-                name: showcase.name,
-                slug: showcase.slug,
-                coverUrl: showcase.coverUrl,
-                status: showcase.status,
-              }
-            : null
-        }
+        showcase={showcase}
       />
 
       {clients.length > 0 ? (
@@ -69,20 +85,36 @@ export default async function HomePage() {
 
       <section id="aplikasi" className={cn(SHELL, SECTION, "border-border scroll-mt-14 border-t")}>
         <SectionHeading
-          title="Semua aplikasi"
+          title="Aplikasi"
           description="Buka kartu aplikasi untuk melihat penjelasan, fitur, dan catatan pembuatannya."
         />
 
-        {apps.length === 0 ? (
-          <p className="text-muted-foreground mt-10">Aplikasi pertama masih dalam pembuatan.</p>
+        {featured ? (
+          <>
+            <div className="mt-10">
+              <AppCard app={featured} wide />
+            </div>
+            {gridApps.length === 1 && onlyGridApp ? (
+              <div className="mt-6">
+                <AppCard app={onlyGridApp} wide />
+              </div>
+            ) : gridApps.length > 1 ? (
+              <ul className={cn("mt-6 grid gap-6", gridCols(gridApps.length))}>
+                {gridApps.map((app) => (
+                  <li key={app.slug}>
+                    <AppCard app={app} />
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            {apps.length > HOME_APP_LIMIT ? (
+              <p className="mt-8">
+                <ArrowLink href="/apps">Lihat semua {apps.length} aplikasi</ArrowLink>
+              </p>
+            ) : null}
+          </>
         ) : (
-          <ul className={cn("mt-10 grid gap-6", appGridCols(apps.length))}>
-            {apps.map((app) => (
-              <li key={app.slug}>
-                <AppCard app={app} wide={apps.length === 1} />
-              </li>
-            ))}
-          </ul>
+          <p className="text-muted-foreground mt-10">Aplikasi pertama masih dalam pembuatan.</p>
         )}
       </section>
 

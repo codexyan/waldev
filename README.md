@@ -51,7 +51,7 @@ Produksi berjalan di paket Workers Free (CPU 10 ms per permintaan), jadi halaman
 disajikan sebagai berkas statis. **Jangan pakai `pnpm deploy`**: hasilnya tanpa halaman
 statis, dan halaman publik membalas Error 1102.
 ```bash
-pnpm terbitkan                                     # build + render halaman publik dengan data produksi
+pnpm terbitkan                                     # typecheck, build hemat memori, render halaman publik dengan data produksi
 npx wrangler versions upload                       # versi baru, 0% trafik; buka URL pratinjaunya
 npx wrangler versions deploy <uuid-penuh>@100% -y  # tayangkan
 ```

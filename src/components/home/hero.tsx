@@ -3,18 +3,25 @@ import { buttonVariants } from "@/components/ui/button";
 import { SHELL } from "@/components/ui/shell";
 import { StaticLink } from "@/components/ui/static-link";
 import { cn } from "@/lib/utils";
-import type { AppStatus } from "@/modules/apps/app.schema";
 import { HeroRakit } from "./hero-rakit";
 
-/** Aplikasi tayang yang dipajang di hero beserta tangkapan layar utamanya. */
+/**
+ * Gambar hero: dari Pengaturan › Hero beranda, atau tangkapan layar aplikasi terbaru
+ * yang punya gambar dan masih aktif.
+ */
 export interface HeroShowcase {
-  name: string;
-  slug: string;
-  coverUrl: string;
-  status: AppStatus;
+  imageUrl: string;
+  alt: string;
+  /** "Aplikasi terbaru" atau "Aplikasi unggulan"; null bila tidak ada aplikasi terkait. */
+  label: string | null;
+  name: string | null;
+  /** Halaman aplikasi yang dituju saat gambar diklik. */
+  href: string | null;
+  /** Aplikasi di hero masih dibangun: tepi kartu 3D tetap berwarna aksen. */
+  building: boolean;
 }
 
-/** Hero beranda (docs/09 §5.1): judul, pengantar, ajakan, lalu tangkapan layar. */
+/** Hero beranda (docs/09 §5.1): judul, pengantar, ajakan, lalu gambar 3D. */
 export function Hero({
   title,
   lead,
@@ -25,7 +32,7 @@ export function Hero({
   lead: string;
   /** Null selama email kontak belum diisi di Pengaturan. */
   email: string | null;
-  /** Null bila belum ada aplikasi tayang yang punya tangkapan layar utama. */
+  /** Null bila belum ada gambar hero maupun aplikasi bergambar. */
   showcase: HeroShowcase | null;
 }) {
   return (
@@ -52,31 +59,38 @@ export function Hero({
 }
 
 /**
- * Tangkapan layar aplikasi terbaru. Di layar lebar dirakit sebagai kartu 3D
- * (docs/09 §16); di tempat lain tampil sebagai gambar biasa. Seluruh blok hilang
- * bila belum ada aplikasi bersampul, supaya hero berhenti di tombol.
+ * Gambar hero. Di layar lebar dirakit sebagai kartu 3D di atas lantai cetak biru
+ * (docs/09 §16); di tempat lain tampil sebagai gambar biasa.
  */
 function Showcase({ item }: { item: HeroShowcase }) {
+  const visual = <HeroRakit src={item.imageUrl} alt={item.alt} building={item.building} />;
+
   return (
     <figure className="mt-14">
-      <StaticLink
-        href={`/apps/${item.slug}`}
-        aria-label={`Lihat halaman ${item.name}`}
-        className="block"
-      >
-        <HeroRakit
-          src={item.coverUrl}
-          alt={`Tangkapan layar ${item.name}`}
-          building={item.status === "building"}
-        />
-      </StaticLink>
-
-      <figcaption className="text-faint mt-3 text-xs">
-        Aplikasi terbaru ·{" "}
-        <StaticLink href={`/apps/${item.slug}`} className="link text-muted-foreground">
-          {item.name}
+      {item.href ? (
+        <StaticLink
+          href={item.href}
+          aria-label={item.name ? `Lihat halaman ${item.name}` : "Lihat halaman aplikasi"}
+          className="block"
+        >
+          {visual}
         </StaticLink>
-      </figcaption>
+      ) : (
+        visual
+      )}
+
+      {item.label && item.name ? (
+        <figcaption className="text-faint mt-3 text-xs">
+          {item.label} ·{" "}
+          {item.href ? (
+            <StaticLink href={item.href} className="link text-muted-foreground">
+              {item.name}
+            </StaticLink>
+          ) : (
+            item.name
+          )}
+        </figcaption>
+      ) : null}
     </figure>
   );
 }

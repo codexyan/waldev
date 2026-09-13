@@ -1,6 +1,6 @@
 # 09 · Perombakan: WalDev sebagai Arsip Aplikasi
 
-**Status:** Disetujui pemilik 2026-09-12 · Tahap 1–4 selesai, Tahap 5 (tayang) berjalan · Revisi beranda & klien 2026-09-12 (§15)
+**Status:** Disetujui pemilik 2026-09-12 · Tahap 1–4 selesai, Tahap 5 (tayang) berjalan · Revisi beranda & klien 2026-09-12, revisi hero, logo, dan kartu 2026-09-13 (§15)
 **Hubungan dengan dokumen lain:** dokumen 01–08 menggambarkan arah lama (situs jasa studio). Bila ada yang bertentangan, dokumen ini yang berlaku. Dokumen lama tetap disimpan sebagai riwayat.
 
 ## 1. Ringkasan
@@ -11,16 +11,17 @@ WalDev berubah dari situs jasa studio menjadi **arsip aplikasi yang dibangun dan
 |---|---|
 | Tujuan situs | Arsip & reputasi jangka panjang |
 | Nama | Tetap **WalDev**; pemilik tampil sebagai pembuat (nama, foto, cerita singkat) di halaman Tentang |
-| Suara tulisan | Tanpa kata "saya": pelaku disebut langsung (WalDev, nama aplikasi, atau nama pemilik). Menggantikan suara orang pertama |
+| Suara tulisan | Tanpa kata "saya": pelaku disebut langsung (WalDev, nama aplikasi, atau nama pemilik). Judul hero berpusat pada manfaat untuk pengunjung dan tidak menyebut pembuatnya |
 | Tagline | Build Digital Products |
 | Halaman aplikasi | Halaman produk yang lengkap untuk calon pemakai, bukan studi kasus |
 | Isi saat tayang | Tayang sambil membangun; situs WalDev sendiri jadi entri pertama |
 | Status yang tampil | Sedang dibangun · Sudah rilis · Tidak aktif. Yang berhenti sebelum rilis disembunyikan |
-| Beranda | Hero (judul, ajakan, tangkapan layar aplikasi terbaru) · logo klien · daftar aplikasi · tulisan terbaru |
+| Beranda | Hero Cetak biru (judul bertema solusi, ajakan, gambar dari Pengaturan atau aplikasi terbaru) · logo klien yang muncul bertahap · kartu unggulan + grid · tulisan terbaru |
 | Struktur halaman aplikasi | Bagian wajib + bagian opsional yang dinyalakan per aplikasi |
 | Tulisan | Catatan pendek per aplikasi + artikel panjang sesekali; 3 tulisan terbaru tampil di beranda; menu Artikel belum tampil |
 | Tanggal | Tanggal catatan terakhir ditampilkan apa adanya |
 | Modul jasa | Dihapus, kecuali Klien yang dipulihkan untuk logo di beranda; kontak tersisa email & tautan sosial |
+| Logo klien | Hanya klien sungguhan. Logo contoh tidak ditampilkan di situs publik |
 | Halaman publik | Berkas statis hasil `pnpm terbitkan` karena paket Workers Free ([10 · Rencana Tayang](./10-rencana-tayang.md) §5) |
 | Tampilan | Gaya Plain v3 dipertahankan |
 | Domain | Domain baru bernama WalDev (dibeli pemilik) |
@@ -37,7 +38,8 @@ Jumlah pengunjung **bukan** ukuran keberhasilan.
 ### 4.1 Situs publik
 | Rute | Isi | Perubahan |
 |---|---|---|
-| `/` | Hero, logo klien, daftar aplikasi, tulisan terbaru | Dirombak total, direvisi (§5.1) |
+| `/` | Hero, logo klien, kartu aplikasi, tulisan terbaru | Dirombak total, direvisi (§5.1) |
+| `/apps` | Semua aplikasi dengan saringan status | Baru 2026-09-13 (§5.1) |
 | `/apps/[slug]` | Halaman aplikasi | Baru, menggantikan `/portfolio/[slug]` |
 | `/articles` · `/articles/[slug]` | Daftar & isi artikel | Tetap, tidak ada di menu bawaan |
 | `/about` | Pembuat, cerita, kontak | Dirombak |
@@ -65,17 +67,27 @@ Menu `Artikel` ditambahkan manual lewat Panel › Navigasi saat tulisannya diras
 | Tulisan | Tetap + pilihan "Aplikasi terkait" |
 | Klien | Dipulihkan di kelompok Konten (§7.4) |
 | Media · Kategori · Tag | Tetap |
-| Navigasi · Pengaturan · Pengguna · Peran · Aktivitas | Tetap; Pengaturan ditambah profil pembuat (§7.3) |
+| Navigasi · Pengaturan · Pengguna · Peran · Aktivitas | Tetap; Pengaturan ditambah profil pembuat dan hero beranda (§7.3) |
 
 **Dihapus:** Layanan, Testimoni, Prospek, Pesan. Kelompok menu "Relasi" hilang.
 
 ## 5. Halaman publik
 ### 5.1 Beranda
 Urutan bagian dari atas:
-1. **Hero.** Judul dari Pengaturan (`home_intro`; selama kosong dipakai `HOME_INTRO` di `src/lib/constants.ts`), kalimat pengantar `HOME_LEAD`, tombol *Lihat aplikasi* ke `#aplikasi`, dan tautan *Hubungi lewat email* (hanya bila email kontak diisi). Di bawahnya tangkapan layar utama dari aplikasi teratas di daftar yang punya sampul dan tidak berstatus *Tidak aktif*, ditampilkan sebagai kartu 3D *Rakit* (§16), dengan keterangan "Aplikasi terbaru · {nama}". Bila tidak ada yang memenuhi, hero berhenti di tombol.
-2. **Logo klien.** Satu baris logo dari modul Klien (§7.4) berlabel "Pernah bekerja sama dengan". Klien NDA tidak ikut, klien tanpa logo tampil sebagai nama, dan logo menaut ke situs web klien bila diisi. Bagian ini hilang bila kosong.
-3. **Kartu aplikasi** (`#aplikasi`). Satu kartu per aplikasi yang tayang: tangkapan layar utama, logo aplikasi yang menumpang di tepi bawah tangkapan layar (selama logo belum diunggah, monogram dua huruf dari nama, misalnya "IU" untuk iaUndang), nama, satu kalimat, status, dan bulan-tahun catatan terakhir. Satu aplikasi memakai kartu lebar; 2 atau 4 aplikasi memakai dua kolom; selebihnya sampai tiga kolom di layar lebar. Urutan: catatan terakhir terbaru di atas; aplikasi berstatus *Tidak aktif* selalu di bawah. Bila belum ada aplikasi tayang: "Aplikasi pertama masih dalam pembuatan."
+1. **Hero.** Judul dari Pengaturan (`home_intro`; selama kosong dipakai `HOME_INTRO` di `src/lib/constants.ts`: "Solusi digital untuk kebutuhan sehari-hari."), kalimat pengantar `HOME_LEAD`, tombol *Lihat aplikasi* ke `#aplikasi`, dan tautan *Hubungi lewat email* (hanya bila email kontak diisi). Di bawahnya gambar hero yang dirakit sebagai kartu 3D di atas lantai Cetak biru (§16):
+   - Gambarnya `hero_media_id` bila diisi di Pengaturan, selain itu tangkapan layar utama aplikasi di hero.
+   - Aplikasi di hero adalah `hero_app_slug` bila dipilih (keterangan "Aplikasi unggulan · {nama}"), selain itu aplikasi teratas yang punya tangkapan layar dan tidak berstatus *Tidak aktif* (keterangan "Aplikasi terbaru · {nama}"). Gambar menaut ke halaman aplikasi itu.
+   - Bila tidak ada gambar yang bisa dipakai, hero berhenti di tombol.
+2. **Logo klien.** Satu baris logo dari modul Klien (§7.4) berlabel "Pernah bekerja sama dengan". Klien NDA tidak ikut, klien tanpa logo tampil sebagai nama, dan logo menaut ke situs web klien bila diisi. Logo muncul satu per satu dari buram ke tajam saat deretannya masuk layar; animasi dilewati bila deretan sudah terlihat ketika halaman siap, tanpa JavaScript, atau saat gerak dikurangi. Hanya klien sungguhan yang ditampilkan. Bagian ini hilang bila kosong.
+3. **Kartu aplikasi** (`#aplikasi`). Satu kartu per aplikasi yang tayang: tangkapan layar utama, logo aplikasi yang menumpang di tepi bawah tangkapan layar (selama logo belum diunggah, monogram dua huruf dari nama, misalnya "IU" untuk iaUndang), nama, satu kalimat, status, dan bulan-tahun catatan terakhir. Susunan *Unggulan + grid*:
+   - Kartu teratas selalu lebar.
+   - Beranda memuat paling banyak tujuh kartu: satu kartu lebar dan enam kartu grid. Satu kartu grid tampil lebar; dua atau empat memakai dua kolom; selebihnya sampai tiga kolom di layar lebar.
+   - Bila aplikasinya lebih dari tujuh, muncul tautan *Lihat semua {jumlah} aplikasi* ke `/apps`.
+   - Urutan: catatan terakhir terbaru di atas; aplikasi berstatus *Tidak aktif* selalu di bawah dan gambarnya abu-abu.
+   - Bila belum ada aplikasi tayang: "Aplikasi pertama masih dalam pembuatan."
 4. **Tulisan terbaru.** 3 tulisan terbit terbaru dengan kartu yang sama seperti `/articles`, ditambah tautan *Semua tulisan*. Bagian ini hilang bila belum ada tulisan terbit.
+
+**Halaman `/apps`.** Semua aplikasi yang tayang dalam grid tiga kolom (dua di tablet, satu di ponsel), dengan tombol saring *Semua*, *Sedang dibangun*, *Sudah rilis*, dan *Tidak aktif* beserta jumlahnya. Tombol tanpa kartu tidak tampil. Kartu dirender di server dan penyaringannya hanya mengganti atribut `data-filter`, jadi halamannya tetap berkas statis. Bila baru ada satu aplikasi, halamannya berisi satu kartu lebar tanpa tombol saring.
 
 Teks mengikuti aturan tanpa "saya", dan tidak ada angka, testimoni, atau klaim yang tidak berasal dari data. JSON-LD `Organization` (WalDev) dengan `founder` → `Person` dipasang di layout publik.
 
@@ -130,7 +142,7 @@ Konvensi mengikuti [05 · Database](./05-database-erd.md): PK CUID2, timestamp e
 - **articles**: + `app_id` FK→apps(SET NULL), nullable, di-index.
 - **categories.type**: `article|portfolio|client` → `article`. Enum `text` di SQLite hanya dicek di TypeScript/Zod.
 - **seo_meta.entity_type**: `article|app|page` (tingkat kode).
-- **settings**: + `home_intro`, `owner_name`, `owner_photo_media_id`, `owner_bio`; − `contact_whatsapp`; isi `tagline` & `description` mengikuti `SITE` di `src/lib/constants.ts`.
+- **settings**: + `home_intro`, `hero_media_id` (id media gambar hero), `hero_app_slug` (slug aplikasi di hero), `owner_name`, `owner_photo_media_id`, `owner_bio`; − `contact_whatsapp`; isi `tagline` & `description` mengikuti `SITE` di `src/lib/constants.ts`. Tabel `settings` berupa kunci dan nilai, jadi kunci baru tidak butuh migrasi.
 
 ### 6.3 Tanggal catatan terakhir
 `last_activity_at` dihitung saat query, tidak disimpan: MAX dari `app_notes.noted_at` dan `articles.published_at` (artikel terkait yang berstatus published). Jumlah aplikasi kecil, jadi subquery tidak jadi masalah.
@@ -169,16 +181,16 @@ erDiagram
 ## 7. Panel admin
 ### 7.1 Aplikasi
 - **Daftar:** nama · status · tayang/tersembunyi · catatan terakhir.
-- **Form sunting**, dikelompokkan: Dasar (nama, satu kalimat) · Penjelasan & fitur · Media (tangkapan layar utama, galeri, URL video) · Bagian opsional (saklar + isi panduan & FAQ) · samping: status, tayang, slug, tanggal mulai/rilis/pensiun, tautan, teknologi, SEO.
+- **Form sunting**, dikelompokkan: Dasar (nama, satu kalimat) · Penjelasan & fitur · Media (logo aplikasi, tangkapan layar utama, galeri, URL video) · Bagian opsional (saklar + isi panduan & FAQ) · samping: status, tayang, slug, tanggal mulai/rilis/pensiun, tautan, teknologi, SEO.
 - **Catatan:** kotak *Tulis catatan* di paling atas halaman sunting berisi teks, versi (opsional), dan tanggal. Satu klik atau Ctrl/⌘+Enter langsung tayang, tanpa draf. Asumsi paling berisiko proyek ini adalah pemilik rutin menulis catatan, jadi menulisnya harus secepat mengetik pesan.
 
 ### 7.2 Ringkasan
 - Tombol cepat: *Aplikasi* · *Tulisan* · *Lihat situs*, dan kotak *Tulis catatan* dengan pilihan aplikasi.
 - Panel **Perlu kabar**: aplikasi berstatus *Sedang dibangun* yang tidak punya catatan lebih dari 30 hari. Jumlahnya juga tampil sebagai lencana di menu Aplikasi.
-- Daftar kelengkapan: email kontak · tautan sosial · profil pembuat (nama, foto, cerita) · kalimat pengantar beranda · alamat situs bukan lagi `workers.dev`.
+- Daftar kelengkapan: email kontak · tautan sosial · profil pembuat (nama, foto, cerita) · judul hero beranda · alamat situs bukan lagi `workers.dev`.
 
 ### 7.3 Pengaturan
-Isian dikelompokkan: Identitas situs (termasuk *Kalimat pengantar beranda*) · *Profil pembuat* (nama, foto lewat media picker, cerita singkat) · Kontak & sosial · Lokasi.
+Isian dikelompokkan: Identitas situs · *Hero beranda* (judul hero, gambar hero lewat media picker, dan pilihan aplikasi di hero dari daftar aplikasi yang tayang) · *Profil pembuat* (nama, foto lewat media picker, cerita singkat) · Kontak & sosial · Lokasi. Semua isian media memakai media picker yang sama; nilainya id media.
 
 ### 7.4 Klien
 Satu halaman berizin `client.manage`: formulir (logo lewat media picker, nama, situs web, NDA, urutan) dan daftar klien dengan tombol sunting & hapus. Tanpa kategori. Logo sebaiknya berlatar transparan dan berwarna gelap, karena di beranda logo dipudarkan dan warnanya dibalik pada tema gelap. Seperti konten lain, perubahan baru tampil di situs setelah halaman diterbitkan ulang.
@@ -209,6 +221,11 @@ Satu halaman berizin `client.manage`: formulir (logo lewat media picker, nama, s
 - **Baru:** `src/modules/articles/components/article-card.tsx` (kartu bersama), kolom `coverUrl` di `listPublishedApps`.
 - **Diubah:** beranda, `/articles`, `HOME_LEAD`, migrasi `0003`, migrasi baru `0004_pulihkan_klien`.
 
+### 8.4 Revisi hero, logo, dan kartu (2026-09-13)
+- **Baru:** `src/app/(public)/apps/page.tsx` (halaman Semua aplikasi), `src/modules/apps/components/app-status-filter.tsx` (tombol saring), kunci pengaturan `hero_media_id` & `hero_app_slug`.
+- **Ditulis ulang:** `src/components/home/rakit-scene.ts` (lantai Cetak biru, transisi baru), `src/components/home/hero-rakit.tsx` (pudar masuk tanpa kedipan, jeda saat tidak terlihat), `src/components/home/hero.tsx` (gambar dari Pengaturan), `src/components/home/client-logos.tsx` (komponen klien dengan animasi muncul), beranda.
+- **Diubah:** `src/modules/apps/components/app-card.tsx` (gambar abu-abu untuk aplikasi tidak aktif), `src/modules/settings/{settings.ts,components/settings-form.tsx}`, halaman Pengaturan panel, Ringkasan panel, `src/app/globals.css` (tepi kanvas hero, animasi logo, saringan), `src/app/sitemap.ts` dan `scripts/terbitkan.mjs` (`/apps`), `src/lib/constants.ts` (`HOME_INTRO`, `HOME_LEAD`), `scripts/gen-og.mjs` + `public/og.png`.
+
 ## 9. Data produksi & migrasi
 ### 9.1 Kondisi D1 produksi (dibaca 2026-09-12)
 | Tabel | Baris | Catatan |
@@ -223,6 +240,8 @@ Satu halaman berizin `client.manage`: formulir (logo lewat media picker, nama, s
 | pengguna ber-peran `sales` | 0 | Peran aman dihapus |
 | d1_migrations | 1 | Hanya `0000_calm_bastion.sql` |
 
+Sesudahnya, 2026-09-13: klien sungguhan pertama, **Lapas Kelas IIB Banjarbaru**, ditambahkan ke `clients` atas persetujuan pemilik, tanpa berkas logo sehingga tampil sebagai nama.
+
 ### 9.2 Berkas migrasi & urutan penerapan di produksi
 | Berkas | Isi | Bisa dibatalkan? |
 |---|---|---|
@@ -230,6 +249,7 @@ Satu halaman berizin `client.manage`: formulir (logo lewat media picker, nama, s
 | `0002_salin_karya.sql` | Salin iaUndang & SIM-KGB ke `apps` (id sama dengan karya lama), berstatus Rilis dan **tersembunyi**, beserta fitur, teknologi, galeri, SEO, dan penjelasan dari teks tantangan & solusi | Ya (hanya menambah) |
 | `0003_hapus_modul_jasa.sql` | Hapus artikel contoh yang **tidak** berstatus tayang, izin & peran lama, pengaturan WhatsApp; lalu drop 11 tabel §6.4. Direvisi sebelum diterapkan di produksi: `clients` dan `client.manage` tidak lagi dihapus | **Tidak** |
 | `0004_pulihkan_klien.sql` | `CREATE TABLE IF NOT EXISTS clients` + indeks unik slug. Di produksi tidak mengubah apa pun karena tabelnya masih ada; di D1 lokal membuat ulang tabel yang terlanjur dihapus 0003 versi lama | Ya |
+| `0005_logo_aplikasi.sql` | Kolom `apps.logo_media_id` (FK `ON DELETE SET NULL` ditambahkan manual). Sudah diterapkan di produksi 2026-09-13 | Ya (hanya menambah) |
 
 Urutannya penting: kode lama akan error 500 bila tabelnya dihapus lebih dulu, dan kode baru error 500 bila tabel `apps` belum ada. `wrangler d1 migrations apply` selalu menerapkan **semua** migrasi yang tertunda sekaligus, jadi 0001 dan 0002 diterapkan manual.
 
@@ -249,6 +269,7 @@ Urutan lengkap penerapan di produksi, termasuk pelajaran dari insiden auto-deplo
 | 4 · Pembersihan | Hapus kode §8.1, migrasi 0002 & 0003 di lokal, perbarui seed/skrip/README/docs | typecheck + lint + build bersih | Selesai |
 | 5 · Tayang | Isi entri WalDev + catatan pertama, periksa iaUndang & SIM-KGB, deploy lewat §9.2, Lighthouse ≥ 95, domain bila siap | Produksi tayang tanpa sisa modul jasa | Berjalan |
 | 6 · Revisi beranda | Hero, logo klien, tulisan terbaru, modul Klien, migrasi 0003 direvisi + 0004 (§8.3) | typecheck + lint + build bersih, beranda dirender statis dan dicek di URL pratinjau | Selesai (tayang 12 Sep, versi `3587a5e8`) |
+| 7 · Hero, logo, dan kartu | Lantai Cetak biru, transisi baru, gambar hero dari Pengaturan, logo muncul bertahap, kartu unggulan + grid, halaman `/apps` (§8.4) | typecheck + lint + build bersih, hero dan halaman `/apps` dicek di URL pratinjau | Berjalan |
 
 Setiap fase ditutup dengan `pnpm typecheck`, `pnpm lint`, `pnpm build` (webpack, jangan Turbopack), lalu commit. Versi yang tayang dibuat dengan `pnpm terbitkan`.
 
@@ -265,10 +286,16 @@ Setiap fase ditutup dengan `pnpm typecheck`, `pnpm lint`, `pnpm build` (webpack,
 - Beranda direvisi: hero dengan judul, ajakan, dan tangkapan layar aplikasi terbaru; logo klien tepat di bawah hero; daftar aplikasi; tulisan terbaru.
 - Modul Klien dipulihkan. Tiga klien contoh dihapus supaya nama fiktif tidak tampil sebagai bukti kerja.
 
+**Sudah diputuskan (2026-09-13):**
+- Latar hero **Cetak biru**, dipilih dari tiga konsep (Cetak biru, Partikel, Panggung).
+- Judul hero bertema solusi: "Solusi digital untuk kebutuhan sehari-hari." Judul tidak menyebut pembuatnya.
+- Logo klien memakai animasi **Muncul**, dan hanya klien sungguhan yang tampil. Lapas Kelas IIB Banjarbaru jadi klien pertama.
+- Kartu aplikasi memakai susunan **Unggulan + grid**, dengan halaman `/apps` untuk aplikasi yang tidak muat di beranda.
+- Gambar hero dan aplikasi di hero bisa diganti dari Pengaturan.
+
 **Masih terbuka:**
-- Kalimat pengantar beranda (sementara memakai `HOME_INTRO`).
 - Tanggal rilis sebenarnya iaUndang dan SIM-KGB. Penjelasan hasil salinannya masih bersuara "kami" dari situs jasa lama.
-- Logo klien yang sebenarnya (diisi pemilik lewat panel Klien).
+- Berkas logo Lapas Kelas IIB Banjarbaru dan logo klien lain (diunggah pemilik lewat panel Klien).
 - Nama domain.
 
 ## 14. Di luar cakupan
@@ -277,21 +304,30 @@ Harga, WhatsApp, testimoni, formulir prospek/kontak, beranda berbentuk linimasa,
 ## 15. Riwayat revisi
 - **2026-09-12 malam · Beranda & klien.** Pemilik meminta beranda berisi hero, aplikasi, logo klien, dan tulisan. Pilihannya: hero dengan judul, ajakan, dan tangkapan layar; logo klien tepat di bawah hero; modul Klien dipulihkan; tulisan contoh yang sedang tayang dibiarkan. Diterapkan di §2, §4, §5.1, §6.4–6.6, §7.4, §8.3, §9, §11, dan §13.
 - **2026-09-13 · Hero 3D.** Pemilik meminta hero dikombinasikan dengan Three.js. Dari tiga konsep di halaman pratinjau (Rakit, Lembar, Tumpuk), pemilik memilih Rakit. Spesifikasi di §16; §5.1 diperbarui.
+- **2026-09-13 siang · Hero, logo, dan kartu.** Pemilik meminta transisi 3D yang lebih halus, latar hero yang lebih menarik, gambar hero yang bisa diganti dari panel, susunan kartu untuk banyak aplikasi, logo kerja sama dengan animasi di bawah hero, dan judul yang tidak ke-akuan. Pilihannya dari halaman konsep "Hero dan Kartu WalDev": latar Cetak biru, judul bertema solusi, logo Muncul dengan logo asli saja, dan kartu Unggulan + grid. Diterapkan di §2, §4, §5.1, §6.2, §7, §8.4, §9.1, §11, §13, dan §16.
 
-## 16. Hero 3D *Rakit*
-Tangkapan layar aplikasi terbaru di hero ditampilkan sebagai kartu 3D yang dirakit di depan pengunjung, sebagai wujud tagline *Build Digital Products*. Bingkai jendela bertitik tiga pada hero sebelumnya dihapus.
+## 16. Hero 3D *Rakit* dengan latar Cetak biru
+Gambar hero ditampilkan sebagai kartu 3D yang terangkat dari lantai bergaris biru, seperti meja kerja tempat aplikasi dirakit. Wujud dari tagline *Build Digital Products*.
 
-**Urutan gerak** (sekali saat halaman dibuka, sekitar dua detik):
-1. Garis rangka kartu tergambar dengan warna aksen (0–0,7 detik).
-2. Isi layar terisi dari atas ke bawah, ditandai garis pindai tipis (0,42–1,25 detik).
-3. Kartu miring, terangkat, dan bayangannya muncul, sementara garis rangka memudar ke warna garis biasa (1,05–1,9 detik).
+**Transisi** (sekali saat halaman dibuka, sekitar dua detik):
+1. Kanvas memudar masuk selama 300 ms di atas gambar statis. Kartu 3D pada saat itu masih datar dengan ukuran dan posisi yang sama persis dengan gambar, jadi pergantiannya tidak terlihat. Gambar statis baru disembunyikan setelah kanvas menutupinya.
+2. Garis tepi kartu tergambar dengan warna aksen (0,12 sampai 1 detik).
+3. Kartu terangkat dan miring, kamera naik sedikit, dan bayangan kartu muncul di lantai (0,25 sampai 1,65 detik). Kurvanya smootherstep, sehingga gerak mulai dan berhenti tanpa sentakan.
+4. Garis lantai menyala dari bawah kartu ke luar (0,2 sampai 1,7 detik), dan kilau tipis menyapu muka kartu sekali (0,5 sampai 1,45 detik).
+5. Garis tepi kartu memudar ke warna garis biasa (1,1 sampai 1,9 detik).
 
-Setelah itu kartu diam dan kanvas berhenti menggambar. Kartu hanya ikut miring sampai sekitar 5° saat kursor bergerak di atasnya.
+Jam transisi baru berjalan di frame pertama yang tergambar. Shader dan gambar disiapkan lebih dulu, karena kompilasi shader bisa makan ratusan milidetik di GPU laptop dan akan memotong awal transisi.
 
-**Status aplikasi:** aplikasi berstatus *Sedang dibangun* berhenti di langkah 2 dengan isi 46%, garis rangka tetap berwarna aksen, dan tanpa kemiringan. Aplikasi *Tidak aktif* tidak pernah dipajang di hero (§5.1).
+**Setelah transisi:** garis lantai berdenyut sangat pelan dan titik terang di lantai mengikuti kursor. Kartu ikut miring sedikit mengikuti mouse, bukan sentuhan. Render berhenti saat hero tidak terlihat atau tab disembunyikan.
 
-**Kapan Three.js dimuat:** hanya bila layar ≥ 768 px dan WebGL 2 tersedia (three 0.163 ke atas tidak mendukung WebGL 1). Modulnya dimuat lewat dynamic import setelah halaman selesai dimuat. Di luar kondisi itu hero memakai gambar statis. Pengunjung yang meminta gerak dikurangi tetap mendapat kartu 3D, langsung di posisi akhir tanpa urutan perakitan dan tanpa ikut kursor. Kartu hanya miring mengikuti mouse, bukan sentuhan. Syarat `pointer: fine` dan penolakan gerak dikurangi dihapus pada 13 September, setelah Edge di laptop pemilik terdeteksi melaporkan gerak dikurangi sehingga kartu 3D tidak pernah dimuat.
+**Tepi panggung:** lantai dan bayangan memudar di tepi kiri, kanan, dan bawah kanvas (`.rakit-canvas` di `globals.css`), jadi garisnya tidak terpotong lurus. Kartu berada di luar area pudar, termasuk saat masih datar.
 
-**Gambar statis tetap ada.** `<img>` tangkapan layar tetap berada di HTML sebagai elemen pertama yang tampil dan sebagai cadangan tanpa JavaScript. Kanvas menggantikannya di wadah 16:10 yang sama setelah siap, jadi tata letak tidak bergeser.
+**Status aplikasi:** bila aplikasi di hero berstatus *Sedang dibangun*, garis tepi kartu tetap berwarna aksen setelah transisi.
 
-**Warna** diambil dari token tema (`--surface`, `--border`, `--primary`) dan diperbarui saat tema berganti. **Berkas:** `src/components/home/rakit-scene.ts` (adegan Three.js), `src/components/home/hero-rakit.tsx` (komponen klien), `src/components/home/hero.tsx`, beranda, dan dependensi `three`. Halaman konsep: artifact "Hero 3D WalDev".
+**Gerak dikurangi:** kartu tetap datar seperti gambar aslinya dan lantai tampil diam, tanpa transisi dan tanpa denyut. Edge di laptop pemilik melaporkan gerak dikurangi karena efek animasi Windows dimatikan; transisi penuh baru terlihat bila efek animasi dinyalakan lagi.
+
+**Kapan Three.js dimuat:** hanya bila layar ≥ 768 px dan WebGL 2 tersedia (three 0.163 ke atas tidak mendukung WebGL 1). Modulnya dimuat lewat dynamic import setelah halaman selesai dimuat. Di luar kondisi itu hero memakai gambar statis.
+
+**Gambar statis tetap ada.** `<img>` tetap berada di HTML sebagai elemen pertama yang tampil dan sebagai cadangan tanpa JavaScript. Di layar lebar gambar itu selebar 64% panggung 16:10 tanpa sudut membulat, sama dengan `CARD_SHARE` di adegan 3D.
+
+**Warna** diambil dari token tema (`--surface`, `--border`, `--link`) dan diperbarui saat tema berganti. Shader lantai dan kilau memakai `colorspace_fragment`, sehingga birunya sama dengan CSS. **Berkas:** `src/components/home/rakit-scene.ts` (adegan Three.js), `src/components/home/hero-rakit.tsx` (komponen klien), `src/components/home/hero.tsx`, beranda, dan dependensi `three`. Halaman konsep: artifact "Hero 3D WalDev" (Rakit) dan "Hero dan Kartu WalDev" (latar, logo, kartu).

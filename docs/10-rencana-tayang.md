@@ -157,9 +157,9 @@ npx wrangler versions deploy <uuid-penuh>@100% -y  # tayangkan setelah pratinjau
 `--lewati-build` (`node scripts/terbitkan.mjs --lewati-build`) hanya untuk mengulang render yang gagal tepat setelah build. Setelah penerbitan berhasil, `.open-next/assets` berisi halaman statis yang dilayani lebih dulu oleh `wrangler dev`, jadi perubahan konten wajib lewat build penuh. Skrip menolak `--lewati-build` selama `index.html` hasil render lama masih ada.
 
 Cara kerja `scripts/terbitkan.mjs`:
-1. Build OpenNext.
+1. Menjalankan `pnpm typecheck`, lalu build OpenNext dengan `WALDEV_BUILD_HEMAT=1`. Di mode ini `next build` melewati pengecekan tipenya sendiri (sudah dijalankan tepat sebelumnya), memakai satu worker, dan menyalakan `webpackMemoryOptimizations` (lihat `next.config.ts`). Mode ini ditambahkan 13 September setelah build dihentikan di tahap pengecekan tipe karena RAM laptop menipis saat dev server proyek lain ikut berjalan.
 2. Menyalakan `wrangler dev --config wrangler.terbit.jsonc` di port 8799. Konfigurasi ini memakai D1 dan R2 produksi (`remote: true`) dengan KV lokal, dan skripnya hanya membaca.
-3. Merender `/`, `/about`, `/articles`, `/privacy-policy`, dan semua URL di sitemap, lalu menyimpannya sebagai `index.html`, `about.html`, `apps/<slug>.html`, dan seterusnya. Gambar dari `/api/media/file/...` ikut disimpan di jalur yang sama, begitu juga `sitemap.xml`, `robots.txt`, ikon, dan `_headers` (header keamanan yang sama dengan `next.config.ts`).
+3. Merender `/`, `/apps`, `/about`, `/articles`, `/privacy-policy`, dan semua URL di sitemap, lalu menyimpannya sebagai `index.html`, `apps.html`, `about.html`, `apps/<slug>.html`, dan seterusnya. Gambar dari `/api/media/file/...` ikut disimpan di jalur yang sama, begitu juga `sitemap.xml`, `robots.txt`, ikon, dan `_headers` (header keamanan yang sama dengan `next.config.ts`).
 4. Menyalin hasilnya ke `.open-next/assets`. Proses berhenti bila ada halaman yang tidak membalas 200 atau HTML masih memuat alamat localhost.
 
 Batasan:

@@ -103,7 +103,10 @@ export function AppCard({ app, wide = false }: { app: AppCardItem; wide?: boolea
               alt=""
               loading="lazy"
               decoding="async"
-              className="h-full w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+              className={cn(
+                "h-full w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100",
+                app.status === "retired" && "opacity-80 grayscale",
+              )}
             />
           ) : (
             <span className="flex h-full items-center justify-center">

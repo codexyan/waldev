@@ -35,7 +35,7 @@ const BLUE = "#155DFC";
 const FONT = "Segoe UI, Arial, sans-serif";
 
 const ALAMAT = "waldev.mdcodeid.workers.dev";
-const JUDUL = ["Aplikasi web", "buatan WalDev."];
+const JUDUL = ["Solusi digital untuk", "kebutuhan sehari-hari."];
 const TAGLINE = "Build Digital Products";
 
 const escape = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");

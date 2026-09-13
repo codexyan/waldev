@@ -4,8 +4,12 @@ export const SITE_SETTINGS_DEFAULTS = {
   brand_name: SITE.name,
   tagline: SITE.tagline,
   description: SITE.description,
-  /* Satu kalimat di atas daftar arsip beranda (docs/09 §5.1). */
+  /* Judul hero beranda (docs/09 §5.1). Kosong berarti HOME_INTRO. */
   home_intro: "",
+  /* Gambar hero beranda (docs/09 §5.1): id media, dan slug aplikasi yang ditautkan.
+     Keduanya kosong berarti tangkapan layar aplikasi terbaru. */
+  hero_media_id: "",
+  hero_app_slug: "",
   /* Profil pembuat untuk halaman Tentang (docs/09 §5.3). Foto disimpan sebagai id media. */
   owner_name: "",
   owner_photo_media_id: "",
@@ -33,6 +37,8 @@ export interface SettingsField {
   multiline?: boolean;
   /** Isian berupa pilihan media; nilainya id media. */
   media?: boolean;
+  /** Isian berupa pilihan aplikasi yang tayang; nilainya slug aplikasi. */
+  appSelect?: boolean;
 }
 
 export interface SettingsGroup {
@@ -48,12 +54,31 @@ export const SETTINGS_GROUPS: SettingsGroup[] = [
       { key: "brand_name", label: "Nama brand" },
       { key: "tagline", label: "Tagline" },
       { key: "description", label: "Deskripsi", multiline: true },
+      { key: "footer_text", label: "Teks footer", multiline: true },
+    ],
+  },
+  {
+    title: "Hero beranda",
+    description:
+      "Judul dan gambar di bagian paling atas beranda. Perubahan tampil setelah halaman diterbitkan ulang.",
+    fields: [
       {
         key: "home_intro",
-        label: "Kalimat pengantar beranda",
-        hint: "Judul besar di atas daftar aplikasi, misalnya “Aplikasi web buatan WalDev.”",
+        label: "Judul hero",
+        hint: "Kosongkan untuk memakai “Solusi digital untuk kebutuhan sehari-hari.”",
       },
-      { key: "footer_text", label: "Teks footer", multiline: true },
+      {
+        key: "hero_media_id",
+        label: "Gambar hero",
+        media: true,
+        hint: "Kosongkan untuk memakai tangkapan layar aplikasi di bawah. Pakai gambar 16:9, misalnya 1200 × 675 px.",
+      },
+      {
+        key: "hero_app_slug",
+        label: "Aplikasi di hero",
+        appSelect: true,
+        hint: "Gambar menaut ke halaman aplikasi ini, dan namanya tampil di bawah gambar.",
+      },
     ],
   },
   {

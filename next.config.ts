@@ -10,9 +10,21 @@ const securityHeaders = [
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=()" },
 ];
 
+/* Mode hemat memori, hanya dinyalakan `pnpm terbitkan` setelah skrip itu menjalankan
+   `tsc --noEmit` sendiri. Pengecekan tipe kedua di dalam `next build` dilewati dan worker
+   dikurangi menjadi satu (bawaannya jumlah core dikurangi satu). Keluaran build tetap sama.
+   Pada 13 September build dihentikan di tahap pengecekan tipe karena RAM laptop menipis. */
+const buildHemat = process.env.WALDEV_BUILD_HEMAT === "1";
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  ...(buildHemat
+    ? {
+        typescript: { ignoreBuildErrors: true },
+        experimental: { webpackMemoryOptimizations: true, cpus: 1 },
+      }
+    : {}),
   images: {
     // Optimasi gambar memakai Cloudflare Images/loader kustom bila diperlukan.
   },
