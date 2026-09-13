@@ -166,4 +166,5 @@ Batasan:
 - Isian panel baru tampil di situs setelah ketiga perintah di atas.
 - Panel, login, dan API tetap dirender Worker, jadi masih bisa terkena Error 1102. Pada 12 September data yang disimpan tetap masuk; muat ulang dan periksa sebelum mengisi ulang.
 - Tautan internal situs publik memakai `StaticLink` (`<a>` biasa), bukan `next/link`, supaya navigasi tidak meminta data RSC ke Worker.
+- `keep_names` dimatikan di `wrangler.jsonc` dan `wrangler.terbit.jsonc`. Tanpa itu esbuild di Wrangler menyisipkan `__name(...)` ke skrip tema next-themes di HTML, dan browser melempar `ReferenceError: __name is not defined` (terlihat di produksi pada 13 September).
 - `pnpm deploy` tidak menjalankan `terbitkan`, jadi hasilnya tanpa halaman statis. Build di Workers Builds sengaja digagalkan (langkah 1).

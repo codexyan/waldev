@@ -31,6 +31,7 @@ export default async function NewAppPage() {
           retiredAt: "",
           technologies: "",
           features: [],
+          logo: null,
           cover: null,
           gallery: [],
           guideJson: EMPTY_DOC,

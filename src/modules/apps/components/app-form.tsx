@@ -36,6 +36,7 @@ export interface AppFormInitial {
   retiredAt: string;
   technologies: string;
   features: RepeatableRow[];
+  logo: PickedMedia | null;
   cover: PickedMedia | null;
   gallery: PickedMedia[];
   guideJson: unknown;
@@ -126,6 +127,7 @@ export function AppForm({ initial }: { initial: AppFormInitial }) {
   const [retiredAt, setRetiredAt] = useState(initial.retiredAt);
   const [technologies, setTechnologies] = useState(initial.technologies);
   const [features, setFeatures] = useState<RepeatableRow[]>(initial.features);
+  const [logo, setLogo] = useState<PickedMedia | null>(initial.logo);
   const [cover, setCover] = useState<PickedMedia | null>(initial.cover);
   const [gallery, setGallery] = useState<PickedMedia[]>(initial.gallery);
   const [guide, setGuide] = useState<unknown>(initial.guideJson);
@@ -164,6 +166,7 @@ export function AppForm({ initial }: { initial: AppFormInitial }) {
       repoUrl: repoUrl || undefined,
       videoUrl: videoUrl || undefined,
       coverMediaId: cover?.id,
+      logoMediaId: logo?.id,
       galleryMediaIds: gallery.map((g) => g.id),
       startedAt: startedAt || null,
       // Isian yang tidak tampil untuk status ini tidak ikut dikirim.
@@ -254,6 +257,14 @@ export function AppForm({ initial }: { initial: AppFormInitial }) {
           title="Media"
           description="Tangkapan layar tetap jadi bukti walau suatu hari aplikasinya tidak aktif lagi."
         >
+          <div className="space-y-1.5">
+            <MediaPickerField label="Logo aplikasi" value={logo} onChange={setLogo} />
+            <Hint>
+              Tampil di kartu aplikasi di beranda dan di kepala halaman aplikasi. Pakai gambar
+              persegi berlatar transparan. Tanpa logo, yang tampil monogram dua huruf dari nama
+              aplikasi.
+            </Hint>
+          </div>
           <MediaPickerField label="Tangkapan layar utama" value={cover} onChange={setCover} />
           <MediaGalleryField label="Galeri" value={gallery} onChange={setGallery} />
           <div className="space-y-1.5">

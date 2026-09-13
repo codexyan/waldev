@@ -50,6 +50,7 @@ export const appInputSchema = z
     repoUrl: optionalHttpUrl,
     videoUrl: optionalYoutubeUrl,
     coverMediaId: z.string().trim().optional(),
+    logoMediaId: z.string().trim().optional(),
     galleryMediaIds: z.array(z.string()).max(30).default([]),
     startedAt: optionalDay,
     releasedAt: optionalDay,

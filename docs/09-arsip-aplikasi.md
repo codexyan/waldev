@@ -74,7 +74,7 @@ Menu `Artikel` ditambahkan manual lewat Panel › Navigasi saat tulisannya diras
 Urutan bagian dari atas:
 1. **Hero.** Judul dari Pengaturan (`home_intro`; selama kosong dipakai `HOME_INTRO` di `src/lib/constants.ts`), kalimat pengantar `HOME_LEAD`, tombol *Lihat aplikasi* ke `#aplikasi`, dan tautan *Hubungi lewat email* (hanya bila email kontak diisi). Di bawahnya tangkapan layar utama dari aplikasi teratas di daftar yang punya sampul dan tidak berstatus *Tidak aktif*, ditampilkan sebagai kartu 3D *Rakit* (§16), dengan keterangan "Aplikasi terbaru · {nama}". Bila tidak ada yang memenuhi, hero berhenti di tombol.
 2. **Logo klien.** Satu baris logo dari modul Klien (§7.4) berlabel "Pernah bekerja sama dengan". Klien NDA tidak ikut, klien tanpa logo tampil sebagai nama, dan logo menaut ke situs web klien bila diisi. Bagian ini hilang bila kosong.
-3. **Daftar aplikasi** (`#aplikasi`). Satu baris per aplikasi yang tayang: **nama · satu kalimat · status · bulan-tahun catatan terakhir**. Urutan: catatan terakhir terbaru di atas; aplikasi berstatus *Tidak aktif* selalu di bawah. Bila belum ada aplikasi tayang: "Aplikasi pertama masih dalam pembuatan."
+3. **Kartu aplikasi** (`#aplikasi`). Satu kartu per aplikasi yang tayang: tangkapan layar utama, logo aplikasi yang menumpang di tepi bawah tangkapan layar (selama logo belum diunggah, monogram dua huruf dari nama, misalnya "IU" untuk iaUndang), nama, satu kalimat, status, dan bulan-tahun catatan terakhir. Satu aplikasi memakai kartu lebar; 2 atau 4 aplikasi memakai dua kolom; selebihnya sampai tiga kolom di layar lebar. Urutan: catatan terakhir terbaru di atas; aplikasi berstatus *Tidak aktif* selalu di bawah. Bila belum ada aplikasi tayang: "Aplikasi pertama masih dalam pembuatan."
 4. **Tulisan terbaru.** 3 tulisan terbit terbaru dengan kartu yang sama seperti `/articles`, ditambah tautan *Semua tulisan*. Bagian ini hilang bila belum ada tulisan terbit.
 
 Teks mengikuti aturan tanpa "saya", dan tidak ada angka, testimoni, atau klaim yang tidak berasal dari data. JSON-LD `Organization` (WalDev) dengan `founder` → `Person` dipasang di layout publik.
@@ -113,7 +113,7 @@ SEO: JSON-LD `SoftwareApplication`; gambar OG = tangkapan layar utama.
 Konvensi mengikuti [05 · Database](./05-database-erd.md): PK CUID2, timestamp epoch, boolean 0/1, enum `text` + Zod.
 
 ### 6.1 Tabel baru
-- **apps**: id · name · slug(UNIQUE) · tagline · description_json · description_html · status(building|released|retired) · is_published(bool, default 0) · app_url · repo_url · video_url · cover_media_id FK→media(SET NULL) · started_at · released_at · retired_at · guide_json · guide_html · show_guide · show_faq · show_notes (default 1) · show_releases (bool) · timestamps
+- **apps**: id · name · slug(UNIQUE) · tagline · description_json · description_html · status(building|released|retired) · is_published(bool, default 0) · app_url · repo_url · video_url · cover_media_id FK→media(SET NULL) · logo_media_id FK→media(SET NULL, migrasi 0005) · started_at · released_at · retired_at · guide_json · guide_html · show_guide · show_faq · show_notes (default 1) · show_releases (bool) · timestamps
   - Index: status, is_published
 - **app_media** (galeri): id · app_id FK(CASCADE) · media_id FK(CASCADE) · caption · order
 - **app_features**: id · app_id FK(CASCADE) · title · description · order
@@ -290,7 +290,7 @@ Setelah itu kartu diam dan kanvas berhenti menggambar. Kartu hanya ikut miring s
 
 **Status aplikasi:** aplikasi berstatus *Sedang dibangun* berhenti di langkah 2 dengan isi 46%, garis rangka tetap berwarna aksen, dan tanpa kemiringan. Aplikasi *Tidak aktif* tidak pernah dipajang di hero (§5.1).
 
-**Kapan Three.js dimuat:** hanya bila layar ≥ 768 px, kursornya presisi (`pointer: fine`), WebGL tersedia, dan pengunjung tidak meminta gerak dikurangi. Modulnya dimuat lewat dynamic import setelah halaman selesai dimuat. Di luar kondisi itu hero memakai gambar statis.
+**Kapan Three.js dimuat:** hanya bila layar ≥ 768 px dan WebGL 2 tersedia (three 0.163 ke atas tidak mendukung WebGL 1). Modulnya dimuat lewat dynamic import setelah halaman selesai dimuat. Di luar kondisi itu hero memakai gambar statis. Pengunjung yang meminta gerak dikurangi tetap mendapat kartu 3D, langsung di posisi akhir tanpa urutan perakitan dan tanpa ikut kursor. Kartu hanya miring mengikuti mouse, bukan sentuhan. Syarat `pointer: fine` dan penolakan gerak dikurangi dihapus pada 13 September, setelah Edge di laptop pemilik terdeteksi melaporkan gerak dikurangi sehingga kartu 3D tidak pernah dimuat.
 
 **Gambar statis tetap ada.** `<img>` tangkapan layar tetap berada di HTML sebagai elemen pertama yang tampil dan sebagai cadangan tanpa JavaScript. Kanvas menggantikannya di wadah 16:10 yang sama setelah siap, jadi tata letak tidak bergeser.
 

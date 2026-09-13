@@ -14,6 +14,7 @@ import { formatDay, formatMonthYear } from "@/lib/date";
 import { cn } from "@/lib/utils";
 import { getYoutubeId } from "@/lib/youtube";
 import { getPublishedAppBySlug } from "@/modules/apps/app.dal";
+import { AppLogo } from "@/modules/apps/components/app-card";
 import { AppStatusText } from "@/modules/apps/components/app-status";
 import { getSeoMeta } from "@/modules/seo/seo.dal";
 import { getSiteSettings } from "@/modules/settings/settings.dal";
@@ -117,12 +118,23 @@ export default async function AppPage({ params }: { params: Promise<{ slug: stri
             Semua aplikasi
           </ArrowLink>
 
-          <p className="label mt-10">
-            <AppStatusText status={app.status} />
-          </p>
-          <h1 className="display mt-4 max-w-3xl text-[2rem] text-balance sm:text-4xl lg:text-5xl">
-            {app.name}
-          </h1>
+          <div className="mt-10 flex items-center gap-5">
+            {app.logoUrl ? (
+              <AppLogo
+                name={app.name}
+                logoUrl={app.logoUrl}
+                className="h-16 w-16 sm:h-20 sm:w-20"
+              />
+            ) : null}
+            <div className="min-w-0">
+              <p className="label">
+                <AppStatusText status={app.status} />
+              </p>
+              <h1 className="display mt-3 max-w-3xl text-[2rem] text-balance sm:text-4xl lg:text-5xl">
+                {app.name}
+              </h1>
+            </div>
+          </div>
           {app.tagline ? (
             <p className="text-muted-foreground mt-5 max-w-2xl leading-relaxed text-pretty">
               {app.tagline}

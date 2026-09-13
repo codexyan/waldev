@@ -4,6 +4,10 @@
   "main": ".open-next/worker.js",
   "compatibility_date": "2025-06-01",
   "compatibility_flags": ["nodejs_compat"],
+  // esbuild di Wrangler menyisipkan `__name(...)` saat keep_names aktif. next-themes
+  // mengubah fungsinya jadi teks skrip, sehingga browser menjalankan `__name` yang
+  // tidak ada dan skrip tema gagal. Lihat opennext.js.org/cloudflare/howtos/keep_names.
+  "keep_names": false,
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"

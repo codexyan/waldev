@@ -37,6 +37,7 @@ export interface AppWriteData {
   repoUrl?: string;
   videoUrl?: string;
   coverMediaId?: string;
+  logoMediaId?: string;
   gallery: string[];
   startedAt?: string | null;
   releasedAt?: string | null;
@@ -76,6 +77,11 @@ const lastNoteAt = sql<
 const lastArticleAt = sql<
   number | null
 >`(select max(${articles.publishedAt}) from ${articles} where ${articles.appId} = "apps"."id" and ${articles.status} = 'published')`;
+
+/** URL logo aplikasi. Ditulis sebagai subquery karena query yang sama sudah menggabungkan media untuk tangkapan layar. */
+const logoUrl = sql<
+  string | null
+>`(select "logo"."url" from "media" as "logo" where "logo"."id" = "apps"."logo_media_id")`;
 
 function withLastActivity<T extends { lastNoteAt: number | null; lastArticleAt: number | null }>(
   row: T,
@@ -130,6 +136,7 @@ function coreValues(
     repoUrl: data.repoUrl?.trim() || null,
     videoUrl: data.videoUrl?.trim() || null,
     coverMediaId: data.coverMediaId || null,
+    logoMediaId: data.logoMediaId || null,
     startedAt: toDay(data.startedAt),
     ...resolveMilestones(data, existing),
     guideJson: JSON.stringify(data.guideJson ?? EMPTY_DOC),
@@ -324,7 +331,7 @@ export async function getAppForEdit(id: string) {
   const app = rows[0];
   if (!app) return null;
 
-  const [techRows, featureRows, faqRows, gallery, cover] = await Promise.all([
+  const [techRows, featureRows, faqRows, gallery, cover, logo] = await Promise.all([
     db
       .select({ name: technologies.name })
       .from(appTechnologies)
@@ -347,6 +354,7 @@ export async function getAppForEdit(id: string) {
       .where(eq(appMedia.appId, id))
       .orderBy(asc(appMedia.order)),
     getMediaPick(db, app.coverMediaId),
+    getMediaPick(db, app.logoMediaId),
   ]);
 
   return {
@@ -354,6 +362,7 @@ export async function getAppForEdit(id: string) {
     technologies: techRows.map((t) => t.name),
     features: featureRows.map((f) => ({ title: f.title, description: f.description ?? "" })),
     faqs: faqRows,
+    logo,
     cover,
     gallery,
   };
@@ -454,7 +463,7 @@ export async function deleteAppNote(noteId: string) {
 
 /**
  * Daftar aplikasi di beranda: aktivitas terbaru di atas, aplikasi pensiun selalu di bawah.
- * `coverUrl` dipakai hero untuk memajang tangkapan layar aplikasi teratas.
+ * `coverUrl` dipakai hero dan kartu aplikasi; `logoUrl` untuk logo di kartu.
  */
 export async function listPublishedApps() {
   const db = getDb();
@@ -466,6 +475,7 @@ export async function listPublishedApps() {
       status: apps.status,
       createdAt: apps.createdAt,
       coverUrl: media.url,
+      logoUrl,
       lastNoteAt,
       lastArticleAt,
     })
@@ -508,6 +518,7 @@ export async function getPublishedAppBySlug(slug: string) {
       createdAt: apps.createdAt,
       coverUrl: media.url,
       coverAlt: media.alt,
+      logoUrl,
       lastNoteAt,
       lastArticleAt,
     })

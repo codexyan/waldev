@@ -78,6 +78,7 @@ export default async function EditAppPage({ params }: { params: Promise<{ id: st
           retiredAt: toDateInput(app.retiredAt),
           technologies: app.technologies.join(", "),
           features: app.features,
+          logo: app.logo,
           cover: app.cover,
           gallery: app.gallery,
           guideJson: parseDoc(app.guideJson),

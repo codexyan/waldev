@@ -226,6 +226,8 @@ export const apps = sqliteTable(
     repoUrl: text("repo_url"),
     videoUrl: text("video_url"), // hanya YouTube
     coverMediaId: text("cover_media_id").references(() => media.id, { onDelete: "set null" }),
+    // Logo persegi untuk kartu aplikasi di beranda dan kepala halaman aplikasi.
+    logoMediaId: text("logo_media_id").references(() => media.id, { onDelete: "set null" }),
     startedAt: integer("started_at", { mode: "timestamp" }),
     releasedAt: integer("released_at", { mode: "timestamp" }),
     retiredAt: integer("retired_at", { mode: "timestamp" }),

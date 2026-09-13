@@ -8,6 +8,9 @@
   "main": ".open-next/worker.js",
   "compatibility_date": "2025-06-01",
   "compatibility_flags": ["nodejs_compat"],
+  // Sama dengan wrangler.jsonc. Tanpa ini skrip tema di HTML hasil render memanggil
+  // `__name` yang tidak ada di browser.
+  "keep_names": false,
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"

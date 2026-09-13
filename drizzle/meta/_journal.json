@@ -36,6 +36,13 @@
       "when": 1789222447062,
       "tag": "0004_pulihkan_klien",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1789264187923,
+      "tag": "0005_logo_aplikasi",
+      "breakpoints": true
     }
   ]
 }

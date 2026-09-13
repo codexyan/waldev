@@ -34,6 +34,7 @@ function toWriteData(input: AppInput): dal.AppWriteData {
     repoUrl: input.repoUrl,
     videoUrl: input.videoUrl,
     coverMediaId: input.coverMediaId,
+    logoMediaId: input.logoMediaId,
     gallery: input.galleryMediaIds ?? [],
     startedAt: input.startedAt,
     releasedAt: input.releasedAt,

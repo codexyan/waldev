@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import type { RakitColors, RakitHandle } from "./rakit-scene";
 
-function supportsWebGL(): boolean {
+/** three 0.163 ke atas hanya mendukung WebGL 2. */
+function supportsWebGL2(): boolean {
   try {
-    const canvas = document.createElement("canvas");
-    return Boolean(canvas.getContext("webgl2") || canvas.getContext("webgl"));
+    return Boolean(document.createElement("canvas").getContext("webgl2"));
   } catch {
     return false;
   }
@@ -41,9 +41,10 @@ const waitForPageLoad = () =>
  * Tangkapan layar hero yang dirakit sebagai kartu 3D (docs/09 §16).
  *
  * HTML statis selalu berisi <img> biasa. Gambar itu yang tampil pertama, dan tetap
- * dipakai di ponsel, tanpa JavaScript, tanpa WebGL, atau saat pengunjung meminta gerak
- * dikurangi. Di layar lebar dengan kursor, Three.js dimuat setelah halaman selesai
- * dimuat, lalu kanvas menggantikan gambar di wadah yang sama sehingga tata letak diam.
+ * dipakai di layar di bawah 768 px, tanpa JavaScript, atau tanpa WebGL 2. Di layar
+ * lebar, Three.js dimuat setelah halaman selesai dimuat, lalu kanvas menggantikan
+ * gambar di wadah yang sama sehingga tata letak diam. Pengunjung yang meminta gerak
+ * dikurangi tetap melihat kartu 3D, langsung di posisi akhir tanpa urutan perakitan.
  */
 export function HeroRakit({ src, alt, building }: { src: string; alt: string; building: boolean }) {
   const stageRef = useRef<HTMLDivElement>(null);
@@ -56,13 +57,13 @@ export function HeroRakit({ src, alt, building }: { src: string; alt: string; bu
     const image = imageRef.current;
     const canvas = canvasRef.current;
     if (!stage || !image || !canvas) return;
-    const wide = window.matchMedia("(min-width: 768px) and (pointer: fine)");
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (!wide.matches || reduce.matches || !supportsWebGL()) return;
+    if (!window.matchMedia("(min-width: 768px)").matches || !supportsWebGL2()) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let handle: RakitHandle | null = null;
     let cancelled = false;
 
+    // Kartu hanya ikut miring mengikuti mouse; sentuhan dan pena dibiarkan.
     const onMove = (event: PointerEvent) => {
       if (event.pointerType !== "mouse" || !handle) return;
       const rect = stage.getBoundingClientRect();
@@ -82,7 +83,7 @@ export function HeroRakit({ src, alt, building }: { src: string; alt: string; bu
       if (cancelled || !image.naturalWidth) return;
       const { mountRakit } = await import("./rakit-scene");
       if (cancelled) return;
-      handle = mountRakit(canvas, image, { building, reducedMotion: false, colors: readColors() });
+      handle = mountRakit(canvas, image, { building, reducedMotion, colors: readColors() });
       stage.addEventListener("pointermove", onMove);
       stage.addEventListener("pointerleave", onLeave);
       resizeObserver.observe(stage);
