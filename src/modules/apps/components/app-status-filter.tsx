@@ -10,7 +10,7 @@ type Filter = "all" | AppStatus;
 const STATUS_ORDER: AppStatus[] = ["building", "released", "retired"];
 
 /**
- * Tombol saring status di halaman Semua aplikasi (docs/09 §5.1). Kartu dirender di server;
+ * Tombol saring status di halaman Semua proyek (docs/09 §5.1). Kartu dirender di server;
  * komponen ini hanya mengganti `data-filter`, dan globals.css (`.app-directory`)
  * menyembunyikan kartu yang statusnya tidak cocok. Tombol tanpa kartu tidak tampil.
  */
@@ -35,7 +35,7 @@ export function AppStatusFilter({
 
   return (
     <div className="app-directory" data-filter={filter}>
-      <div role="group" aria-label="Saring aplikasi berdasarkan status" className="flex flex-wrap gap-2">
+      <div role="group" aria-label="Saring proyek berdasarkan status" className="flex flex-wrap gap-2">
         {options.map((option) => (
           <button
             key={option.key}

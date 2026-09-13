@@ -26,7 +26,7 @@ export default async function PrivacyPolicyPage() {
       <section className="mx-auto max-w-3xl px-6 py-16 sm:py-20">
         <div className="prose max-w-none">
           <p>
-            {brand} adalah portofolio aplikasi web. Halaman ini menjelaskan data apa saja yang
+            {brand} adalah portofolio proyek aplikasi web. Halaman ini menjelaskan data apa saja yang
             terlibat saat Anda membuka situs ini.
           </p>
 
@@ -51,7 +51,7 @@ export default async function PrivacyPolicyPage() {
 
           <h2>Video YouTube</h2>
           <p>
-            Beberapa halaman aplikasi menyertakan video YouTube. Sebelum diklik, hanya gambar
+            Beberapa halaman proyek menyertakan video YouTube. Sebelum diklik, hanya gambar
             pratinjaunya yang dimuat dari server YouTube. Pemutarnya baru dimuat setelah Anda
             mengklik video, dan sejak saat itu berlaku kebijakan privasi YouTube.
           </p>

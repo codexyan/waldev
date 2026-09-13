@@ -6,13 +6,13 @@ import { cn } from "@/lib/utils";
 import { HeroRakit } from "./hero-rakit";
 
 /**
- * Gambar hero: dari Pengaturan › Hero beranda, atau tangkapan layar aplikasi terbaru
+ * Gambar hero: dari Pengaturan › Hero beranda, atau tangkapan layar proyek terbaru
  * yang punya gambar dan masih aktif.
  */
 export interface HeroShowcase {
   imageUrl: string;
   alt: string;
-  /** "Aplikasi terbaru" atau "Aplikasi unggulan"; null bila tidak ada aplikasi terkait. */
+  /** "Proyek terbaru" atau "Proyek unggulan"; null bila tidak ada proyek terkait. */
   label: string | null;
   name: string | null;
   /** Halaman aplikasi yang dituju saat gambar diklik. */
@@ -45,12 +45,12 @@ export function Hero({
 
       <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3">
         <StaticLink
-          href="#aplikasi"
+          href="#portofolio"
           className={cn(buttonVariants({ size: "xl" }), "w-full sm:w-auto")}
         >
-          Lihat aplikasi
+          Lihat portofolio
         </StaticLink>
-        {email ? <ArrowLink href={`mailto:${email}`}>Hubungi lewat email</ArrowLink> : null}
+        {email ? <ArrowLink href={`mailto:${email}`}>Hubungi WalDev</ArrowLink> : null}
       </div>
 
       {showcase ? <Showcase item={showcase} /> : null}
@@ -70,7 +70,7 @@ function Showcase({ item }: { item: HeroShowcase }) {
       {item.href ? (
         <StaticLink
           href={item.href}
-          aria-label={item.name ? `Lihat halaman ${item.name}` : "Lihat halaman aplikasi"}
+          aria-label={item.name ? `Lihat halaman ${item.name}` : "Lihat halaman proyek"}
           className="block"
         >
           {visual}

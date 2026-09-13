@@ -12,8 +12,8 @@ export default function NotFound() {
         Tautannya mungkin sudah berubah, atau halamannya sudah tidak tersedia.
       </p>
       <div className="mt-8">
-        <StaticLink href="/" className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto")}>
-          Lihat semua aplikasi
+        <StaticLink href="/apps" className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto")}>
+          Lihat portofolio
         </StaticLink>
       </div>
     </main>

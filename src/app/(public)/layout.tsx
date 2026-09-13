@@ -17,13 +17,13 @@ const SOCIAL_ICONS: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
 
 export const dynamic = "force-dynamic";
 
-/* Menu bawaan arsip aplikasi (docs/09 §4.1). Beranda sudah berupa daftar
-   aplikasi, jadi "Aplikasi" menunjuk ke sana. Menu Artikel sengaja tidak ada:
+/* Menu bawaan portofolio (docs/09 §4.1). "Portofolio" menunjuk ke halaman Semua proyek,
+   karena beranda hanya memuat tujuh kartu. Menu Artikel sengaja tidak ada:
    pemilik menambahkannya lewat Panel › Navigasi saat tulisannya dirasa cukup.
    Keduanya hanya fallback — begitu menu disusun lewat modul Navigasi, tabel
    `navigation_items` yang menang. */
 const DEFAULT_HEADER = [
-  { label: "Aplikasi", url: "/" },
+  { label: "Portofolio", url: "/apps" },
   { label: "Tentang", url: "/about" },
 ];
 

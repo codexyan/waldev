@@ -46,7 +46,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const app = await getApp(slug);
-  if (!app) return { title: "Aplikasi tidak ditemukan" };
+  if (!app) return { title: "Proyek tidak ditemukan" };
   const seo = await getSeoMeta("app", app.id);
   const title = seo.metaTitle || app.name;
   const description = seo.metaDescription || app.tagline || undefined;
@@ -114,8 +114,8 @@ export default async function AppPage({ params }: { params: Promise<{ slug: stri
     <>
       <header className="border-border border-b">
         <div className={cn(SHELL, "pt-8 pb-14")}>
-          <ArrowLink href="/" className="text-muted-foreground hover:text-link" back>
-            Semua aplikasi
+          <ArrowLink href="/apps" className="text-muted-foreground hover:text-link" back>
+            Semua proyek
           </ArrowLink>
 
           <div className="mt-10 flex items-center gap-5">
@@ -143,7 +143,7 @@ export default async function AppPage({ params }: { params: Promise<{ slug: stri
 
           {retired ? (
             <p className="border-border bg-surface text-muted-foreground mt-8 max-w-2xl rounded-lg border px-4 py-3 leading-relaxed">
-              Aplikasi ini sudah tidak aktif
+              Proyek ini sudah tidak aktif
               {app.retiredAt ? ` sejak ${formatMonthYear(app.retiredAt)}` : ""}. Halaman ini tetap
               ada sebagai dokumentasi.
             </p>
@@ -158,7 +158,7 @@ export default async function AppPage({ params }: { params: Promise<{ slug: stri
                   rel="noopener noreferrer"
                   className={cn(buttonVariants({ size: "lg" }), "gap-2")}
                 >
-                  Buka aplikasi
+                  Kunjungi situs
                   <ExternalLink className="h-3.5 w-3.5" aria-hidden />
                 </a>
               ) : null}

@@ -41,7 +41,7 @@ export function ClientLogos({ clients }: { clients: ClientLogo[] }) {
 
   return (
     <div>
-      <p className="text-faint text-center text-xs">Pernah bekerja sama dengan</p>
+      <p className="text-faint text-center text-xs">Pernah bekerja sama dengan kami</p>
       <ul
         ref={listRef}
         className="client-logos mt-6 flex flex-wrap items-center justify-center gap-x-12 gap-y-6"

@@ -18,7 +18,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Tulisan",
   description:
-    "Tulisan seputar pembuatan aplikasi WalDev, misalnya alasan di balik sebuah keputusan teknis atau kendala yang muncul saat membangun.",
+    "Tulisan seputar proyek yang kami kerjakan, misalnya alasan di balik sebuah keputusan teknis atau kendala yang muncul saat membangun.",
   alternates: { canonical: "/articles" },
 };
 
@@ -30,7 +30,7 @@ export default async function ArticlesPage() {
     <>
       <PageHeader
         eyebrow="Tulisan"
-        title="Tulisan seputar pembuatan aplikasi."
+        title="Catatan dari proyek yang kami kerjakan."
         description="Bahasan yang terlalu panjang untuk catatan singkat, misalnya alasan memilih sebuah pendekatan atau kendala yang muncul saat membangun."
       />
 
@@ -38,7 +38,7 @@ export default async function ArticlesPage() {
         <section className={cn(SHELL, SECTION)}>
           <p className="text-muted-foreground">Belum ada tulisan.</p>
           <p className="mt-4">
-            <ArrowLink href="/">Lihat daftar aplikasi</ArrowLink>
+            <ArrowLink href="/apps">Lihat portofolio</ArrowLink>
           </p>
         </section>
       ) : (

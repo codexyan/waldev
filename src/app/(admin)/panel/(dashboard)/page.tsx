@@ -165,7 +165,7 @@ export default async function AdminOverviewPage() {
       label: "Judul hero beranda",
       done: Boolean(settings.home_intro),
       href: settingsHref,
-      hint: "Kosong berarti judul bawaan: Solusi digital untuk kebutuhan sehari-hari",
+      hint: "Kosong berarti judul bawaan: Software house untuk solusi digital Anda",
     },
     {
       label: "Situs memakai domain sendiri",

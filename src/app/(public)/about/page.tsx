@@ -53,14 +53,14 @@ export default async function AboutPage() {
     bio.length > 0
       ? bio
       : [
-          `${brand} membangun dan merawat aplikasi web. Semua aplikasinya tercatat di sini, termasuk yang masih dikerjakan dan yang sudah tidak aktif.`,
+          `${brand} adalah software house yang membangun aplikasi web dan sistem informasi. Semua proyek kami tercatat di portofolio, termasuk yang masih dikerjakan dan yang sudah tidak aktif.`,
         ];
 
   const lokasi = [settings.location_city, settings.location_region].filter(Boolean).join(", ");
   const facts = [
     lokasi ? { label: "Berbasis di", value: lokasi } : null,
     settings.founded_year ? { label: `${brand} sejak`, value: settings.founded_year } : null,
-    { label: "Jumlah aplikasi", value: String(apps.length) },
+    { label: "Jumlah proyek", value: String(apps.length) },
   ].filter((fact) => fact !== null);
 
   const socials = [
@@ -138,7 +138,7 @@ export default async function AboutPage() {
           <>
             <Eyebrow>Kontak</Eyebrow>
             <h2 className="display mt-3 max-w-2xl text-2xl text-balance sm:text-[1.75rem]">
-              Ada pertanyaan tentang salah satu aplikasi?
+              Ada pertanyaan tentang proyek kami?
             </h2>
             {settings.contact_email ? (
               <p className="text-muted-foreground mt-3 max-w-2xl leading-relaxed">
@@ -175,7 +175,7 @@ export default async function AboutPage() {
           </>
         ) : null}
         <p className={settings.contact_email || socials.length > 0 ? "mt-10" : undefined}>
-          <ArrowLink href="/">Lihat semua aplikasi</ArrowLink>
+          <ArrowLink href="/apps">Lihat portofolio</ArrowLink>
         </p>
       </section>
 

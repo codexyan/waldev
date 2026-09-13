@@ -176,7 +176,7 @@ export function AppCard({ app, wide = false }: { app: AppCardItem; wide?: boolea
         </p>
         {wide ? (
           <span className="text-link mt-6 hidden items-center gap-1.5 font-medium md:inline-flex">
-            Lihat aplikasi
+            Lihat proyek
             <ArrowRight
               className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none"
               aria-hidden

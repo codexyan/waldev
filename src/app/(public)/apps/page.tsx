@@ -10,14 +10,14 @@ import { AppStatusFilter } from "@/modules/apps/components/app-status-filter";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Semua aplikasi",
-  description: "Daftar lengkap aplikasi yang sedang dibangun, sudah rilis, atau sudah tidak aktif.",
+  title: "Portofolio",
+  description: "Semua proyek yang kami kerjakan, termasuk yang masih dibangun dan yang sudah tidak aktif.",
   alternates: { canonical: "/apps" },
 };
 
 /**
- * Halaman Semua aplikasi (docs/09 §5.1). Beranda memuat paling banyak tujuh kartu dan
- * menautkan ke sini saat aplikasinya lebih banyak.
+ * Halaman Semua proyek (docs/09 §5.1). Beranda memuat paling banyak tujuh kartu dan
+ * menautkan ke sini saat proyeknya lebih banyak.
  */
 export default async function AppsPage() {
   const apps = await listPublishedApps();
@@ -30,14 +30,14 @@ export default async function AppsPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Aplikasi"
-        title="Semua aplikasi"
-        description="Buka kartu untuk melihat penjelasan, fitur, dan catatan pembuatan setiap aplikasi."
+        eyebrow="Portofolio"
+        title="Semua proyek"
+        description="Proyek yang sedang dan pernah kami kerjakan. Buka kartu untuk melihat penjelasan, fitur, dan tangkapan layar setiap proyek."
       />
 
       <section className={cn(SHELL, SECTION)}>
         {apps.length === 0 ? (
-          <p className="text-muted-foreground">Aplikasi pertama masih dalam pembuatan.</p>
+          <p className="text-muted-foreground">Proyek pertama masih dalam pengerjaan.</p>
         ) : apps.length === 1 && onlyApp ? (
           <AppCard app={onlyApp} wide />
         ) : (

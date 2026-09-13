@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ClientLogos } from "@/components/home/client-logos";
 import { Hero, type HeroShowcase } from "@/components/home/hero";
 import { ArrowLink } from "@/components/ui/arrow-link";
+import { buttonVariants } from "@/components/ui/button";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { SECTION, SHELL } from "@/components/ui/shell";
 import { HOME_INTRO, HOME_LEAD } from "@/lib/constants";
@@ -30,7 +31,7 @@ function gridCols(count: number): string {
 }
 
 /**
- * Beranda (docs/09 §5.1): hero, logo klien, kartu aplikasi, lalu tulisan terbaru.
+ * Beranda (docs/09 §5.1): hero, logo klien, kartu proyek, lalu tulisan terbaru.
  * Logo klien dan tulisan hilang selama isinya kosong, jadi beranda tetap utuh walau
  * baru ada satu aplikasi.
  */
@@ -56,7 +57,7 @@ export default async function HomePage() {
         alt: heroApp
           ? `${customImage ? "Gambar" : "Tangkapan layar"} ${heroApp.name}`
           : "Gambar hero",
-        label: heroApp ? (chosenApp ? "Aplikasi unggulan" : "Aplikasi terbaru") : null,
+        label: heroApp ? (chosenApp ? "Proyek unggulan" : "Proyek terbaru") : null,
         name: heroApp?.name ?? null,
         href: heroApp ? `/apps/${heroApp.slug}` : null,
         building: heroApp?.status === "building",
@@ -83,11 +84,8 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      <section id="aplikasi" className={cn(SHELL, SECTION, "border-border scroll-mt-14 border-t")}>
-        <SectionHeading
-          title="Aplikasi"
-          description="Buka kartu aplikasi untuk melihat penjelasan, fitur, dan catatan pembuatannya."
-        />
+      <section id="portofolio" className={cn(SHELL, SECTION, "border-border scroll-mt-14 border-t")}>
+        <SectionHeading title="Portofolio" />
 
         {featured ? (
           <>
@@ -109,12 +107,12 @@ export default async function HomePage() {
             ) : null}
             {apps.length > HOME_APP_LIMIT ? (
               <p className="mt-8">
-                <ArrowLink href="/apps">Lihat semua {apps.length} aplikasi</ArrowLink>
+                <ArrowLink href="/apps">Lihat semua {apps.length} proyek</ArrowLink>
               </p>
             ) : null}
           </>
         ) : (
-          <p className="text-muted-foreground mt-10">Aplikasi pertama masih dalam pembuatan.</p>
+          <p className="text-muted-foreground mt-10">Proyek pertama masih dalam pengerjaan.</p>
         )}
       </section>
 
@@ -125,6 +123,26 @@ export default async function HomePage() {
             {articles.map((article) => (
               <ArticleCard key={article.slug} article={article} headingLevel="h3" />
             ))}
+          </div>
+        </section>
+      ) : null}
+
+      {/* Penutup seperti situs software house acuan (docs/09 §5.1), tanpa formulir dan WhatsApp.
+          Hanya tampil bila email kontak diisi, supaya tombolnya tidak mati. */}
+      {settings.contact_email ? (
+        <section id="kontak" className={cn(SHELL, SECTION, "border-border scroll-mt-14 border-t")}>
+          <SectionHeading
+            title="Punya proyek yang ingin dibicarakan?"
+            description="Ceritakan kebutuhan aplikasi web atau sistem informasi Anda lewat email ke kami."
+          />
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <a
+              href={`mailto:${settings.contact_email}`}
+              className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto")}
+            >
+              Hubungi kami
+            </a>
+            <span className="text-muted-foreground text-sm break-all">{settings.contact_email}</span>
           </div>
         </section>
       ) : null}

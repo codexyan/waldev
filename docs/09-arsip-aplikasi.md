@@ -1,22 +1,22 @@
 # 09 · Perombakan: WalDev sebagai Arsip Aplikasi
 
-**Status:** Disetujui pemilik 2026-09-12 · Tahap 1–4 selesai, Tahap 5 (tayang) berjalan · Revisi beranda & klien 2026-09-12, revisi hero, logo, dan kartu 2026-09-13 (§15)
+**Status:** Disetujui pemilik 2026-09-12 · Tahap 1–4 selesai, Tahap 5 (tayang) berjalan · Revisi beranda & klien 2026-09-12, revisi hero, logo, dan kartu 2026-09-13, revisi nada software house 2026-09-13 sore (§15)
 **Hubungan dengan dokumen lain:** dokumen 01–08 menggambarkan arah lama (situs jasa studio). Bila ada yang bertentangan, dokumen ini yang berlaku. Dokumen lama tetap disimpan sebagai riwayat.
 
 ## 1. Ringkasan
-WalDev berubah dari situs jasa studio menjadi **arsip aplikasi yang dibangun dan dirawat pemiliknya**. Tujuannya reputasi jangka panjang, bukan jualan atau mencari proyek. Karena itu tidak ada harga, WhatsApp, testimoni, atau formulir prospek. Logo klien yang pernah bekerja sama tetap tampil di beranda sebagai bukti kerja. Setiap aplikasi punya halaman yang menjelaskannya secara lengkap, dan tulisan menempel ke aplikasinya. Kode yang ada **dirombak**, tidak ditulis ulang dari nol.
+WalDev berubah dari situs jasa studio menjadi **portofolio proyek bernada software house**: WalDev tampil sebagai pihak yang mengerjakan proyek, dan pengunjung datang untuk melihat hasil kerjanya serta mengunjungi situs proyek yang masih tayang. Tujuannya reputasi jangka panjang, bukan jualan, jadi tidak ada harga, WhatsApp, testimoni, atau formulir prospek. Logo klien yang pernah bekerja sama tetap tampil di beranda sebagai bukti kerja. Setiap proyek punya halaman yang menjelaskannya secara lengkap, dan tulisan menempel ke proyeknya. Kode yang ada **dirombak**, tidak ditulis ulang dari nol.
 
 ## 2. Keputusan
 | Topik | Keputusan |
 |---|---|
 | Tujuan situs | Arsip & reputasi jangka panjang |
 | Nama | Tetap **WalDev**; pemilik tampil sebagai pembuat (nama, foto, cerita singkat) di halaman Tentang |
-| Suara tulisan | Tanpa kata "saya": pelaku disebut langsung (WalDev, nama aplikasi, atau nama pemilik). Judul hero berpusat pada manfaat untuk pengunjung dan tidak menyebut pembuatnya |
+| Suara tulisan | Bernada software house dengan acuan gaya vodjo.com/id dan gosocial.co.id: "kami" untuk WalDev dan "Anda" untuk pengunjung, tanpa kata "saya". Pengunjung diajak melihat portofolio dan mengunjungi situs proyek yang masih tayang, bukan mencoba aplikasi. Menu dan bagian memakai *Portofolio*, itemnya *proyek*; panel tetap *aplikasi* |
 | Tagline | Build Digital Products |
-| Halaman aplikasi | Halaman produk yang lengkap untuk calon pemakai, bukan studi kasus |
+| Halaman proyek | Halaman portofolio yang lengkap (penjelasan, fitur, tangkapan layar, tautan ke situs bila masih tayang), bukan studi kasus |
 | Isi saat tayang | Tayang sambil membangun; situs WalDev sendiri jadi entri pertama |
 | Status yang tampil | Sedang dibangun · Sudah rilis · Tidak aktif. Yang berhenti sebelum rilis disembunyikan |
-| Beranda | Hero Cetak biru (judul bertema solusi, ajakan, gambar dari Pengaturan atau aplikasi terbaru) · logo klien yang muncul bertahap · kartu unggulan + grid · tulisan terbaru |
+| Beranda | Hero Cetak biru (judul "Software house untuk solusi digital Anda.", dua ajakan, gambar dari Pengaturan atau proyek terbaru) · logo klien yang muncul bertahap · Portofolio (kartu unggulan + grid) · tulisan terbaru · ajakan kontak lewat email |
 | Struktur halaman aplikasi | Bagian wajib + bagian opsional yang dinyalakan per aplikasi |
 | Tulisan | Catatan pendek per aplikasi + artikel panjang sesekali; 3 tulisan terbaru tampil di beranda; menu Artikel belum tampil |
 | Tanggal | Tanggal catatan terakhir ditampilkan apa adanya |
@@ -38,9 +38,9 @@ Jumlah pengunjung **bukan** ukuran keberhasilan.
 ### 4.1 Situs publik
 | Rute | Isi | Perubahan |
 |---|---|---|
-| `/` | Hero, logo klien, kartu aplikasi, tulisan terbaru | Dirombak total, direvisi (§5.1) |
-| `/apps` | Semua aplikasi dengan saringan status | Baru 2026-09-13 (§5.1) |
-| `/apps/[slug]` | Halaman aplikasi | Baru, menggantikan `/portfolio/[slug]` |
+| `/` | Hero, logo klien, portofolio, tulisan terbaru, ajakan kontak | Dirombak total, direvisi (§5.1) |
+| `/apps` | Semua proyek dengan saringan status | Baru 2026-09-13 (§5.1) |
+| `/apps/[slug]` | Halaman proyek | Baru, menggantikan `/portfolio/[slug]` |
 | `/articles` · `/articles/[slug]` | Daftar & isi artikel | Tetap, tidak ada di menu bawaan |
 | `/about` | Pembuat, cerita, kontak | Dirombak |
 | `/privacy-policy` | Kebijakan privasi | Tetap, isinya disederhanakan (tidak ada lagi formulir) |
@@ -54,7 +54,7 @@ Jumlah pengunjung **bukan** ukuran keberhasilan.
 - `/portfolio`, `/services`, `/services/:slug`, `/clients`, `/testimonials`, `/terms-of-service` → `/`
 
 **Menu bawaan:**
-- Header: `Aplikasi` → `/` · `Tentang` → `/about`
+- Header: `Portofolio` → `/apps` · `Tentang` → `/about`. *Portofolio* juga menyala di halaman setiap proyek
 - Footer: `Kebijakan Privasi`, email kontak, ikon sosial
 
 Menu `Artikel` ditambahkan manual lewat Panel › Navigasi saat tulisannya dirasa cukup. Sengaja tidak ada logika otomatis: modul Navigasi sudah bisa melakukannya, dan ambang "cukup" lebih baik diputuskan pemilik.
@@ -74,30 +74,31 @@ Menu `Artikel` ditambahkan manual lewat Panel › Navigasi saat tulisannya diras
 ## 5. Halaman publik
 ### 5.1 Beranda
 Urutan bagian dari atas:
-1. **Hero.** Judul dari Pengaturan (`home_intro`; selama kosong dipakai `HOME_INTRO` di `src/lib/constants.ts`: "Solusi digital untuk kebutuhan sehari-hari."), kalimat pengantar `HOME_LEAD`, tombol *Lihat aplikasi* ke `#aplikasi`, dan tautan *Hubungi lewat email* (hanya bila email kontak diisi). Di bawahnya gambar hero yang dirakit sebagai kartu 3D di atas lantai Cetak biru (§16):
-   - Gambarnya `hero_media_id` bila diisi di Pengaturan, selain itu tangkapan layar utama aplikasi di hero.
-   - Aplikasi di hero adalah `hero_app_slug` bila dipilih (keterangan "Aplikasi unggulan · {nama}"), selain itu aplikasi teratas yang punya tangkapan layar dan tidak berstatus *Tidak aktif* (keterangan "Aplikasi terbaru · {nama}"). Gambar menaut ke halaman aplikasi itu.
+1. **Hero.** Judul dari Pengaturan (`home_intro`; selama kosong dipakai `HOME_INTRO` di `src/lib/constants.ts`: "Software house untuk solusi digital Anda."), kalimat pengantar `HOME_LEAD` ("WalDev membangun aplikasi web dan sistem informasi. Setiap proyek di portofolio punya halaman sendiri, dan yang masih tayang bisa langsung dikunjungi."), tombol *Lihat portofolio* ke `#portofolio`, dan tautan *Hubungi WalDev* ke email kontak (hanya bila email kontak diisi). Di bawahnya gambar hero yang dirakit sebagai kartu 3D di atas lantai Cetak biru (§16):
+   - Gambarnya `hero_media_id` bila diisi di Pengaturan, selain itu tangkapan layar utama proyek di hero.
+   - Proyek di hero adalah `hero_app_slug` bila dipilih (keterangan "Proyek unggulan · {nama}"), selain itu proyek teratas yang punya tangkapan layar dan tidak berstatus *Tidak aktif* (keterangan "Proyek terbaru · {nama}"). Gambar menaut ke halaman proyek itu.
    - Bila tidak ada gambar yang bisa dipakai, hero berhenti di tombol.
-2. **Logo klien.** Satu baris logo dari modul Klien (§7.4) berlabel "Pernah bekerja sama dengan". Klien NDA tidak ikut, klien tanpa logo tampil sebagai nama, dan logo menaut ke situs web klien bila diisi. Logo muncul satu per satu dari buram ke tajam saat deretannya masuk layar; animasi dilewati bila deretan sudah terlihat ketika halaman siap, tanpa JavaScript, atau saat gerak dikurangi. Hanya klien sungguhan yang ditampilkan. Bagian ini hilang bila kosong.
-3. **Kartu aplikasi** (`#aplikasi`). Satu kartu per aplikasi yang tayang: tangkapan layar utama, logo aplikasi yang menumpang di tepi bawah tangkapan layar (selama logo belum diunggah, monogram dua huruf dari nama, misalnya "IU" untuk iaUndang), nama, satu kalimat, status, dan bulan-tahun catatan terakhir. Susunan *Unggulan + grid*:
+2. **Logo klien.** Satu baris logo dari modul Klien (§7.4) berlabel "Pernah bekerja sama dengan kami". Klien NDA tidak ikut, klien tanpa logo tampil sebagai nama, dan logo menaut ke situs web klien bila diisi. Logo muncul satu per satu dari buram ke tajam saat deretannya masuk layar; animasi dilewati bila deretan sudah terlihat ketika halaman siap, tanpa JavaScript, atau saat gerak dikurangi. Hanya klien sungguhan yang ditampilkan. Bagian ini hilang bila kosong.
+3. **Portofolio** (`#portofolio`, berjudul *Portofolio* tanpa deskripsi karena pengantar hero sudah menjelaskan isi halaman proyek). Satu kartu per proyek yang tayang: tangkapan layar utama, logo yang menumpang di tepi bawah tangkapan layar (selama logo belum diunggah, monogram dua huruf dari nama, misalnya "IU" untuk iaUndang), nama, satu kalimat, status, bulan-tahun catatan terakhir, dan pada kartu lebar tautan *Lihat proyek*. Susunan *Unggulan + grid*:
    - Kartu teratas selalu lebar.
    - Beranda memuat paling banyak tujuh kartu: satu kartu lebar dan enam kartu grid. Satu kartu grid tampil lebar; dua atau empat memakai dua kolom; selebihnya sampai tiga kolom di layar lebar.
-   - Bila aplikasinya lebih dari tujuh, muncul tautan *Lihat semua {jumlah} aplikasi* ke `/apps`.
-   - Urutan: catatan terakhir terbaru di atas; aplikasi berstatus *Tidak aktif* selalu di bawah dan gambarnya abu-abu.
-   - Bila belum ada aplikasi tayang: "Aplikasi pertama masih dalam pembuatan."
+   - Bila proyeknya lebih dari tujuh, muncul tautan *Lihat semua {jumlah} proyek* ke `/apps`.
+   - Urutan: catatan terakhir terbaru di atas; proyek berstatus *Tidak aktif* selalu di bawah dan gambarnya abu-abu.
+   - Bila belum ada proyek tayang: "Proyek pertama masih dalam pengerjaan."
 4. **Tulisan terbaru.** 3 tulisan terbit terbaru dengan kartu yang sama seperti `/articles`, ditambah tautan *Semua tulisan*. Bagian ini hilang bila belum ada tulisan terbit.
+5. **Ajakan kontak** (`#kontak`). Judul "Punya proyek yang ingin dibicarakan?", satu kalimat ajakan, tombol *Hubungi kami* yang membuka email, dan alamat email kontak. Pola penutup ini diambil dari situs acuan; formulir konsultasi dan WhatsApp sengaja tidak ada. Bagian ini hanya tampil bila email kontak diisi di Pengaturan.
 
-**Halaman `/apps`.** Semua aplikasi yang tayang dalam grid tiga kolom (dua di tablet, satu di ponsel), dengan tombol saring *Semua*, *Sedang dibangun*, *Sudah rilis*, dan *Tidak aktif* beserta jumlahnya. Tombol tanpa kartu tidak tampil. Kartu dirender di server dan penyaringannya hanya mengganti atribut `data-filter`, jadi halamannya tetap berkas statis. Bila baru ada satu aplikasi, halamannya berisi satu kartu lebar tanpa tombol saring.
+**Halaman `/apps`.** Berjudul *Semua proyek* dengan eyebrow *Portofolio*: semua proyek yang tayang dalam grid tiga kolom (dua di tablet, satu di ponsel), dengan tombol saring *Semua*, *Sedang dibangun*, *Sudah rilis*, dan *Tidak aktif* beserta jumlahnya. Tombol tanpa kartu tidak tampil. Kartu dirender di server dan penyaringannya hanya mengganti atribut `data-filter`, jadi halamannya tetap berkas statis. Bila baru ada satu proyek, halamannya berisi satu kartu lebar tanpa tombol saring.
 
-Teks mengikuti aturan tanpa "saya", dan tidak ada angka, testimoni, atau klaim yang tidak berasal dari data. JSON-LD `Organization` (WalDev) dengan `founder` → `Person` dipasang di layout publik.
+Teks memakai sudut pandang "kami" dan "Anda" tanpa kata "saya", dan tidak ada angka, testimoni, atau klaim yang tidak berasal dari data. JSON-LD `Organization` (WalDev) dengan `founder` → `Person` dipasang di layout publik.
 
-### 5.2 Halaman aplikasi `/apps/[slug]`
+### 5.2 Halaman proyek `/apps/[slug]`
 **Bagian wajib**, selalu tampil:
 1. Nama, status, satu kalimat ringkasan, tanggal catatan terakhir.
 2. Penjelasan lengkap (Tiptap).
 3. Tangkapan layar utama + galeri. Video opsional berupa URL YouTube yang baru dimuat saat diklik, supaya tidak membebani Lighthouse.
 4. Fitur utama (judul + penjelasan, berulang).
-5. Tautan *Buka aplikasi* dan *Lihat kode sumber* (masing-masing hanya bila diisi), serta teknologi yang dipakai.
+5. Tautan *Kunjungi situs* (membuka situs proyek yang tayang) dan *Lihat kode sumber* (masing-masing hanya bila diisi), serta teknologi yang dipakai. Tautan kembali di atas judul, *Semua proyek*, menuju `/apps`.
 
 **Bagian opsional**, dinyalakan per aplikasi dan hanya dirender bila isinya ada:
 - Cara pakai (Tiptap)
@@ -105,13 +106,13 @@ Teks mengikuti aturan tanpa "saya", dan tidak ada angka, testimoni, atau klaim y
 - Catatan pembuatan (catatan pendek + artikel terkait, urut waktu)
 - Catatan rilis (catatan yang punya nomor versi)
 
-**Aplikasi berstatus *Tidak aktif*:** tombol *Buka aplikasi* disembunyikan otomatis, lalu tampil keterangan "Aplikasi ini sudah tidak aktif sejak {bulan tahun}. Halaman ini tetap ada sebagai dokumentasi." Tangkapan layar dan video jadi bukti utama, karena tautannya sudah mati.
+**Proyek berstatus *Tidak aktif*:** tombol *Kunjungi situs* disembunyikan otomatis, lalu tampil keterangan "Proyek ini sudah tidak aktif sejak {bulan tahun}. Halaman ini tetap ada sebagai dokumentasi." Tangkapan layar dan video jadi bukti utama, karena tautannya sudah mati.
 
 SEO: JSON-LD `SoftwareApplication`; gambar OG = tangkapan layar utama.
 
 ### 5.3 Tentang `/about`
-- Nama, foto, dan cerita singkat pembuat (Pengaturan, §7.3).
-- Fakta WalDev: kota, provinsi, tahun berdiri, jumlah aplikasi.
+- Nama, foto, dan cerita singkat pembuat (Pengaturan, §7.3). Selama cerita kosong, tampil kalimat bawaan yang memperkenalkan WalDev sebagai software house yang membangun aplikasi web dan sistem informasi.
+- Fakta WalDev: kota, provinsi, tahun berdiri, jumlah proyek.
 - Kontak: email + tautan sosial. Tanpa formulir, tanpa WhatsApp.
 - JSON-LD: `ProfilePage` dengan `Person` + `Organization`.
 
@@ -226,6 +227,11 @@ Satu halaman berizin `client.manage`: formulir (logo lewat media picker, nama, s
 - **Ditulis ulang:** `src/components/home/rakit-scene.ts` (lantai Cetak biru, transisi baru), `src/components/home/hero-rakit.tsx` (pudar masuk tanpa kedipan, jeda saat tidak terlihat), `src/components/home/hero.tsx` (gambar dari Pengaturan), `src/components/home/client-logos.tsx` (komponen klien dengan animasi muncul), beranda.
 - **Diubah:** `src/modules/apps/components/app-card.tsx` (gambar abu-abu untuk aplikasi tidak aktif), `src/modules/settings/{settings.ts,components/settings-form.tsx}`, halaman Pengaturan panel, Ringkasan panel, `src/app/globals.css` (tepi kanvas hero, animasi logo, saringan), `src/app/sitemap.ts` dan `scripts/terbitkan.mjs` (`/apps`), `src/lib/constants.ts` (`HOME_INTRO`, `HOME_LEAD`), `scripts/gen-og.mjs` + `public/og.png`.
 
+### 8.5 Revisi nada software house (2026-09-13 sore)
+- **Teks publik:** `src/lib/constants.ts` (`HOME_INTRO`, `HOME_LEAD`, `SITE.description`), `src/components/home/hero.tsx`, beranda, `src/app/(public)/apps/page.tsx`, `src/app/(public)/apps/[slug]/page.tsx`, Tentang, Tulisan, kebijakan privasi, `src/app/not-found.tsx`, `src/modules/apps/components/{app-card,app-status-filter}.tsx`, `src/components/home/client-logos.tsx`, `scripts/gen-og.mjs` + `public/og.png`. Beranda juga mendapat bagian ajakan kontak.
+- **Menu:** `src/app/(public)/layout.tsx` (*Portofolio* ke `/apps`) dan `src/components/layout/site-header.tsx` (tautan ikut aktif di halaman di bawahnya).
+- **Panel:** petunjuk judul hero di Pengaturan dan Ringkasan. Label panel lain tetap *Aplikasi*.
+
 ## 9. Data produksi & migrasi
 ### 9.1 Kondisi D1 produksi (dibaca 2026-09-12)
 | Tabel | Baris | Catatan |
@@ -269,7 +275,8 @@ Urutan lengkap penerapan di produksi, termasuk pelajaran dari insiden auto-deplo
 | 4 · Pembersihan | Hapus kode §8.1, migrasi 0002 & 0003 di lokal, perbarui seed/skrip/README/docs | typecheck + lint + build bersih | Selesai |
 | 5 · Tayang | Isi entri WalDev + catatan pertama, periksa iaUndang & SIM-KGB, deploy lewat §9.2, Lighthouse ≥ 95, domain bila siap | Produksi tayang tanpa sisa modul jasa | Berjalan |
 | 6 · Revisi beranda | Hero, logo klien, tulisan terbaru, modul Klien, migrasi 0003 direvisi + 0004 (§8.3) | typecheck + lint + build bersih, beranda dirender statis dan dicek di URL pratinjau | Selesai (tayang 12 Sep, versi `3587a5e8`) |
-| 7 · Hero, logo, dan kartu | Lantai Cetak biru, transisi baru, gambar hero dari Pengaturan, logo muncul bertahap, kartu unggulan + grid, halaman `/apps` (§8.4) | typecheck + lint + build bersih, hero dan halaman `/apps` dicek di URL pratinjau | Berjalan |
+| 7 · Hero, logo, dan kartu | Lantai Cetak biru, transisi baru, gambar hero dari Pengaturan, logo muncul bertahap, kartu unggulan + grid, halaman `/apps` (§8.4) | typecheck + lint + build bersih, hero dan halaman `/apps` dicek di URL pratinjau | Selesai (tayang 13 Sep, versi `d059fe0f`) |
+| 8 · Nada software house | Teks publik bernada software house mengikuti acuan Vodjo dan GoSocial, sudut pandang kami dan Anda, menu *Portofolio* ke `/apps`, ajakan kontak (§8.5) | typecheck + lint + build bersih, teks baru dicek di URL pratinjau | Berjalan |
 
 Setiap fase ditutup dengan `pnpm typecheck`, `pnpm lint`, `pnpm build` (webpack, jangan Turbopack), lalu commit. Versi yang tayang dibuat dengan `pnpm terbitkan`.
 
@@ -293,6 +300,12 @@ Setiap fase ditutup dengan `pnpm typecheck`, `pnpm lint`, `pnpm build` (webpack,
 - Kartu aplikasi memakai susunan **Unggulan + grid**, dengan halaman `/apps` untuk aplikasi yang tidak muat di beranda.
 - Gambar hero dan aplikasi di hero bisa diganti dari Pengaturan.
 
+**Sudah diputuskan (2026-09-13 sore):**
+- Nada situs publik seperti software house, dengan acuan gaya vodjo.com/id dan gosocial.co.id: sudut pandang "kami" dan "Anda", tetap tanpa "saya". Pengunjung melihat portofolio dan mengunjungi situs yang masih tayang, bukan mencoba aplikasi.
+- Judul hero "Software house untuk solusi digital Anda." dengan pengantar yang menyebut WalDev membangun aplikasi web dan sistem informasi.
+- Menu dan bagian beranda bernama *Portofolio* (menu menuju `/apps`), itemnya disebut *proyek*, dan tombol *Buka aplikasi* menjadi *Kunjungi situs*. Alamat `/apps` dan label panel tetap.
+- Beranda ditutup ajakan kontak lewat email. Angka klien, testimoni, sertifikasi, liputan media, formulir konsultasi, dan WhatsApp dari situs acuan tidak ditiru.
+
 **Masih terbuka:**
 - Tanggal rilis sebenarnya iaUndang dan SIM-KGB. Penjelasan hasil salinannya masih bersuara "kami" dari situs jasa lama.
 - Berkas logo Lapas Kelas IIB Banjarbaru dan logo klien lain (diunggah pemilik lewat panel Klien).
@@ -305,6 +318,7 @@ Harga, WhatsApp, testimoni, formulir prospek/kontak, beranda berbentuk linimasa,
 - **2026-09-12 malam · Beranda & klien.** Pemilik meminta beranda berisi hero, aplikasi, logo klien, dan tulisan. Pilihannya: hero dengan judul, ajakan, dan tangkapan layar; logo klien tepat di bawah hero; modul Klien dipulihkan; tulisan contoh yang sedang tayang dibiarkan. Diterapkan di §2, §4, §5.1, §6.4–6.6, §7.4, §8.3, §9, §11, dan §13.
 - **2026-09-13 · Hero 3D.** Pemilik meminta hero dikombinasikan dengan Three.js. Dari tiga konsep di halaman pratinjau (Rakit, Lembar, Tumpuk), pemilik memilih Rakit. Spesifikasi di §16; §5.1 diperbarui.
 - **2026-09-13 siang · Hero, logo, dan kartu.** Pemilik meminta transisi 3D yang lebih halus, latar hero yang lebih menarik, gambar hero yang bisa diganti dari panel, susunan kartu untuk banyak aplikasi, logo kerja sama dengan animasi di bawah hero, dan judul yang tidak ke-akuan. Pilihannya dari halaman konsep "Hero dan Kartu WalDev": latar Cetak biru, judul bertema solusi, logo Muncul dengan logo asli saja, dan kartu Unggulan + grid. Diterapkan di §2, §4, §5.1, §6.2, §7, §8.4, §9.1, §11, §13, dan §16.
+- **2026-09-13 sore · Nada software house.** Pemilik meminta teks hero terkesan seperti software house, dengan pengunjung yang melihat portofolio dan mengunjungi proyek yang masih tayang, bukan mencoba aplikasi. Setelah memilih judul "Solusi digital dari WalDev.", pemilik memberi acuan gaya vodjo.com/id dan gosocial.co.id, lalu memilih: judul "Software house untuk solusi digital Anda.", sudut pandang kami dan Anda, menu dan bagian *Portofolio* dengan item *proyek* (panel tetap *aplikasi*), ajakan kontak di akhir beranda, dan aturan antislop selama pengerjaan. Diterapkan di §1, §2, §4.1, §5.1 sampai §5.3, §8.5, §11, dan §13.
 
 ## 16. Hero 3D *Rakit* dengan latar Cetak biru
 Gambar hero ditampilkan sebagai kartu 3D yang terangkat dari lantai bergaris biru, seperti meja kerja tempat aplikasi dirakit. Wujud dari tagline *Build Digital Products*.

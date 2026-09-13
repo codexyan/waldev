@@ -65,7 +65,7 @@ export const SETTINGS_GROUPS: SettingsGroup[] = [
       {
         key: "home_intro",
         label: "Judul hero",
-        hint: "Kosongkan untuk memakai “Solusi digital untuk kebutuhan sehari-hari.”",
+        hint: "Kosongkan untuk memakai “Software house untuk solusi digital Anda.”",
       },
       {
         key: "hero_media_id",

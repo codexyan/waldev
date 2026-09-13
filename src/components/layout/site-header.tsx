@@ -15,7 +15,7 @@ export interface HeaderNavItem {
 
 /**
  * Kepala situs: merek, navigasi teks, dan pengalih tema. Tidak ada tombol
- * ajakan: situs ini arsip, bukan halaman penjualan.
+ * ajakan: situs ini portofolio, bukan halaman penjualan.
  *
  * Latarnya tidak berubah mengikuti gulir — header selalu tampil sebagai bidang
  * kertas dengan satu garis tipis di bawahnya.
@@ -26,9 +26,9 @@ export function SiteHeader({ brand, nav }: { brand: string; nav: HeaderNavItem[]
   const panelRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
-  /* Beranda adalah daftar aplikasi, jadi halaman aplikasi ikut menandai tautan beranda. */
+  /* Tautan ikut aktif di halaman di bawahnya: "Portofolio" (/apps) juga menandai halaman setiap proyek. */
   const isActive = (url: string) =>
-    url === "/" ? pathname === "/" || pathname.startsWith("/apps/") : pathname.startsWith(url);
+    url === "/" ? pathname === "/" : pathname === url || pathname.startsWith(`${url}/`);
 
   /* Tutup menu setiap kali pindah halaman. Disesuaikan saat render, bukan lewat
      useEffect: memanggil setState di dalam efek memicu render berantai, dan

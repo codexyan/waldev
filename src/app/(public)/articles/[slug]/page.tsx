@@ -168,7 +168,7 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
               <span className="text-heading font-medium">{app.name}</span>.
             </p>
             <p className="mt-3">
-              <ArrowLink href={`/apps/${app.slug}`}>Lihat aplikasinya</ArrowLink>
+              <ArrowLink href={`/apps/${app.slug}`}>Lihat proyeknya</ArrowLink>
             </p>
           </div>
         ) : null}

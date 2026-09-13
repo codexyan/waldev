@@ -3,20 +3,21 @@ export const SITE = {
   name: "WalDev",
   tagline: "Build Digital Products",
   description:
-    "Portofolio aplikasi web WalDev, lengkap dengan fitur dan catatan pembuatan tiap aplikasi.",
+    "WalDev, software house yang membangun aplikasi web dan sistem informasi. Lihat portofolio proyek kami beserta tautan ke situs yang masih tayang.",
   // Nilai sebenarnya di-set lewat NEXT_PUBLIC_SITE_URL pada wrangler.jsonc.
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://waldev.mdcodeid.workers.dev",
 } as const;
 
 /**
  * Judul hero beranda selama Pengaturan › Hero beranda › Judul hero masih kosong.
- * Berpusat pada manfaat untuk pengunjung dan tidak menyebut siapa pembuatnya.
+ * Nada software house mengikuti acuan Vodjo dan GoSocial: sudut pandang "kami" dan "Anda",
+ * dan pengunjung datang untuk melihat portofolio, bukan mencoba aplikasinya.
  */
-export const HOME_INTRO = "Solusi digital untuk kebutuhan sehari-hari.";
+export const HOME_INTRO = "Software house untuk solusi digital Anda.";
 
 /** Kalimat pengantar di hero beranda, di bawah judul. */
 export const HOME_LEAD =
-  "Setiap aplikasi dibuat untuk menyelesaikan satu kebutuhan, lengkap dengan penjelasan, fitur, dan cara memakainya.";
+  "WalDev membangun aplikasi web dan sistem informasi. Setiap proyek di portofolio punya halaman sendiri, dan yang masih tayang bisa langsung dikunjungi.";
 
 /**
  * Basis rute admin (rahasia, tidak tertaut di publik).
