@@ -31,7 +31,7 @@
   --muted: 0 0% 98%; /* #fafafa */
   --surface: 240 5% 96%; /* #f4f4f5 — bidang gambar & bingkai */
   --muted-foreground: 240 5% 27%; /* #404047 — teks isi */
-  --faint: 0 0% 67%; /* #aaaaaa — meta yang diredam */
+  --faint: 0 0% 45.1%; /* #737373, meta yang diredam; digelapkan dari #aaaaaa (2,3:1) supaya lolos WCAG AA 4,5:1 */
 
   --border: 0 0% 89%; /* #e3e3e3 */
   --input: 0 0% 89%;

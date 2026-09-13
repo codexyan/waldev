@@ -23,7 +23,7 @@ WalDev berubah dari situs jasa studio menjadi **portofolio proyek bernada softwa
 | Modul jasa | Dihapus, kecuali Klien yang dipulihkan untuk logo di beranda; kontak tersisa email & tautan sosial |
 | Logo klien | Hanya klien sungguhan. Logo contoh tidak ditampilkan di situs publik |
 | Halaman publik | Berkas statis hasil `pnpm terbitkan` karena paket Workers Free ([10 · Rencana Tayang](./10-rencana-tayang.md) §5) |
-| Tampilan | Gaya Plain v3 dipertahankan |
+| Tampilan | Gaya Plain v3 dipertahankan; token teks pudar tema terang digelapkan ke `#737373` (4,7:1) supaya lolos WCAG AA |
 | Domain | Domain baru bernama WalDev (dibeli pemilik) |
 | Cara membangun | Rombak repo ini |
 
@@ -305,6 +305,8 @@ Setiap fase ditutup dengan `pnpm typecheck`, `pnpm lint`, `pnpm build` (webpack,
 - Judul hero "Software house untuk solusi digital Anda." dengan pengantar yang menyebut WalDev membangun aplikasi web dan sistem informasi.
 - Menu dan bagian beranda bernama *Portofolio* (menu menuju `/apps`), itemnya disebut *proyek*, dan tombol *Buka aplikasi* menjadi *Kunjungi situs*. Alamat `/apps` dan label panel tetap.
 - Beranda ditutup ajakan kontak lewat email. Angka klien, testimoni, sertifikasi, liputan media, formulir konsultasi, dan WhatsApp dari situs acuan tidak ditiru.
+- Token teks pudar tema terang digelapkan dari `#aaaaaa` (2,3:1) ke `#737373` (4,7:1) supaya lolos WCAG AA di seluruh situs.
+- Ringkasan tulisan contoh "Mengapa Kecepatan Website Menentukan Bisnis Anda" tetap tayang walau memuat klaim riset tanpa sumber; pemilik menerimanya sebagai pengecualian gate antislop.
 
 **Masih terbuka:**
 - Tanggal rilis sebenarnya iaUndang dan SIM-KGB. Penjelasan hasil salinannya masih bersuara "kami" dari situs jasa lama.
