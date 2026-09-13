@@ -1,18 +1,18 @@
 # 10 · Rencana Tayang: Arsip Aplikasi ke Produksi
 
-**Status:** Berjalan. Situs baru tayang sejak 12 September 2026 pukul 15.49 WITA. Pada hari yang sama halaman publiknya beralih ke berkas statis, lalu beranda direvisi. Sejak 13 September dini hari hero beranda memakai kartu 3D *Rakit* (versi `0f2e8ecd`). Build dari Workers Builds diblokir di kode (langkah 1). Tersisa pengisian konten (6), pemantauan (8), dan migrasi 0003 + 0004 (9) · **Dibuat:** 2026-09-12
+**Status:** Berjalan. Situs baru tayang sejak 12 September 2026 pukul 15.49 WITA. Pada hari yang sama halaman publiknya beralih ke berkas statis, lalu beranda direvisi. Sejak 13 September siang beranda memakai hero *Rakit* berlatar Cetak biru, logo klien yang muncul bertahap, kartu unggulan + grid, dan halaman `/apps` (versi `d059fe0f`). Build dari Workers Builds diblokir di kode (langkah 1). Tersisa pengisian konten (6), pemantauan (8), dan migrasi 0003 + 0004 (9) · **Dibuat:** 2026-09-12
 **Terkait:** [09 · Perombakan](./09-arsip-aplikasi.md) §9 dan §11 (Tahap 5) · README bagian "Menerbitkan ke produksi"
 
 Aturan dasar: setiap langkah yang mengubah produksi hanya dijalankan setelah pemilik menyetujui langkah itu tepat sebelum dikerjakan.
 
 ## 1. Kondisi saat ini
-| Hal | Kondisi (2026-09-13 pagi, setelah kartu aplikasi berlogo tayang) |
+| Hal | Kondisi (2026-09-13 siang, setelah hero Cetak biru tayang) |
 |---|---|
-| Worker produksi | Versi `d1ba9430-a9f6-4601-926e-f64b5f33b893`: hero 3D *Rakit* yang juga tampil saat gerak dikurangi (docs/09 §16), kartu aplikasi berlogo (§5.1), logo klien, tulisan terbaru, menu Klien di panel, halaman publik statis, `keep_names` mati. Versi statis sebelumnya: `144f0042-39c3-4c93-ae3d-44afcc7bcb5a` (gambar kartu lebar terpotong), lalu `0f2e8ecd-b979-4cc7-9523-460b0da97bf7` (hero 3D tidak pernah dimuat di laptop pemilik) |
-| Kode di GitHub `main` | Push terakhir `b322eb9` (13 September dini hari). Commit sesudahnya (`c77e404`, `37c2a09`, dan commit dokumen ini) belum di-push. Berkas statisnya tidak disimpan di repo; dibuat saat `pnpm terbitkan` |
-| D1 produksi | Migrasi 0000, 0001, 0002, dan 0005 (kolom `apps.logo_media_id`) sudah diterapkan; 0003 (direvisi) dan 0004 tertunda. 0005 diterapkan manual lewat `d1 execute --file` dan dicatat di `d1_migrations`. Bookmark Time Travel sebelum 0005: `000007e7-00000000-000050e5-45d29e800fde44cb7af328270012bb1b`. Tabel `clients` masih ada dan kosong |
+| Worker produksi | Versi `d059fe0f-9f95-4fd3-8755-e20c4fbec5c2`: hero *Rakit* berlatar Cetak biru dengan tepi lantai memudar (docs/09 §16), gambar dan aplikasi hero dari Pengaturan, logo klien yang muncul bertahap, kartu unggulan + grid dan halaman `/apps` (§5.1), tulisan terbaru, halaman publik statis, `keep_names` mati. Versi statis sebelumnya untuk rollback: `d1ba9430-a9f6-4601-926e-f64b5f33b893` (hero Rakit lama, kartu berlogo), lalu `144f0042-39c3-4c93-ae3d-44afcc7bcb5a` (gambar kartu lebar terpotong) dan `0f2e8ecd-b979-4cc7-9523-460b0da97bf7` (hero 3D tidak pernah dimuat di laptop pemilik). Pratinjau `12de6086-7a99-4b13-bbcb-abc7cef1e128` tidak dipakai karena garis lantai masih terpotong tepi kanvas |
+| Kode di GitHub `main` | Push terakhir `b322eb9` (13 September dini hari). Commit sesudahnya (`c77e404`, `37c2a09`, `47b1583`, `c106e23`, dan commit dokumen ini) belum di-push. Berkas statisnya tidak disimpan di repo; dibuat saat `pnpm terbitkan` |
+| D1 produksi | Migrasi 0000, 0001, 0002, dan 0005 (kolom `apps.logo_media_id`) sudah diterapkan; 0003 (direvisi) dan 0004 tertunda. 0005 diterapkan manual lewat `d1 execute --file` dan dicatat di `d1_migrations`. Bookmark Time Travel sebelum 0005: `000007e7-00000000-000050e5-45d29e800fde44cb7af328270012bb1b`. Tabel `clients` berisi satu klien sungguhan, Lapas Kelas IIB Banjarbaru, yang ditambahkan 13 September atas persetujuan pemilik |
 | Auto-deploy | Push ke `main` tetap memicu Workers Builds, tetapi skrip `build` berhenti karena `WORKERS_CI=1`, jadi tidak ada versi yang diunggah (langkah 1) |
-| Konten produksi | iaUndang tayang, SIM-KGB tersembunyi, 1 tulisan tayang, belum ada klien. Belum ada entri WalDev, profil pembuat, maupun kalimat pengantar |
+| Konten produksi | iaUndang tayang, SIM-KGB tersembunyi, 1 tulisan tayang, 1 klien tanpa berkas logo (tampil sebagai nama). Belum ada entri WalDev, profil pembuat, logo klien, maupun gambar hero pilihan; judul hero memakai bawaan kode |
 
 ### Insiden 12 September
 Commit Tahap 2–4 yang di-push ke `main` terpasang otomatis sebelum migrasi D1 diterapkan. Sejak sekitar 13.32 WITA panel produksi, dan sejak sekitar 13.52 WITA halaman publik (`/`, `/about`, `/apps/*`, `/sitemap.xml`), membalas 500 karena tabel `apps` belum ada. Situs dipulihkan sekitar 15.00 WITA dengan `wrangler rollback` ke versi 23 Agustus. Tidak ada data yang berubah atau hilang.
@@ -33,6 +33,12 @@ Penyebabnya: catatan lama menyebut push ke `main` tidak memicu deploy, dan hal i
 - Versi `b56c7b28` adalah situs yang sama tanpa halaman statis. Kembali ke sana berarti Error 1102 kembali, jadi pakai hanya bila semua versi statis rusak.
 - Pemilik mengganti Deploy command menjadi `npx wrangler versions upload`, lalu `22352fc` di-push pukul 20.55 WITA. Build tetap tayang: versi `b5bec1b0-05c9-4f2d-a8ac-b5471ca43282` diunggah pukul 20.56.49 WITA dan di-deploy 100% dua detik kemudian. Pemantau push mengembalikan `5cbe6ca8` pukul 20.57.30 WITA, jadi versi tanpa halaman statis melayani sekitar 39 detik. Log build berikutnya menunjukkan Build command di Workers Builds adalah `pnpm run cf:build`, yang hanya membangun. Bila pengaturannya sama saat push `22352fc`, deploy itu datang dari langkah Deploy command walau sudah diganti; penyebabnya belum dipastikan.
 - Sebagai gantinya, skrip `build` diberi pengaman yang menghentikan build di Workers Builds (langkah 1). Terbukti pada push `f80196c`: log build `a305eac6-e14f-460e-b484-19bd837c0652` pukul 21.10 WITA memuat pesan "Build dihentikan: …" dari `scripts/tolak-build-ci.mjs`, lalu Workers Builds berhenti dengan "Failed: error occurred while running build command" dan tidak ada versi baru.
+
+### Hero Cetak biru (13 September siang)
+- Pemilik meminta transisi 3D yang lebih halus, latar hero yang lebih menarik, gambar hero yang bisa diganti dari panel, susunan kartu untuk banyak aplikasi, dan logo kerja sama di bawah hero (docs/09 §15).
+- Build pertama dihentikan karena RAM laptop tinggal sekitar 2,8 GB saat dev server proyek lain berjalan. `pnpm terbitkan` sekarang menjalankan typecheck sendiri lalu build hemat memori (bagian 5).
+- Pratinjau `12de6086` diperiksa dengan Edge headless lalu tidak dipakai: garis lantai dan bayangan terpotong lurus di tepi kanvas. Setelah diperbaiki, pratinjau `d059fe0f` lolos di tema terang, tema gelap, dan gerak dikurangi, tanpa galat konsol.
+- `d059fe0f` di-deploy 100% atas persetujuan pemilik. Sesudahnya tujuh URL publik membalas 200 tanpa header Next.js, `/panel/clients` membalas 307 ke halaman login, dan 20 permintaan beruntun ke `/` serta `/apps/iaundang` membalas 200 semua.
 
 ## 2. Prinsip
 - **Menambah dulu, menghapus paling akhir.** 0001 dan 0002 hanya menambah tabel dan baris, jadi situs lama tidak terganggu dan rollback tetap mungkin. 0003 menghapus tabel lama dan dijalankan terakhir.
