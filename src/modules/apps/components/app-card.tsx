@@ -80,32 +80,42 @@ export function AppCard({ app, wide = false }: { app: AppCardItem; wide?: boolea
         wide && "md:flex-row",
       )}
     >
+      {/* Di kartu lebar, kolom keterangan bisa lebih tinggi daripada tangkapan layar.
+          Gambarnya diberi bingkai berjarak dan diletakkan di tengah kolom, supaya tidak
+          ikut memanjang lalu terpotong. */}
       <div
         className={cn(
-          // 16:9 mengikuti ukuran tangkapan layar yang paling umum, supaya tepinya tidak terpotong.
-          "bg-surface border-border relative aspect-[16/9] overflow-hidden border-b",
-          wide && "md:w-[58%] md:shrink-0 md:border-r md:border-b-0",
+          "bg-surface border-border border-b",
+          wide && "md:flex md:w-[58%] md:shrink-0 md:items-center md:border-r md:border-b-0 md:p-6",
         )}
       >
-        {app.coverUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={app.coverUrl}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            className="h-full w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-          />
-        ) : (
-          <span className="flex h-full items-center justify-center">
-            <AppLogo
-              name={app.name}
-              logoUrl={app.logoUrl}
-              className="h-20 w-20 rounded-2xl"
-              monogramClassName="text-[1.75rem]"
+        <div
+          className={cn(
+            // 16:9 mengikuti ukuran tangkapan layar yang paling umum.
+            "relative aspect-[16/9] w-full overflow-hidden",
+            wide && "md:border-border md:rounded-lg md:border",
+          )}
+        >
+          {app.coverUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={app.coverUrl}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
             />
-          </span>
-        )}
+          ) : (
+            <span className="flex h-full items-center justify-center">
+              <AppLogo
+                name={app.name}
+                logoUrl={app.logoUrl}
+                className="h-20 w-20 rounded-2xl"
+                monogramClassName="text-[1.75rem]"
+              />
+            </span>
+          )}
+        </div>
       </div>
 
       <div
