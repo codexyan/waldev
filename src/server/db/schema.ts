@@ -200,6 +200,32 @@ export const clients = sqliteTable("clients", {
 });
 
 /* ================================================================== */
+/* PESAN KONTAK                                                       */
+/* ================================================================== */
+
+/**
+ * Pesan dari formulir di halaman Kontak (docs/09 §5.4). Definisinya sama persis dengan
+ * tabel lama di `0000_calm_bastion` yang masih ada di produksi, jadi skema produksi tidak
+ * perlu diubah. Baris baru ditulis `src/server/contact-endpoint.ts` di Worker, bukan lewat
+ * Drizzle; `subject` tidak dipakai formulir.
+ */
+export const contactMessages = sqliteTable(
+  "contact_messages",
+  {
+    id: id(),
+    name: text("name").notNull(),
+    email: text("email").notNull(),
+    subject: text("subject"),
+    message: text("message").notNull(),
+    status: text("status", { enum: ["new", "read", "archived"] })
+      .notNull()
+      .default("new"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("idx_contact_status").on(t.status)],
+);
+
+/* ================================================================== */
 /* APPS                                                               */
 /* ================================================================== */
 

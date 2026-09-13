@@ -25,13 +25,10 @@ export interface HeroShowcase {
 export function Hero({
   title,
   lead,
-  email,
   showcase,
 }: {
   title: string;
   lead: string;
-  /** Null selama email kontak belum diisi di Pengaturan. */
-  email: string | null;
   /** Null bila belum ada gambar hero maupun aplikasi bergambar. */
   showcase: HeroShowcase | null;
 }) {
@@ -50,7 +47,7 @@ export function Hero({
         >
           Lihat portofolio
         </StaticLink>
-        {email ? <ArrowLink href={`mailto:${email}`}>Hubungi WalDev</ArrowLink> : null}
+        <ArrowLink href="/kontak">Hubungi WalDev</ArrowLink>
       </div>
 
       {showcase ? <Showcase item={showcase} /> : null}

@@ -25,6 +25,7 @@ export const dynamic = "force-dynamic";
 const DEFAULT_HEADER = [
   { label: "Portofolio", url: "/apps" },
   { label: "Tentang", url: "/about" },
+  { label: "Kontak", url: "/kontak" },
 ];
 
 const DEFAULT_FOOTER = [{ label: "Kebijakan Privasi", url: "/privacy-policy" }];
@@ -38,6 +39,7 @@ export default async function PublicLayout({ children }: { children: React.React
 
   const brand = settings.brand_name || SITE.name;
   const nav = headerItems.length > 0 ? headerItems : DEFAULT_HEADER;
+  const menuPunyaKontak = nav.some((item) => item.url === "/kontak");
   const footerNav = footerItems.length > 0 ? footerItems : DEFAULT_FOOTER;
   const socials = [
     { label: "GitHub", url: settings.social_github },
@@ -58,7 +60,6 @@ export default async function PublicLayout({ children }: { children: React.React
     logo: new URL("/logo-mark.png", SITE.url).toString(),
     ...(settings.founded_year ? { foundingDate: settings.founded_year } : {}),
     ...(settings.owner_name ? { founder: { "@type": "Person", name: settings.owner_name } } : {}),
-    ...(settings.contact_email ? { email: settings.contact_email } : {}),
     ...(settings.location_city
       ? {
           address: {
@@ -92,7 +93,12 @@ export default async function PublicLayout({ children }: { children: React.React
           murni navigasi dan kontak. */}
       <footer className="bg-ink text-ink-muted mt-20">
         <div className={cn(SHELL, "py-14")}>
-          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+          <div
+            className={cn(
+              "grid gap-10 sm:grid-cols-2",
+              menuPunyaKontak ? "lg:grid-cols-[1.4fr_1fr_1fr]" : "lg:grid-cols-[1.4fr_1fr_1fr_1fr]",
+            )}
+          >
             <div>
               <div className="flex items-center gap-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -147,22 +153,25 @@ export default async function PublicLayout({ children }: { children: React.React
             <FooterColumn title="Jelajahi" items={nav} />
             <FooterColumn title="Informasi" items={footerNav} />
 
-            {settings.contact_email ? (
+            {/* Alamat email pemilik sengaja tidak ditampilkan; pengunjung menghubungi lewat
+                formulir (docs/09 §5.4). Kolom ini hanya muncul bila menu belum menautkan
+                halaman Kontak, supaya kaki halaman tidak memuat dua tautan ke tujuan yang sama. */}
+            {menuPunyaKontak ? null : (
               <div>
                 <p className="label text-ink-foreground/60">Kontak</p>
                 <ul className="mt-4 space-y-2.5">
                   <li>
-                    <a
-                      href={`mailto:${settings.contact_email}`}
-                      className="hover:text-ink-foreground inline-flex items-center gap-2 break-all transition-colors"
+                    <StaticLink
+                      href="/kontak"
+                      className="hover:text-ink-foreground inline-flex items-center gap-2 transition-colors"
                     >
                       <Mail className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                      {settings.contact_email}
-                    </a>
+                      Formulir kontak
+                    </StaticLink>
                   </li>
                 </ul>
               </div>
-            ) : null}
+            )}
           </div>
 
           <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs sm:flex-row sm:items-center sm:justify-between">

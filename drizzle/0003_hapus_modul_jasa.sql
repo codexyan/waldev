@@ -7,6 +7,10 @@
 -- contoh yang sudah tayang lagi dipertahankan. Di D1 lokal versi lama sudah terlanjur jalan;
 -- 0004_pulihkan_klien membuat ulang tabel `clients` di sana.
 --
+-- Direvisi lagi 2026-09-13, masih sebelum diterapkan di produksi: tabel `contact_messages`
+-- tidak dihapus karena dipakai formulir di halaman Kontak. 0006_pulihkan_pesan membuat ulang
+-- tabel itu di D1 lokal.
+--
 -- 1) Bersihkan data yang tidak dipakai lagi (bagian 6.6 dan 13).
 DELETE FROM articles WHERE slug IN ('membangun-web-cepat-cloudflare', 'prinsip-desain-produk-digital', 'otomasi-bisnis-dengan-workflow') AND status <> 'published';--> statement-breakpoint
 DELETE FROM seo_meta WHERE entity_type IN ('portfolio', 'service', 'client') OR (entity_type = 'article' AND entity_id NOT IN (SELECT id FROM articles));--> statement-breakpoint
@@ -17,7 +21,6 @@ DELETE FROM roles WHERE name = 'sales' AND NOT EXISTS (SELECT 1 FROM user WHERE 
 -- 2) Hapus tabel modul jasa. Tabel anak dihapus sebelum induknya supaya aksi foreign key
 --    tidak pernah berjalan terhadap tabel yang masih dirujuk.
 DROP TABLE `collaboration_requests`;--> statement-breakpoint
-DROP TABLE `contact_messages`;--> statement-breakpoint
 DROP TABLE `testimonials`;--> statement-breakpoint
 DROP TABLE `portfolio_features`;--> statement-breakpoint
 DROP TABLE `portfolio_media`;--> statement-breakpoint

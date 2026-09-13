@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "waldev",
-  "main": ".open-next/worker.js",
+  "main": "worker.mjs",
   "compatibility_date": "2025-06-01",
   "compatibility_flags": ["nodejs_compat"],
   // esbuild di Wrangler menyisipkan `__name(...)` saat keep_names aktif. next-themes

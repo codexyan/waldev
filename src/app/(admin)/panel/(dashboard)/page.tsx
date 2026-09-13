@@ -144,12 +144,6 @@ export default async function AdminOverviewPage() {
   const settingsHref = `${ADMIN_BASE}/settings`;
   const checklist: ChecklistItem[] = [
     {
-      label: "Email kontak terisi",
-      done: Boolean(settings.contact_email),
-      href: settingsHref,
-      hint: "Jalur utama pengunjung untuk menghubungi Anda",
-    },
-    {
       label: "Tautan media sosial",
       done: Boolean(settings.social_instagram || settings.social_linkedin || settings.social_github),
       href: settingsHref,

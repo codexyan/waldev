@@ -73,7 +73,6 @@ export default async function HomePage() {
       <Hero
         title={settings.home_intro || HOME_INTRO}
         lead={HOME_LEAD}
-        email={settings.contact_email || null}
         showcase={showcase}
       />
 
@@ -127,8 +126,7 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      {/* Penutup kontak hanya tampil bila email kontak diisi, supaya tombolnya tidak mati. */}
-      {settings.contact_email ? <ContactCta email={settings.contact_email} /> : null}
+      <ContactCta />
     </>
   );
 }

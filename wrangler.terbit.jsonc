@@ -5,7 +5,7 @@
   // jarak jauh, untuk merender halaman publik menjadi berkas statis. Jangan dipakai deploy;
   // deploy tetap memakai wrangler.jsonc.
   "name": "waldev",
-  "main": ".open-next/worker.js",
+  "main": "worker.mjs",
   "compatibility_date": "2025-06-01",
   "compatibility_flags": ["nodejs_compat"],
   // Sama dengan wrangler.jsonc. Tanpa ini skrip tema di HTML hasil render memanggil

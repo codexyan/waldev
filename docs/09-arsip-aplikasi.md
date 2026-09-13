@@ -1,10 +1,10 @@
 # 09 · Perombakan: WalDev sebagai Arsip Aplikasi
 
-**Status:** Disetujui pemilik 2026-09-12 · Tahap 1–4 selesai, Tahap 5 (tayang) berjalan · Revisi beranda & klien 2026-09-12, revisi hero, logo, dan kartu 2026-09-13, revisi nada software house 2026-09-13 sore (§15)
+**Status:** Disetujui pemilik 2026-09-12 · Tahap 1–4 selesai, Tahap 5 (tayang) berjalan · Revisi beranda & klien 2026-09-12, revisi hero, logo, dan kartu 2026-09-13, revisi nada software house 2026-09-13 sore, formulir kontak dan halaman Tentang 2026-09-13 malam (§15)
 **Hubungan dengan dokumen lain:** dokumen 01–08 menggambarkan arah lama (situs jasa studio). Bila ada yang bertentangan, dokumen ini yang berlaku. Dokumen lama tetap disimpan sebagai riwayat.
 
 ## 1. Ringkasan
-WalDev berubah dari situs jasa studio menjadi **portofolio proyek bernada software house**: WalDev tampil sebagai pihak yang mengerjakan proyek, dan pengunjung datang untuk melihat hasil kerjanya serta mengunjungi situs proyek yang masih tayang. Tujuannya reputasi jangka panjang, bukan jualan, jadi tidak ada harga, WhatsApp, testimoni, atau formulir prospek. Logo klien yang pernah bekerja sama tetap tampil di beranda sebagai bukti kerja. Setiap proyek punya halaman yang menjelaskannya secara lengkap, dan tulisan menempel ke proyeknya. Kode yang ada **dirombak**, tidak ditulis ulang dari nol.
+WalDev berubah dari situs jasa studio menjadi **portofolio proyek bernada software house**: WalDev tampil sebagai pihak yang mengerjakan proyek, dan pengunjung datang untuk melihat hasil kerjanya serta mengunjungi situs proyek yang masih tayang. Tujuannya reputasi jangka panjang, bukan jualan, jadi tidak ada harga, WhatsApp, atau testimoni. Pengunjung yang ingin menghubungi WalDev memakai formulir di halaman Kontak; alamat email pemilik tidak ditampilkan. Logo klien yang pernah bekerja sama tetap tampil di beranda sebagai bukti kerja. Setiap proyek punya halaman yang menjelaskannya secara lengkap, dan tulisan menempel ke proyeknya. Kode yang ada **dirombak**, tidak ditulis ulang dari nol.
 
 ## 2. Keputusan
 | Topik | Keputusan |
@@ -20,7 +20,8 @@ WalDev berubah dari situs jasa studio menjadi **portofolio proyek bernada softwa
 | Struktur halaman aplikasi | Bagian wajib + bagian opsional yang dinyalakan per aplikasi |
 | Tulisan | Catatan pendek per aplikasi + artikel panjang sesekali; 3 tulisan terbaru tampil di beranda; menu Artikel belum tampil |
 | Tanggal | Tanggal catatan terakhir ditampilkan apa adanya |
-| Modul jasa | Dihapus, kecuali Klien yang dipulihkan untuk logo di beranda; kontak tersisa email & tautan sosial |
+| Modul jasa | Dihapus, kecuali Klien (logo di beranda) dan tabel pesan kontak yang dipakai lagi untuk formulir Kontak |
+| Kontak | Formulir di halaman `/kontak` (nama, email, pesan); pesan masuk ke menu Pesan di panel. Alamat email pemilik tidak ditampilkan di situs |
 | Logo klien | Hanya klien sungguhan. Logo contoh tidak ditampilkan di situs publik |
 | Halaman publik | Berkas statis hasil `pnpm terbitkan` karena paket Workers Free ([10 · Rencana Tayang](./10-rencana-tayang.md) §5) |
 | Tampilan | Gaya Plain v3 dipertahankan; token teks pudar tema terang digelapkan ke `#737373` (4,7:1) supaya lolos WCAG AA |
@@ -42,7 +43,8 @@ Jumlah pengunjung **bukan** ukuran keberhasilan.
 | `/apps` | Semua proyek dengan saringan status | Baru 2026-09-13 (§5.1) |
 | `/apps/[slug]` | Halaman proyek | Baru, menggantikan `/portfolio/[slug]` |
 | `/articles` · `/articles/[slug]` | Daftar & isi artikel | Tetap, tidak ada di menu bawaan |
-| `/about` | Pembuat, cerita, kontak | Dirombak |
+| `/about` | Profil software house | Dirombak, direvisi 2026-09-13 (§5.3) |
+| `/kontak` · `/kontak/terkirim` · `/kontak/gagal` | Formulir kontak dan halaman hasil kiriman tanpa JavaScript | Baru 2026-09-13 (§5.4) |
 | `/privacy-policy` | Kebijakan privasi | Tetap, isinya disederhanakan (tidak ada lagi formulir) |
 | 404 | Halaman tidak ditemukan | Tetap |
 
@@ -50,12 +52,12 @@ Jumlah pengunjung **bukan** ukuran keberhasilan.
 
 **Pengalihan permanen (308)** di `next.config.ts`, supaya tautan lama tidak berakhir di 404:
 - `/portfolio/:slug` → `/apps/:slug`
-- `/contact`, `/collaboration` → `/about`
+- `/contact`, `/collaboration` → `/kontak`
 - `/portfolio`, `/services`, `/services/:slug`, `/clients`, `/testimonials`, `/terms-of-service` → `/`
 
 **Menu bawaan:**
-- Header: `Portofolio` → `/apps` · `Tentang` → `/about`. *Portofolio* juga menyala di halaman setiap proyek
-- Footer: `Kebijakan Privasi`, email kontak, ikon sosial
+- Header: `Portofolio` → `/apps` · `Tentang` → `/about` · `Kontak` → `/kontak`. *Portofolio* juga menyala di halaman setiap proyek
+- Footer: kolom *Jelajahi* (isi menu header), `Kebijakan Privasi`, ikon sosial. Kolom *Kontak* dengan tautan *Formulir kontak* hanya muncul bila menu header tidak menautkan `/kontak`, supaya footer tidak memuat dua tautan ke tujuan yang sama
 
 Menu `Artikel` ditambahkan manual lewat Panel › Navigasi saat tulisannya dirasa cukup. Sengaja tidak ada logika otomatis: modul Navigasi sudah bisa melakukannya, dan ambang "cukup" lebih baik diputuskan pemilik.
 
@@ -63,6 +65,7 @@ Menu `Artikel` ditambahkan manual lewat Panel › Navigasi saat tulisannya diras
 | Menu | Perubahan |
 |---|---|
 | Ringkasan | Dirombak (§7.2) |
+| Pesan | Baru 2026-09-13: pesan dari formulir kontak (§7.5) |
 | Aplikasi | Baru, menggantikan Karya; termasuk catatan (§7.1) |
 | Tulisan | Tetap + pilihan "Aplikasi terkait" |
 | Klien | Dipulihkan di kelompok Konten (§7.4) |
@@ -74,7 +77,7 @@ Menu `Artikel` ditambahkan manual lewat Panel › Navigasi saat tulisannya diras
 ## 5. Halaman publik
 ### 5.1 Beranda
 Urutan bagian dari atas:
-1. **Hero.** Judul dari Pengaturan (`home_intro`; selama kosong dipakai `HOME_INTRO` di `src/lib/constants.ts`: "Software house untuk solusi digital Anda."), kalimat pengantar `HOME_LEAD` ("WalDev membangun aplikasi web dan sistem informasi. Setiap proyek di portofolio punya halaman sendiri, dan yang masih tayang bisa langsung dikunjungi."), tombol *Lihat portofolio* ke `#portofolio`, dan tautan *Hubungi WalDev* ke email kontak (hanya bila email kontak diisi). Di bawahnya gambar hero yang dirakit sebagai kartu 3D di atas lantai Cetak biru (§16):
+1. **Hero.** Judul dari Pengaturan (`home_intro`; selama kosong dipakai `HOME_INTRO` di `src/lib/constants.ts`: "Software house untuk solusi digital Anda."), kalimat pengantar `HOME_LEAD` ("WalDev membangun aplikasi web dan sistem informasi. Setiap proyek di portofolio punya halaman sendiri, dan yang masih tayang bisa langsung dikunjungi."), tombol *Lihat portofolio* ke `#portofolio`, dan tautan *Hubungi WalDev* ke halaman Kontak. Di bawahnya gambar hero yang dirakit sebagai kartu 3D di atas lantai Cetak biru (§16):
    - Gambarnya `hero_media_id` bila diisi di Pengaturan, selain itu tangkapan layar utama proyek di hero.
    - Proyek di hero adalah `hero_app_slug` bila dipilih (keterangan "Proyek unggulan · {nama}"), selain itu proyek teratas yang punya tangkapan layar dan tidak berstatus *Tidak aktif* (keterangan "Proyek terbaru · {nama}"). Gambar menaut ke halaman proyek itu.
    - Bila tidak ada gambar yang bisa dipakai, hero berhenti di tombol.
@@ -86,7 +89,7 @@ Urutan bagian dari atas:
    - Urutan: catatan terakhir terbaru di atas; proyek berstatus *Tidak aktif* selalu di bawah dan gambarnya abu-abu.
    - Bila belum ada proyek tayang: "Proyek pertama masih dalam pengerjaan."
 4. **Tulisan terbaru.** 3 tulisan terbit terbaru dengan kartu yang sama seperti `/articles`, ditambah tautan *Semua tulisan*. Bagian ini hilang bila belum ada tulisan terbit.
-5. **Ajakan kontak** (`#kontak`). Judul "Punya proyek yang ingin dibicarakan?", satu kalimat ajakan, tombol *Hubungi kami* yang membuka email, dan alamat email kontak. Pola penutup ini diambil dari situs acuan; formulir konsultasi dan WhatsApp sengaja tidak ada. Bagian ini hanya tampil bila email kontak diisi di Pengaturan.
+5. **Ajakan kontak** (komponen `ContactCta`, juga dipakai halaman proyek dan Tentang). Judul "Punya proyek yang ingin dibicarakan?", satu kalimat ajakan, dan tombol *Hubungi kami* ke halaman Kontak (§5.4). Pola penutup ini diambil dari situs acuan; alamat email dan WhatsApp tidak ditampilkan.
 
 **Halaman `/apps`.** Berjudul *Semua proyek* dengan eyebrow *Portofolio*: semua proyek yang tayang dalam grid tiga kolom (dua di tablet, satu di ponsel), dengan tombol saring *Semua*, *Sedang dibangun*, *Sudah rilis*, dan *Tidak aktif* beserta jumlahnya. Tombol tanpa kartu tidak tampil. Kartu dirender di server dan penyaringannya hanya mengganti atribut `data-filter`, jadi halamannya tetap berkas statis. Bila baru ada satu proyek, halamannya berisi satu kartu lebar tanpa tombol saring.
 
@@ -106,19 +109,30 @@ Teks memakai sudut pandang "kami" dan "Anda" tanpa kata "saya", dan tidak ada an
 - Catatan pembuatan (catatan pendek + artikel terkait, urut waktu)
 - Catatan rilis (catatan yang punya nomor versi)
 
-**Susunan *Kepala terbelah* (2026-09-13).** Di layar lebar kepala halaman dua kolom. Kiri: tautan kembali, logo atau monogram, status, nama, satu kalimat, tombol *Kunjungi situs* dan *Lihat kode sumber*. Kanan: tangkapan layar utama dalam bingkai bermotif Cetak biru. Tanpa tangkapan layar, kepala kembali satu kolom. Di bawahnya ringkasan fakta (status, mulai dibangun, dirilis, tidak aktif sejak, teknologi, situs, catatan terakhir), masing-masing hanya tampil bila datanya ada. Lalu penjelasan dalam kolom baca, bagian dengan judul di kiri dan isi di kanan (fitur utama bernomor, cara pakai, FAQ, catatan rilis, catatan pembuatan), galeri, *Proyek lain* (hingga tiga, hanya bila ada proyek lain yang tayang), dan ajakan kontak *Punya proyek serupa?* bila email kontak diisi.
+**Susunan *Kepala terbelah* (2026-09-13).** Di layar lebar kepala halaman dua kolom. Kiri: tautan kembali, logo atau monogram, status, nama, satu kalimat, tombol *Kunjungi situs* dan *Lihat kode sumber*. Kanan: tangkapan layar utama dalam bingkai bermotif Cetak biru. Tanpa tangkapan layar, kepala kembali satu kolom. Di bawahnya ringkasan fakta (status, mulai dibangun, dirilis, tidak aktif sejak, teknologi, situs, catatan terakhir), masing-masing hanya tampil bila datanya ada. Lalu penjelasan dalam kolom baca, bagian dengan judul di kiri dan isi di kanan (fitur utama bernomor, cara pakai, FAQ, catatan rilis, catatan pembuatan), galeri, *Proyek lain* (hingga tiga, hanya bila ada proyek lain yang tayang), dan ajakan kontak *Punya proyek serupa?* ke halaman Kontak.
 
 **Proyek berstatus *Tidak aktif*:** tombol *Kunjungi situs* disembunyikan otomatis, lalu tampil keterangan "Proyek ini sudah tidak aktif sejak {bulan tahun}. Halaman ini tetap ada sebagai dokumentasi." Tangkapan layar dan video jadi bukti utama, karena tautannya sudah mati.
 
 SEO: JSON-LD `SoftwareApplication`; gambar OG = tangkapan layar utama.
 
 ### 5.3 Tentang `/about`
-- Nama, foto, dan cerita singkat pembuat (Pengaturan, §7.3). Selama cerita kosong, tampil kalimat bawaan yang memperkenalkan WalDev sebagai software house yang membangun aplikasi web dan sistem informasi.
-- Fakta WalDev: kota, provinsi, tahun berdiri, jumlah proyek.
-- Kontak: email + tautan sosial. Tanpa formulir, tanpa WhatsApp.
-- JSON-LD: `ProfilePage` dengan `Person` + `Organization`.
+Profil software house (dipilih 2026-09-13). Setiap bagian hanya tampil bila datanya ada, dan alamat email tidak ditampilkan.
+- **Kepala dua kolom:** pernyataan "WalDev membangun aplikasi web dan sistem informasi.", kalimat asal dari Pengaturan (kota, provinsi, tahun berdiri), tombol *Hubungi kami* ke halaman Kontak dan tautan *Lihat portofolio*. Di kanan daftar fakta: berbasis di, berdiri, dan jumlah proyek di portofolio.
+- ***Teknologi yang kami pakai*:** dihimpun dari teknologi proyek yang tayang.
+- ***Pernah bekerja sama dengan kami*:** klien yang tidak bertanda NDA, berupa logo atau nama.
+- ***Di balik WalDev*:** nama, foto, dan cerita pembuat, hanya bila diisi di Pengaturan (§7.3).
+- ***Proyek terbaru*:** kartu lebar proyek teratas, lalu ajakan kontak.
+- JSON-LD: `AboutPage` dengan `Organization`, atau `Person` yang bekerja untuk organisasi itu bila nama pembuat diisi.
 
-### 5.4 Artikel
+### 5.4 Kontak `/kontak`
+- Satu-satunya jalur menghubungi WalDev dari situs. Alamat email pemilik (`contact_email` di Pengaturan) tidak ditampilkan di halaman mana pun, termasuk footer dan JSON-LD.
+- Formulir berisi nama, email, dan pesan (minimal 10 karakter). Dengan JavaScript, kiriman memakai fetch dan hasilnya tampil di tempat. Tanpa JavaScript, formulir tetap terkirim lalu dialihkan ke `/kontak/terkirim` atau `/kontak/gagal` (keduanya `noindex`).
+- Keadaan formulir: selama mengirim, tombol bertuliskan *Mengirim…* dan memakai `aria-disabled`, bukan `disabled`, karena tombol yang dinonaktifkan melepas fokus keyboard ke awal halaman. Galat tampil di atas tombol dan isian tidak dikosongkan. Setelah terkirim, fokus pindah ke judul *Pesan terkirim*; *Kirim pesan lain* mengembalikan fokus ke kolom Nama. Tautan Kebijakan Privasi di bawah tombol diberi garis bawah supaya terlihat sebagai tautan.
+- Kiriman `POST /api/kontak` ditangani `worker.mjs` sebelum masuk Next.js (`src/server/contact-endpoint.ts`), supaya tidak terkena batas CPU Workers Free: cek asal kiriman, jebakan bot tersembunyi (kolom `website`), validasi, batas 5 kiriman per alamat IP per jam (KV), lalu satu INSERT ke `contact_messages`.
+- Pesan dibaca di menu Pesan di panel (§7.5). Tidak ada email pemberitahuan dan tidak ada layanan pihak ketiga.
+- Kebijakan privasi menjelaskan isian formulir dan pemakaian alamat IP untuk batas kiriman.
+
+### 5.5 Artikel
 - Tetap, ditambah kolom opsional *Aplikasi terkait*.
 - Artikel terkait tampil di bagian Catatan pembuatan aplikasinya, dan halaman artikel menautkan balik ke aplikasi itu.
 - Panel ajakan WhatsApp di akhir artikel dihapus.
@@ -153,16 +167,19 @@ Konvensi mengikuti [05 · Database](./05-database-erd.md): PK CUID2, timestamp e
 - Rujukan ke baris luar di subquery ditulis literal `"apps"."id"`: pada query satu tabel Drizzle menulis kolom tanpa nama tabel, sehingga `"id"` terbaca sebagai kolom tabel subquery.
 
 ### 6.4 Tabel yang dihapus
-services · service_features · service_workflow_steps · service_faqs · testimonials · collaboration_requests · contact_messages · portfolios · portfolio_media · portfolio_features · portfolio_technologies
+services · service_features · service_workflow_steps · service_faqs · testimonials · collaboration_requests · portfolios · portfolio_media · portfolio_features · portfolio_technologies
 
 ### 6.5 Tabel yang dipulihkan
 - **clients**: id · name · slug(UNIQUE) · logo_media_id FK→media(SET NULL) · category_id FK→categories(SET NULL) · website_url · is_nda(bool) · order · timestamps
   - Definisinya sama persis dengan `0000_calm_bastion`, supaya tabel yang masih ada di produksi langsung cocok dengan kode.
   - `category_id` dipertahankan di tabel tetapi tidak dipakai kode lagi (kategori hanya untuk tulisan, §6.2).
+- **contact_messages**: id · name · email · subject (tidak dipakai formulir) · message · status (new|read|archived, default new) · created_at; index status
+  - Definisinya sama persis dengan `0000_calm_bastion`. Tabel ini masih ada dan kosong di produksi, jadi formulir kontak tidak butuh perubahan skema produksi.
+  - Baris baru ditulis endpoint di Worker (§5.4), bukan lewat Drizzle; `id` berupa UUID.
 
 ### 6.6 RBAC
 - **Dihapus:** `service.*`, `portfolio.*`, `testimonial.manage`, `lead.read`, `lead.update`, serta peran `sales` (0 pengguna di produksi per 2026-09-12).
-- **Ditambah:** `app.create`, `app.update`, `app.delete`. Mengelola catatan cukup dengan `app.update`.
+- **Ditambah:** `app.create`, `app.update`, `app.delete`. Mengelola catatan cukup dengan `app.update`. Sejak 2026-09-13 juga `message.manage` (hanya `owner`) untuk menu Pesan.
 - **Dipertahankan:** `client.manage`, untuk peran `owner` dan `editor`.
 - Peran `owner` & `editor` tetap. Guard dan halaman Peran membaca daftar izin dari kode (`permissions.ts`), jadi izin baru tidak butuh baris di tabel `permissions`.
 
@@ -190,13 +207,16 @@ erDiagram
 ### 7.2 Ringkasan
 - Tombol cepat: *Aplikasi* · *Tulisan* · *Lihat situs*, dan kotak *Tulis catatan* dengan pilihan aplikasi.
 - Panel **Perlu kabar**: aplikasi berstatus *Sedang dibangun* yang tidak punya catatan lebih dari 30 hari. Jumlahnya juga tampil sebagai lencana di menu Aplikasi.
-- Daftar kelengkapan: email kontak · tautan sosial · profil pembuat (nama, foto, cerita) · judul hero beranda · alamat situs bukan lagi `workers.dev`.
+- Daftar kelengkapan: tautan sosial · profil pembuat (nama, foto, cerita) · judul hero beranda · alamat situs bukan lagi `workers.dev`.
 
 ### 7.3 Pengaturan
 Isian dikelompokkan: Identitas situs · *Hero beranda* (judul hero, gambar hero lewat media picker, dan pilihan aplikasi di hero dari daftar aplikasi yang tayang) · *Profil pembuat* (nama, foto lewat media picker, cerita singkat) · Kontak & sosial · Lokasi. Semua isian media memakai media picker yang sama; nilainya id media.
 
 ### 7.4 Klien
 Satu halaman berizin `client.manage`: formulir (logo lewat media picker, nama, situs web, NDA, urutan) dan daftar klien dengan tombol sunting & hapus. Tanpa kategori. Logo sebaiknya berlatar transparan dan berwarna gelap, karena di beranda logo dipudarkan dan warnanya dibalik pada tema gelap. Seperti konten lain, perubahan baru tampil di situs setelah halaman diterbitkan ulang.
+
+### 7.5 Pesan
+Halaman `/panel/messages` berizin `message.manage` (hanya owner). Ada kotak Masuk dan Arsip; tiap pesan menampilkan nama, email pengirim, tanggal, dan isi, dengan tombol *Balas lewat email*, *Tandai dibaca*, *Arsipkan*, dan *Kembalikan ke Masuk*. Menu Pesan menampilkan lencana jumlah pesan yang belum dibaca. Pesan tidak perlu diterbitkan ulang karena formulir menulis langsung ke database.
 
 ## 8. Dampak ke kode
 ### 8.1 Dihapus (Tahap 4)
@@ -239,6 +259,11 @@ Satu halaman berizin `client.manage`: formulir (logo lewat media picker, nama, s
 - **Baru:** `src/components/contact-cta.tsx`, ajakan kontak bersama untuk beranda dan halaman proyek; kelas `.frame-cetak-biru` di `src/app/globals.css`.
 - **Diubah:** beranda memakai `ContactCta`.
 
+### 8.7 Formulir kontak dan halaman Tentang (2026-09-13 malam)
+- **Baru:** `worker.mjs` (pintu masuk Worker; `main` di `wrangler.jsonc` dan `wrangler.terbit.jsonc`), `src/server/contact-endpoint.ts`, `src/components/contact-form.tsx`, `src/app/(public)/kontak/{page,terkirim/page,gagal/page}.tsx`, `src/components/ui/split-section.tsx`, `src/modules/messages/{message.dal,message.actions}.ts`, `src/modules/messages/components/message-list.tsx`, `src/app/(admin)/panel/(dashboard)/messages/page.tsx`, migrasi `0006_pulihkan_pesan`.
+- **Ditulis ulang:** `src/app/(public)/about/page.tsx`, `src/app/(public)/privacy-policy/page.tsx`, `src/components/contact-cta.tsx`.
+- **Diubah:** `src/app/(public)/layout.tsx` (menu Kontak, kolom Kontak di footer yang hanya muncul bila menu tidak menautkan `/kontak`, JSON-LD tanpa email), hero, beranda, halaman proyek, `src/server/db/schema.ts`, `src/server/rbac/permissions.ts`, menu dan layout panel, Ringkasan, Pengaturan, `src/modules/apps/app.dal.ts` (`listPublishedTechnologies`), `next.config.ts` (pengalihan), `src/app/sitemap.ts`, `scripts/terbitkan.mjs`, migrasi 0003.
+
 ## 9. Data produksi & migrasi
 ### 9.1 Kondisi D1 produksi (dibaca 2026-09-12)
 | Tabel | Baris | Catatan |
@@ -260,9 +285,10 @@ Sesudahnya, 2026-09-13: klien sungguhan pertama, **Lapas Kelas IIB Banjarbaru**,
 |---|---|---|
 | `0001_arsip_aplikasi.sql` | Tabel `apps` & anak-anaknya + `articles.app_id` (FK `ON DELETE SET NULL` ditambahkan manual) | Ya (hanya menambah) |
 | `0002_salin_karya.sql` | Salin iaUndang & SIM-KGB ke `apps` (id sama dengan karya lama), berstatus Rilis dan **tersembunyi**, beserta fitur, teknologi, galeri, SEO, dan penjelasan dari teks tantangan & solusi | Ya (hanya menambah) |
-| `0003_hapus_modul_jasa.sql` | Hapus artikel contoh yang **tidak** berstatus tayang, izin & peran lama, pengaturan WhatsApp; lalu drop 11 tabel §6.4. Direvisi sebelum diterapkan di produksi: `clients` dan `client.manage` tidak lagi dihapus | **Tidak** |
+| `0003_hapus_modul_jasa.sql` | Hapus artikel contoh yang **tidak** berstatus tayang, izin & peran lama, pengaturan WhatsApp; lalu drop 10 tabel §6.4. Direvisi sebelum diterapkan di produksi: `clients`, `client.manage`, dan (sejak 2026-09-13) `contact_messages` tidak lagi dihapus | **Tidak** |
 | `0004_pulihkan_klien.sql` | `CREATE TABLE IF NOT EXISTS clients` + indeks unik slug. Di produksi tidak mengubah apa pun karena tabelnya masih ada; di D1 lokal membuat ulang tabel yang terlanjur dihapus 0003 versi lama | Ya |
 | `0005_logo_aplikasi.sql` | Kolom `apps.logo_media_id` (FK `ON DELETE SET NULL` ditambahkan manual). Sudah diterapkan di produksi 2026-09-13 | Ya (hanya menambah) |
+| `0006_pulihkan_pesan.sql` | `CREATE TABLE IF NOT EXISTS contact_messages` + indeks status. Di produksi tidak mengubah apa pun karena tabelnya masih ada; di D1 lokal membuat ulang tabel yang terlanjur dihapus 0003 versi lama | Ya |
 
 Urutannya penting: kode lama akan error 500 bila tabelnya dihapus lebih dulu, dan kode baru error 500 bila tabel `apps` belum ada. `wrangler d1 migrations apply` selalu menerapkan **semua** migrasi yang tertunda sekaligus, jadi 0001 dan 0002 diterapkan manual.
 
@@ -316,13 +342,18 @@ Setiap fase ditutup dengan `pnpm typecheck`, `pnpm lint`, `pnpm build` (webpack,
 - Ringkasan tulisan contoh "Mengapa Kecepatan Website Menentukan Bisnis Anda" tetap tayang walau memuat klaim riset tanpa sumber; pemilik menerimanya sebagai pengecualian gate antislop.
 - Halaman proyek memakai susunan *Kepala terbelah* (§5.2), dipilih dari tiga usulan: Kepala terbelah, Ringkasan di samping, dan Satu kolom dirapikan.
 
+**Sudah diputuskan (2026-09-13 malam):**
+- Alamat email pemilik tidak ditampilkan di situs publik. Pengunjung menghubungi WalDev lewat formulir di halaman Kontak (nama, email, pesan), dan pesannya masuk ke menu Pesan di panel tanpa email pemberitahuan.
+- Menu header bertambah *Kontak*; semua tombol *Hubungi* di situs menuju `/kontak`.
+- Halaman Tentang memakai susunan profil software house (§5.3).
+
 **Masih terbuka:**
 - Tanggal rilis sebenarnya iaUndang dan SIM-KGB. Penjelasan hasil salinannya masih bersuara "kami" dari situs jasa lama.
 - Berkas logo Lapas Kelas IIB Banjarbaru dan logo klien lain (diunggah pemilik lewat panel Klien).
 - Nama domain.
 
 ## 14. Di luar cakupan
-Harga, WhatsApp, testimoni, formulir prospek/kontak, beranda berbentuk linimasa, susunan blok bebas, kategori aplikasi, halaman klien tersendiri, multi-bahasa, komentar, statistik pengunjung.
+Harga, WhatsApp, testimoni, formulir prospek (formulir kontak sederhana ada sejak 2026-09-13, §5.4), beranda berbentuk linimasa, susunan blok bebas, kategori aplikasi, halaman klien tersendiri, multi-bahasa, komentar, statistik pengunjung.
 
 ## 15. Riwayat revisi
 - **2026-09-12 malam · Beranda & klien.** Pemilik meminta beranda berisi hero, aplikasi, logo klien, dan tulisan. Pilihannya: hero dengan judul, ajakan, dan tangkapan layar; logo klien tepat di bawah hero; modul Klien dipulihkan; tulisan contoh yang sedang tayang dibiarkan. Diterapkan di §2, §4, §5.1, §6.4–6.6, §7.4, §8.3, §9, §11, dan §13.
@@ -330,6 +361,7 @@ Harga, WhatsApp, testimoni, formulir prospek/kontak, beranda berbentuk linimasa,
 - **2026-09-13 siang · Hero, logo, dan kartu.** Pemilik meminta transisi 3D yang lebih halus, latar hero yang lebih menarik, gambar hero yang bisa diganti dari panel, susunan kartu untuk banyak aplikasi, logo kerja sama dengan animasi di bawah hero, dan judul yang tidak ke-akuan. Pilihannya dari halaman konsep "Hero dan Kartu WalDev": latar Cetak biru, judul bertema solusi, logo Muncul dengan logo asli saja, dan kartu Unggulan + grid. Diterapkan di §2, §4, §5.1, §6.2, §7, §8.4, §9.1, §11, §13, dan §16.
 - **2026-09-13 sore · Nada software house.** Pemilik meminta teks hero terkesan seperti software house, dengan pengunjung yang melihat portofolio dan mengunjungi proyek yang masih tayang, bukan mencoba aplikasi. Setelah memilih judul "Solusi digital dari WalDev.", pemilik memberi acuan gaya vodjo.com/id dan gosocial.co.id, lalu memilih: judul "Software house untuk solusi digital Anda.", sudut pandang kami dan Anda, menu dan bagian *Portofolio* dengan item *proyek* (panel tetap *aplikasi*), ajakan kontak di akhir beranda, dan aturan antislop selama pengerjaan. Diterapkan di §1, §2, §4.1, §5.1 sampai §5.3, §8.5, §11, dan §13.
 - **2026-09-13 sore · Halaman proyek.** Pemilik meminta desain ulang halaman detail iaUndang. Masalah yang ditemukan: layar pertama timpang, baris meta berisi sel kosong, kolom kanan kosong sepanjang halaman, fitur tanpa hierarki, teknologi di paling bawah, dan halaman berhenti tanpa langkah lanjut. Dari tiga usulan, pemilik memilih *Kepala terbelah*. Diterapkan di §5.2, §8.6, dan §13.
+- **2026-09-13 malam · Kontak dan Tentang.** Pemilik meminta tampilan halaman Tentang diperbaiki dan alamat emailnya tidak tampil di luar; yang ingin menghubungi cukup mengisi formulir. Pilihannya: pesan masuk ke panel, formulir di halaman Kontak sendiri dengan isian nama, email, dan pesan, serta halaman Tentang berbentuk profil software house. Diterapkan di §1, §2, §4, §5.1 sampai §5.4, §6.4 sampai §6.6, §7, §8.7, §9.2, §13, dan §14. Setelah pemeriksaan pratinjau pertama: footer tidak lagi memuat dua tautan ke `/kontak`, formulir menjaga fokus keyboard saat mengirim, gagal, dan terkirim, dan tautan Kebijakan Privasi di formulir diberi garis bawah (§4.1, §5.4).
 
 ## 16. Hero 3D *Rakit* dengan latar Cetak biru
 Gambar hero ditampilkan sebagai kartu 3D yang terangkat dari lantai bergaris biru, seperti meja kerja tempat aplikasi dirakit. Wujud dari tagline *Build Digital Products*.

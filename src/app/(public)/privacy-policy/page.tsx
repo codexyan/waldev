@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
+import { StaticLink } from "@/components/ui/static-link";
 import { SITE } from "@/lib/constants";
 import { getSiteSettings } from "@/modules/settings/settings.dal";
 
@@ -7,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Kebijakan Privasi",
-  description: `Kebijakan privasi ${SITE.name}: situs ini tidak meminta data pribadi pengunjung.`,
+  description: `Kebijakan privasi ${SITE.name}: data yang dikirim lewat formulir kontak dan cara memakainya.`,
   alternates: { canonical: "/privacy-policy" },
 };
 
@@ -20,21 +21,29 @@ export default async function PrivacyPolicyPage() {
       <PageHeader
         eyebrow="Privasi"
         title="Kebijakan Privasi"
-        description="Singkatnya: situs ini tidak meminta dan tidak menyimpan data pribadi pengunjung."
+        description="Singkatnya: data pribadi yang disimpan hanya isian formulir kontak, dan hanya dipakai untuk membalas pesan Anda."
       />
 
       <section className="mx-auto max-w-3xl px-6 py-16 sm:py-20">
         <div className="prose max-w-none">
           <p>
             {brand} adalah portofolio proyek aplikasi web. Halaman ini menjelaskan data apa saja yang
-            terlibat saat Anda membuka situs ini.
+            terlibat saat Anda membuka situs ini atau mengirim pesan lewat formulir kontak.
           </p>
 
-          <h2>Tidak ada formulir atau akun</h2>
+          <h2>Formulir kontak</h2>
           <p>
-            Situs ini tidak punya formulir, pendaftaran akun, maupun kolom komentar. Anda tidak
-            perlu memberikan nama, email, atau nomor telepon.
+            Halaman <StaticLink href="/kontak">Kontak</StaticLink> berisi formulir untuk nama, email,
+            dan pesan. Isian itu disimpan di database {brand} di Cloudflare dan hanya dibaca
+            pengelola situs untuk membalas pesan Anda. Alamat email Anda tidak ditampilkan di situs.
           </p>
+          <p>
+            Untuk mencegah pesan spam, alamat IP pengirim dipakai sebagai penghitung jumlah kiriman
+            selama satu jam. Alamat IP itu tidak disimpan bersama pesan.
+          </p>
+
+          <h2>Tidak ada akun</h2>
+          <p>Situs ini tidak punya pendaftaran akun maupun kolom komentar.</p>
 
           <h2>Data teknis</h2>
           <p>
@@ -56,21 +65,11 @@ export default async function PrivacyPolicyPage() {
             mengklik video, dan sejak saat itu berlaku kebijakan privasi YouTube.
           </p>
 
-          <h2>Email</h2>
+          <h2>Pertanyaan</h2>
           <p>
-            Bila Anda mengirim email, {brand} hanya memakai alamat dan isi pesan Anda untuk
-            membalas.
+            Pertanyaan soal kebijakan ini atau data yang Anda kirim bisa disampaikan lewat{" "}
+            <StaticLink href="/kontak">formulir kontak</StaticLink>.
           </p>
-
-          {settings.contact_email ? (
-            <>
-              <h2>Kontak</h2>
-              <p>
-                Pertanyaan soal kebijakan ini bisa dikirim ke{" "}
-                <a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a>.
-              </p>
-            </>
-          ) : null}
         </div>
       </section>
     </>

@@ -45,8 +45,8 @@ const nextConfig: NextConfig = {
     ];
     return [
       { source: "/portfolio/:slug", destination: "/apps/:slug", permanent: true },
-      { source: "/contact", destination: "/about", permanent: true },
-      { source: "/collaboration", destination: "/about", permanent: true },
+      { source: "/contact", destination: "/kontak", permanent: true },
+      { source: "/collaboration", destination: "/kontak", permanent: true },
       ...keBeranda.map((source) => ({ source, destination: "/", permanent: true })),
     ];
   },

@@ -94,7 +94,11 @@ export const SETTINGS_GROUPS: SettingsGroup[] = [
     title: "Kontak & sosial",
     description: "Email dan tautan sosial adalah satu-satunya jalur kontak di situs.",
     fields: [
-      { key: "contact_email", label: "Email kontak" },
+      {
+        key: "contact_email",
+        label: "Email kontak",
+        hint: "Tidak ditampilkan di situs publik. Pengunjung menghubungi lewat formulir di halaman Kontak, dan pesannya masuk ke menu Pesan.",
+      },
       { key: "social_github", label: "GitHub URL" },
       { key: "social_linkedin", label: "LinkedIn URL" },
       { key: "social_instagram", label: "Instagram URL" },

@@ -9,6 +9,7 @@ import {
   Handshake,
   History,
   Image as ImageIcon,
+  Inbox,
   LayoutDashboard,
   ListTree,
   Settings,
@@ -30,7 +31,10 @@ interface NavItem {
 const GROUPS: { label: string | null; items: NavItem[] }[] = [
   {
     label: null,
-    items: [{ href: "", label: "Ringkasan", icon: LayoutDashboard }],
+    items: [
+      { href: "", label: "Ringkasan", icon: LayoutDashboard },
+      { href: "/messages", label: "Pesan", icon: Inbox },
+    ],
   },
   {
     label: "Konten",
@@ -59,6 +63,8 @@ const GROUPS: { label: string | null; items: NavItem[] }[] = [
 export interface NavCounts {
   /** Aplikasi berstatus Sedang dibangun yang lama tanpa catatan. */
   appsNeedingUpdate?: number;
+  /** Pesan dari formulir kontak yang belum dibaca. */
+  newMessages?: number;
 }
 
 export function AdminNav({ counts, onNavigate }: { counts?: NavCounts; onNavigate?: () => void }) {
@@ -66,6 +72,7 @@ export function AdminNav({ counts, onNavigate }: { counts?: NavCounts; onNavigat
 
   const badgeFor = (href: string) => {
     if (href === "/apps") return counts?.appsNeedingUpdate || 0;
+    if (href === "/messages") return counts?.newMessages || 0;
     return 0;
   };
 

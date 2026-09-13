@@ -21,6 +21,8 @@ export const PERMISSIONS = [
   "settings.manage",
   "navigation.manage",
   "seo.manage",
+  // Inbox
+  "message.manage", // pesan dari formulir di halaman Kontak
   // Administration
   "user.manage",
   "role.manage",

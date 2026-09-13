@@ -8,6 +8,7 @@ import { ArrowLink } from "@/components/ui/arrow-link";
 import { buttonVariants } from "@/components/ui/button";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { SECTION, SHELL } from "@/components/ui/shell";
+import { SplitSection } from "@/components/ui/split-section";
 import { StaticLink } from "@/components/ui/static-link";
 import { YoutubeFacade } from "@/components/youtube-facade";
 import { SITE } from "@/lib/constants";
@@ -74,21 +75,6 @@ export async function generateMetadata({
       ...(app.coverUrl ? { images: [{ url: app.coverUrl }] } : {}),
     },
   };
-}
-
-/**
- * Bagian isi: judul di kiri dan isi di kanan pada layar lebar. Susunan satu kolom
- * sebelumnya membiarkan sepertiga kanan halaman kosong dari atas sampai bawah.
- */
-function SplitSection({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className={cn(SHELL, SECTION, "border-border border-t")}>
-      <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
-        <h2 className="display text-2xl text-balance sm:text-[1.75rem] lg:col-span-4">{title}</h2>
-        <div className="min-w-0 lg:col-span-8">{children}</div>
-      </div>
-    </section>
-  );
 }
 
 /**
@@ -417,9 +403,7 @@ export default async function AppPage({ params }: { params: Promise<{ slug: stri
         </section>
       ) : null}
 
-      {settings.contact_email ? (
-        <ContactCta email={settings.contact_email} title="Punya proyek serupa?" />
-      ) : null}
+      <ContactCta title="Punya proyek serupa?" />
 
       <script
         type="application/ld+json"

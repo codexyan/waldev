@@ -494,6 +494,19 @@ export type AppTimelineEntry =
   | { kind: "note"; id: string; body: string; version: string | null; date: Date }
   | { kind: "article"; title: string; slug: string; summary: string | null; date: Date };
 
+/** Teknologi yang dipakai proyek-proyek yang tayang, untuk halaman Tentang (docs/09 §5.3). */
+export async function listPublishedTechnologies(): Promise<string[]> {
+  const db = getDb();
+  const rows = await db
+    .selectDistinct({ name: technologies.name })
+    .from(appTechnologies)
+    .innerJoin(technologies, eq(appTechnologies.technologyId, technologies.id))
+    .innerJoin(apps, eq(appTechnologies.appId, apps.id))
+    .where(eq(apps.isPublished, true))
+    .orderBy(asc(technologies.name));
+  return rows.map((row) => row.name);
+}
+
 export async function getPublishedAppBySlug(slug: string) {
   const db = getDb();
   const rows = await db

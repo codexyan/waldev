@@ -36,7 +36,16 @@ const LOKAL = `http://127.0.0.1:${PORT}`;
 const WINDOWS = process.platform === "win32";
 
 /** Halaman yang selalu ada. Halaman aplikasi dan tulisan diambil dari sitemap. */
-const HALAMAN_TETAP = ["/", "/apps", "/about", "/articles", "/privacy-policy"];
+const HALAMAN_TETAP = [
+  "/",
+  "/apps",
+  "/about",
+  "/kontak",
+  "/kontak/terkirim",
+  "/kontak/gagal",
+  "/articles",
+  "/privacy-policy",
+];
 
 /** Sama dengan securityHeaders di next.config.ts, karena berkas statis tidak melewati Next. */
 const HEADER_KEAMANAN = `/*
